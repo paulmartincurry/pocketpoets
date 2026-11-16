@@ -2135,9 +2135,11 @@ class SoundtrackEngine {
         dummyLead.gain.setValueAtTime(0, 0);
         def.render(offlineBed, dummyLead, offlineBed.destination, noiseBed);
 
-        // Guard against headless hangs with a 1.5s timeout
+        // Rendering a track can take several seconds on a normal machine. Nothing
+        // waits on it (every caller is fire-and-forget), so give it real time.
+        // The guard only exists so a render that never finishes can't hang forever.
         const timeoutPromise = new Promise<never>((_, reject) =>
-          setTimeout(() => reject(new Error('Audio render timeout')), 1500),
+          setTimeout(() => reject(new Error('Audio render timeout')), 30000),
         );
 
         const [leadBuf, bedBuf] = await Promise.race([
@@ -2157,7 +2159,8 @@ class SoundtrackEngine {
         const dummyLead = new AudioBuffer({ length: 128, numberOfChannels: 2, sampleRate });
         const dummyBed = new AudioBuffer({ length: 128, numberOfChannels: 2, sampleRate });
         const fallbackStems: StemTrackBuffers = { lead: dummyLead, bed: dummyBed, bpm: def.bpm };
-        this.bufferCache[zoneOrTrack] = fallbackStems;
+        // Don't remember the silent stand-in: caching it made the track mute for
+        // the rest of the session. Leaving it out lets the next request try again.
         delete this.renderPromises[zoneOrTrack];
         return fallbackStems;
       }
