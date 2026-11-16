@@ -10184,6 +10184,29 @@ export default function App() {
           return;
         }
 
+        // SOAPBOX CORNER (east lawn): whoever is on or around the crate. Non-Duelists.
+        // Their greeting and lines live with them in INITIAL_TOWN_NPCS.
+        if (targetNpc.id.startsWith('npc_town_soapbox_')) {
+          const restFacing: FacingDirection = targetNpc.facing;
+          promptPoetChoiceMenu(
+            targetNpc.name,
+            targetNpc.greeting ?? '',
+            targetNpc.talkLines ?? [],
+            '',
+            undefined,
+            () => {
+              setTownNpcs((prev) =>
+                prev.map((n) =>
+                  n.id === targetNpc.id
+                    ? { ...n, isInteracting: false, facing: restFacing }
+                    : n,
+                ),
+              );
+            },
+          );
+          return;
+        }
+
         // 3. W. B. YEATS: Pacing West of Fountain, X: 10–13, Y: 7–9. Non-Duelist!
         if (targetNpc.poetId === 'YEATS' || targetNpc.id === 'npc_town_yeats') {
           const yeatsGreeting = "Good evening to you. Yeats. Don't mind me, I pace.";
@@ -10261,6 +10284,18 @@ export default function App() {
           active: true,
           speakerName: "PARISIAN BOUQUINISTE",
           text: bookstallLines[curIdx],
+        });
+        return;
+      }
+
+      // Check the Soapbox on the east lawn at X: 31, Y: 24 (reached from below; the speaker answers from the sides)
+      if (facingX === 31 && facingY === 24) {
+        gameAudio.playHoverMicroTone();
+        triggerHaptics(25);
+        setOverworldDialogue({
+          active: true,
+          speakerName: "SOAPBOX",
+          text: "An upturned soap crate. The grass in front of it is worn flat.",
         });
         return;
       }

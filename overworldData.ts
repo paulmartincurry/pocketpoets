@@ -329,6 +329,12 @@ export const HARBOR_TILES = {
   TOWN_BOUQUINISTE_L: 901,
   TOWN_BOUQUINISTE_R: 902,
 
+  // Screen 2: East Lawn (soapbox corner & meadow nature)
+  TOWN_SOAPBOX: 990,
+  TOWN_WILDFLOWERS: 991,
+  TOWN_BUSH: 992,
+  TOWN_MUSHROOMS: 993,
+
   // Screen 2: Fence
   FENCE_WHITE_H: 89,
   FENCE_WHITE_V: 90,
@@ -1890,6 +1896,71 @@ export const INITIAL_TOWN_NPCS: HarborNPC[] = [
     isFightable: false,
     isDuelist: false,
     spriteKey: 'PESSOA',
+    isActive: true,
+    isMoving: false,
+    walkStep: 0,
+    isInteracting: false,
+  },
+  // 6. Audre Lorde: on the soapbox in the east lawn (X: 31, Y: 24). Non-Duelist.
+  //    Shares her tile with the crate and is drawn 6px high so she stands on it.
+  //    Any NPC whose id starts with 'npc_town_soapbox_' talks using the greeting
+  //    and talkLines written here, so the cast can change without touching App.tsx.
+  {
+    id: 'npc_town_soapbox_lorde',
+    name: 'AUDRE LORDE',
+    poetId: 'LORDE',
+    x: 31,
+    y: 24,
+    pxX: 31 * TILE_SIZE,
+    pxY: 24 * TILE_SIZE - 6,
+    facing: 'DOWN',
+    introLine: "Afternoon. Audre Lorde. Somebody left a crate out, so now it's a stage.",
+    greeting: "Afternoon. Audre Lorde. Somebody left a crate out, so now it's a stage.",
+    talkLines: [
+      "Keeping quiet never kept anybody safe. So I got on the box.",
+      "People say poetry is a luxury. Those people have never needed one.",
+      "You're the reader. Good. I've been talking to a man who won't use capital letters.",
+    ],
+    normalLines: [],
+    dialogueLines: [],
+    currentDialogueIndex: 0,
+    hasSeenIntro: false,
+    greeted: false,
+    talkIndex: 0,
+    isFightable: false,
+    isDuelist: false,
+    spriteKey: 'LORDE',
+    isActive: true,
+    isMoving: false,
+    walkStep: 0,
+    isInteracting: false,
+  },
+  // 7. E. E. Cummings: heckling from the grass below the soapbox (X: 30, Y: 26). Non-Duelist.
+  {
+    id: 'npc_town_soapbox_cummings',
+    name: 'E. E. CUMMINGS',
+    poetId: 'CUMMINGS',
+    x: 30,
+    y: 26,
+    pxX: 30 * TILE_SIZE,
+    pxY: 26 * TILE_SIZE,
+    facing: 'UP',
+    introLine: "hello. cummings. small c, if you're writing it down.",
+    greeting: "hello. cummings. small c, if you're writing it down.",
+    talkLines: [
+      "i'm not heckling. i'm punctuating.",
+      "she's right, mostly. i'd have broken the line sooner.",
+      "spring is the only season i've ever agreed with.",
+    ],
+    normalLines: [],
+    dialogueLines: [],
+    currentDialogueIndex: 0,
+    hasSeenIntro: false,
+    greeted: false,
+    talkIndex: 0,
+    isFightable: false,
+    isDuelist: false,
+    spriteKey: 'CUMMINGS',
     isActive: true,
     isMoving: false,
     walkStep: 0,
@@ -6142,7 +6213,7 @@ export function getHarborTilesetCanvas(): HTMLCanvasElement {
 function createHarborTilesetCanvas(): HTMLCanvasElement {
   const canvas = document.createElement('canvas');
   canvas.width = 384;
-  canvas.height = 1440;
+  canvas.height = 1456; // 91 rows; row 90 is the Town east lawn
   const ctx = canvas.getContext('2d');
   if (!ctx) return canvas;
   const renderCtx = ctx;
@@ -18424,6 +18495,78 @@ function createHarborTilesetCanvas(): HTMLCanvasElement {
   px(3, 76, 13, 13, '#f59e0b', 1, 1);
   px(3, 76, 11, 15, '#991b1b', 2, 1);
 
+  // ==========================================================================
+  // ROW 90: SCREEN 2 (THE TOWN) - EAST LAWN: SOAPBOX & MEADOW NATURE
+  // ==========================================================================
+
+  // 1. TOWN_SOAPBOX (tx: 0, ty: 90) - Upturned wooden soap crate. Sits low in the
+  //    tile so a speaker standing on the same tile reads as standing on top of it.
+  rect(0, 90, 0, 0, 16, 16, 'transparent');
+  rect(0, 90, 1, 8, 14, 8, C_DARK_OUTLINE);
+  rect(0, 90, 2, 9, 12, 6, '#9a6a3a'); // Crate face
+  rect(0, 90, 2, 9, 12, 1, '#c79457'); // Lit top edge
+  rect(0, 90, 2, 11, 12, 1, '#7a5028'); // Slat gap
+  rect(0, 90, 2, 13, 12, 1, '#7a5028'); // Slat gap
+  px(0, 90, 2, 9, '#6b4423', 1, 6); // Left corner post
+  px(0, 90, 13, 9, '#6b4423', 1, 6); // Right corner post
+  rect(0, 90, 5, 10, 6, 1, '#3f2a14'); // Stencilled brand, top line
+  rect(0, 90, 6, 12, 4, 1, '#3f2a14'); // Stencilled brand, bottom line
+  px(0, 90, 3, 10, '#d9d9d9', 1, 1); // Nail heads
+  px(0, 90, 12, 10, '#d9d9d9', 1, 1);
+  px(0, 90, 3, 14, '#d9d9d9', 1, 1);
+  px(0, 90, 12, 14, '#d9d9d9', 1, 1);
+
+  // 2. TOWN_WILDFLOWERS (tx: 1, ty: 90) - Loose clump of tall meadow flowers
+  rect(1, 90, 0, 0, 16, 16, 'transparent');
+  px(1, 90, 3, 8, '#15803d', 1, 7); // Stems
+  px(1, 90, 6, 6, '#16a34a', 1, 9);
+  px(1, 90, 9, 9, '#15803d', 1, 6);
+  px(1, 90, 12, 7, '#16a34a', 1, 8);
+  px(1, 90, 4, 11, '#16a34a', 2, 1); // Leaves
+  px(1, 90, 7, 10, '#15803d', 2, 1);
+  px(1, 90, 10, 12, '#16a34a', 2, 1);
+  px(1, 90, 2, 6, '#f9a8d4', 3, 2); // Pink cosmos
+  px(1, 90, 3, 5, '#f472b6', 1, 1);
+  px(1, 90, 3, 7, '#fde047', 1, 1);
+  px(1, 90, 5, 4, '#ffffff', 3, 2); // White daisy
+  px(1, 90, 6, 5, '#facc15', 1, 1);
+  px(1, 90, 8, 7, '#a78bfa', 3, 2); // Violet
+  px(1, 90, 9, 8, '#7c3aed', 1, 1);
+  px(1, 90, 11, 5, '#fb923c', 3, 2); // Orange poppy
+  px(1, 90, 12, 6, '#1c1917', 1, 1);
+
+  // 3. TOWN_BUSH (tx: 2, ty: 90) - Low rounded hawthorn shrub in bloom
+  rect(2, 90, 0, 0, 16, 16, 'transparent');
+  rect(2, 90, 3, 5, 10, 1, C_DARK_OUTLINE);
+  rect(2, 90, 1, 6, 14, 9, C_DARK_OUTLINE);
+  rect(2, 90, 3, 15, 10, 1, C_DARK_OUTLINE);
+  rect(2, 90, 3, 6, 10, 1, '#4ade80');
+  rect(2, 90, 2, 7, 12, 7, '#22a04b');
+  rect(2, 90, 3, 14, 10, 1, '#15803d');
+  rect(2, 90, 2, 11, 12, 3, '#178a3e'); // Lower shade
+  px(2, 90, 4, 7, '#4ade80', 3, 1); // Highlights
+  px(2, 90, 9, 8, '#4ade80', 2, 1);
+  px(2, 90, 5, 9, '#ffffff', 1, 1); // Blossom
+  px(2, 90, 10, 7, '#ffffff', 1, 1);
+  px(2, 90, 8, 11, '#fbcfe8', 1, 1);
+  px(2, 90, 3, 12, '#ffffff', 1, 1);
+  px(2, 90, 12, 10, '#fbcfe8', 1, 1);
+
+  // 4. TOWN_MUSHROOMS (tx: 3, ty: 90) - Three small red-capped mushrooms
+  rect(3, 90, 0, 0, 16, 16, 'transparent');
+  px(3, 90, 4, 12, '#f5f5f4', 2, 3); // Stalks
+  px(3, 90, 9, 10, '#f5f5f4', 2, 5);
+  px(3, 90, 13, 13, '#f5f5f4', 1, 2);
+  rect(3, 90, 3, 10, 4, 2, '#dc2626'); // Caps
+  px(3, 90, 4, 9, '#dc2626', 2, 1);
+  rect(3, 90, 7, 7, 6, 3, '#dc2626');
+  px(3, 90, 8, 6, '#dc2626', 4, 1);
+  rect(3, 90, 12, 12, 3, 1, '#dc2626');
+  px(3, 90, 13, 11, '#dc2626', 1, 1);
+  px(3, 90, 4, 10, '#ffffff', 1, 1); // Spots
+  px(3, 90, 8, 8, '#ffffff', 1, 1);
+  px(3, 90, 11, 7, '#ffffff', 1, 1);
+
   return canvas;
 }
 
@@ -18516,6 +18659,10 @@ export function getHarborTileSourceRect(tileId: number): { sx: number; sy: numbe
     // Screen 2: Market Stall & Newspapers & Fence & Town Props
     case HARBOR_TILES.STALL_L: return { sx: 4 * 16, sy: 68 * 16 };
     case HARBOR_TILES.STALL_R: return { sx: 5 * 16, sy: 68 * 16 };
+    case HARBOR_TILES.TOWN_SOAPBOX: return { sx: 0 * 16, sy: 90 * 16 };
+    case HARBOR_TILES.TOWN_WILDFLOWERS: return { sx: 1 * 16, sy: 90 * 16 };
+    case HARBOR_TILES.TOWN_BUSH: return { sx: 2 * 16, sy: 90 * 16 };
+    case HARBOR_TILES.TOWN_MUSHROOMS: return { sx: 3 * 16, sy: 90 * 16 };
     case HARBOR_TILES.TOWN_BOUQUINISTE_L: return { sx: 4 * 16, sy: 68 * 16 };
     case HARBOR_TILES.TOWN_BOUQUINISTE_R: return { sx: 5 * 16, sy: 68 * 16 };
     case HARBOR_TILES.TOWN_BELLE_EPOQUE_LAMP: return { sx: 0 * 16, sy: 68 * 16 };
@@ -22625,6 +22772,9 @@ export function buildTownScreen2(): HarborScreenData {
     } else if (variant === 'PINE') {
       overlay[r][c] = HARBOR_TILES.TREE_CANOPY_PINE;
       objects[r + 1][c] = HARBOR_TILES.TREE_TRUNK_PINE;
+    } else if (variant === 'BIRCH') {
+      overlay[r][c] = HARBOR_TILES.TREE_CANOPY_BIRCH;
+      objects[r + 1][c] = HARBOR_TILES.TREE_TRUNK_BIRCH;
     } else {
       overlay[r][c] = HARBOR_TILES.TREE_CANOPY_OVERLAY;
       objects[r + 1][c] = HARBOR_TILES.TREE_TRUNK;
@@ -22640,6 +22790,41 @@ export function buildTownScreen2(): HarborScreenData {
     [27, 23, 'PINE'], [29, 21, 'BLOSSOM'],
   ];
   for (const [tc, tr, v] of townTrees) placeTownTree(tc, tr, v);
+
+  // 6. EAST LAWN: SOAPBOX CORNER & MEADOW (X: 25..33, Y: 17..27)
+  // The soapbox: an upturned crate at (31, 24). Whoever is speaking stands on this
+  // same tile (see INITIAL_TOWN_NPCS), so the crate itself is what blocks the tile.
+  objects[24][31] = HARBOR_TILES.TOWN_SOAPBOX;
+  solid[24][31] = true;
+
+  // A birch by the stall end of the lawn
+  placeTownTree(25, 25, 'BIRCH');
+
+  // Poppies drifting through the grass (ground layer, walkable)
+  const lawnPoppies: Array<[number, number]> = [
+    [30, 18], [31, 18], [32, 19], [31, 20], [26, 20], [27, 19],
+    [33, 22], [28, 26], [29, 27], [32, 27], [26, 22],
+  ];
+  for (const [pc, pr] of lawnPoppies) ground[pr][pc] = HARBOR_TILES.GRASS_FLOWER_POPPY;
+
+  // Wildflower clumps you can wade through (object layer, walkable)
+  const lawnWildflowers: Array<[number, number]> = [
+    [26, 18], [32, 18], [25, 21], [33, 20], [28, 20], [33, 25], [26, 27], [29, 25],
+  ];
+  for (const [wc, wr] of lawnWildflowers) objects[wr][wc] = HARBOR_TILES.TOWN_WILDFLOWERS;
+
+  // Shrubs and a mossy boulder (solid)
+  const lawnBushes: Array<[number, number]> = [[25, 18], [32, 21], [28, 22], [33, 27]];
+  for (const [bc, br] of lawnBushes) {
+    objects[br][bc] = HARBOR_TILES.TOWN_BUSH;
+    solid[br][bc] = true;
+  }
+  objects[23][26] = HARBOR_TILES.BOULDER_MOSSY;
+  solid[23][26] = true;
+
+  // Mushrooms in the shade of the pine and the birch (walkable)
+  objects[25][27] = HARBOR_TILES.TOWN_MUSHROOMS;
+  objects[27][25] = HARBOR_TILES.TOWN_MUSHROOMS;
 
   // Reeds along riverbank
   objects[3][10] = HARBOR_TILES.REED;
@@ -33632,7 +33817,9 @@ export function drawHarborOverworldScreen(
             objTile === HARBOR_TILES.GRAVEYARD_FENCE_H ||
             objTile === HARBOR_TILES.GRAVEYARD_FENCE_V ||
             objTile === HARBOR_TILES.GRAVEYARD_FENCE_CORNER ||
-            objTile === HARBOR_TILES.GRAVEYARD_GATE
+            objTile === HARBOR_TILES.GRAVEYARD_GATE ||
+            objTile === HARBOR_TILES.TOWN_WILDFLOWERS ||
+            objTile === HARBOR_TILES.TOWN_MUSHROOMS
           ) {
             continue;
           }
