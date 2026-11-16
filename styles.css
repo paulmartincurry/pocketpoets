@@ -1,0 +1,9 @@
+/* Styling the game expects from its host. Playground supplied Tailwind and
+   the two pixel fonts; here they are bundled so the game has no outside dependencies. */
+@import 'tailwindcss';
+@import '@fontsource/press-start-2p/400.css';
+@import '@fontsource/vt323/400.css';
+
+@source './App.tsx';
+@source './utils';
+@source './src';

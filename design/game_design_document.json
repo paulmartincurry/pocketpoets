@@ -1,0 +1,54 @@
+{
+  "title": "Pocket Poets",
+  "hook": "Duel twenty master poets now",
+  "game_overview": "A 2D literary verse-battler and deckbuilder featuring 20 legendary poets across 5 gated chapters, culminating in the Sovereign Triad showdown.",
+  "artstyle": "pixelated",
+  "genre": "rpg",
+  "winning_condition": "Conquer all progressive tiers and assemble your 25-poet Anthology.",
+  "losing_condition": "Run out of Inspiration Points during a verse duel or fail to maintain the rhyme meter.",
+  "player_mode": "single_player",
+  "supported_orientations": [
+    "landscape"
+  ],
+  "input_methods": [
+    "touch",
+    "keyboard",
+    "dpad"
+  ],
+  "score_options": {
+    "score_type": "points",
+    "score_order": "higher_is_better"
+  },
+  "low_end_device_support": true,
+  "mobile_playable": true,
+  "tv_playable": true,
+  "language": [
+    "en"
+  ],
+  "content_descriptors": [],
+  "controls": [
+    {
+      "input": "Arrow Keys / WASD",
+      "action": "Navigate player across the district map."
+    },
+    {
+      "input": "E / Spacebar / Action Tap",
+      "action": "Talk to locals for location clues, inspect landmarks, or challenge wandering poets."
+    },
+    {
+      "input": "Number Keys (1-4) / Touch Cards",
+      "action": "Select stanza lines and poetic counters during verse duels."
+    },
+    {
+      "input": "Virtual D-Pad & Action Buttons",
+      "action": "Mobile touch overlay for full movement and interaction."
+    }
+  ],
+  "sections": [
+    {
+      "title": "Progression & Chapter Gates",
+      "content": "Quest Mode organizes all 20 poets across 5 distinct Chapters with unlockable gates: Chapter I (4 poets: Robert Frost, Langston Hughes, Matsuo Basho, Maya Angelou), Chapter II (4 poets: Pablo Neruda, Li Bai, Walt Whitman, Emily Dickinson), Chapter III (4 poets: Edgar Allan Poe, Charles Baudelaire, Sylvia Plath, Sor Juana Ines de la Cruz), Chapter IV (5 poets: William Blake, Anna Akhmatova, Mahmoud Darwish, Rabindranath Tagore, Rumi), and Chapter V: The Sovereign Triad (3 poets: Sappho, William Shakespeare, Dante Alighieri). Total roster: exactly 20 poets.",
+      "summary": "5-Chapter gated progression across exactly 20 historical poets culminating in the Sovereign Triad."
+    }
+  ]
+}
