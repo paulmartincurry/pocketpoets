@@ -335,6 +335,20 @@ export const HARBOR_TILES = {
   TOWN_BUSH: 992,
   TOWN_MUSHROOMS: 993,
 
+  // Screen 3: The Cliffs - the sea below the east edge
+  CLIFFS_SEA_A: 1000,
+  CLIFFS_SEA_B: 1001,
+  CLIFFS_SEA_FACE: 1002, // Rock face directly under a clifftop
+  CLIFFS_SEA_FACE_BASE: 1003, // Foot of the rock face, with surf
+  // Sea with a rock lip where land touches it. Number = 1 (west) + 2 (south) + 4 (east).
+  CLIFFS_SEA_RIM_1: 1004,
+  CLIFFS_SEA_RIM_2: 1005,
+  CLIFFS_SEA_RIM_3: 1006,
+  CLIFFS_SEA_RIM_4: 1007,
+  CLIFFS_SEA_RIM_5: 1008,
+  CLIFFS_SEA_RIM_6: 1009,
+  CLIFFS_SEA_RIM_7: 1010,
+
   // Screen 2: Fence
   FENCE_WHITE_H: 89,
   FENCE_WHITE_V: 90,
@@ -6307,7 +6321,7 @@ export function getHarborTilesetCanvas(): HTMLCanvasElement {
 function createHarborTilesetCanvas(): HTMLCanvasElement {
   const canvas = document.createElement('canvas');
   canvas.width = 384;
-  canvas.height = 1456; // 91 rows; row 90 is the Town east lawn
+  canvas.height = 1472; // 92 rows; row 90 is the Town east lawn, row 91 the Cliffs sea
   const ctx = canvas.getContext('2d');
   if (!ctx) return canvas;
   const renderCtx = ctx;
@@ -18661,6 +18675,96 @@ function createHarborTilesetCanvas(): HTMLCanvasElement {
   px(3, 90, 8, 8, '#ffffff', 1, 1);
   px(3, 90, 11, 7, '#ffffff', 1, 1);
 
+  // ==========================================================================
+  // ROW 91: SCREEN 3 (THE CLIFFS) - THE SEA BELOW THE EAST EDGE
+  // ==========================================================================
+  // Deep water seen from high above: darker than the harbor, small whitecaps.
+  const C_CLIFFSEA_DEEP = '#1d4e89';
+  const C_CLIFFSEA_DARK = '#173f73';
+  const C_CLIFFSEA_LITE = '#2a66ab';
+  const C_CLIFFSEA_CAP = '#dbeafe';
+  const C_CLIFFROCK = '#c9b79a';
+  const C_CLIFFROCK_LITE = '#e6d9bf';
+  const C_CLIFFROCK_SHADE = '#9c8a70';
+  const C_CLIFFROCK_DARK = '#6f6252';
+
+  const paintCliffSea = (tx: number, variant: number) => {
+    rect(tx, 91, 0, 0, 16, 16, C_CLIFFSEA_DEEP);
+    if (variant === 0) {
+      px(tx, 91, 1, 3, C_CLIFFSEA_DARK, 6, 1);
+      px(tx, 91, 9, 6, C_CLIFFSEA_LITE, 5, 1);
+      px(tx, 91, 3, 10, C_CLIFFSEA_LITE, 4, 1);
+      px(tx, 91, 10, 13, C_CLIFFSEA_DARK, 5, 1);
+      px(tx, 91, 11, 5, C_CLIFFSEA_CAP, 2, 1);
+    } else {
+      px(tx, 91, 8, 2, C_CLIFFSEA_LITE, 6, 1);
+      px(tx, 91, 2, 7, C_CLIFFSEA_DARK, 5, 1);
+      px(tx, 91, 9, 11, C_CLIFFSEA_DARK, 6, 1);
+      px(tx, 91, 1, 13, C_CLIFFSEA_LITE, 5, 1);
+      px(tx, 91, 4, 12, C_CLIFFSEA_CAP, 2, 1);
+    }
+  };
+
+  // 0-1. CLIFFS_SEA_A / CLIFFS_SEA_B - open water
+  paintCliffSea(0, 0);
+  paintCliffSea(1, 1);
+
+  // 2. CLIFFS_SEA_FACE - sunlit limestone face dropping away under the clifftop
+  rect(2, 91, 0, 0, 16, 16, C_CLIFFROCK);
+  rect(2, 91, 0, 0, 16, 2, C_CLIFFROCK_LITE); // Lip catching the sun
+  rect(2, 91, 0, 2, 16, 1, C_CLIFFROCK_SHADE); // Shadow under the lip
+  px(2, 91, 3, 4, C_CLIFFROCK_SHADE, 1, 9); // Vertical fissures
+  px(2, 91, 4, 6, C_CLIFFROCK_DARK, 1, 4);
+  px(2, 91, 9, 3, C_CLIFFROCK_SHADE, 1, 7);
+  px(2, 91, 13, 5, C_CLIFFROCK_SHADE, 1, 10);
+  px(2, 91, 12, 8, C_CLIFFROCK_DARK, 1, 3);
+  px(2, 91, 6, 9, C_CLIFFROCK_LITE, 2, 1); // Ledges
+  px(2, 91, 10, 12, C_CLIFFROCK_LITE, 2, 1);
+  px(2, 91, 0, 14, C_CLIFFROCK_SHADE, 16, 2);
+
+  // 3. CLIFFS_SEA_FACE_BASE - the foot of the face in shadow, surf breaking on it
+  rect(3, 91, 0, 0, 16, 16, C_CLIFFSEA_DEEP);
+  rect(3, 91, 0, 0, 16, 8, C_CLIFFROCK_SHADE);
+  px(3, 91, 3, 0, C_CLIFFROCK_DARK, 1, 6);
+  px(3, 91, 9, 0, C_CLIFFROCK_DARK, 1, 5);
+  px(3, 91, 13, 0, C_CLIFFROCK_DARK, 1, 7);
+  rect(3, 91, 0, 6, 16, 2, C_CLIFFROCK_DARK);
+  px(3, 91, 0, 8, C_CLIFFSEA_CAP, 5, 1); // Surf line
+  px(3, 91, 6, 8, '#ffffff', 4, 1);
+  px(3, 91, 11, 8, C_CLIFFSEA_CAP, 5, 1);
+  px(3, 91, 2, 9, C_CLIFFSEA_CAP, 3, 1);
+  px(3, 91, 9, 9, C_CLIFFSEA_CAP, 4, 1);
+  px(3, 91, 5, 11, C_CLIFFSEA_LITE, 5, 1);
+  px(3, 91, 1, 13, C_CLIFFSEA_DARK, 5, 1);
+  px(3, 91, 10, 14, C_CLIFFSEA_LITE, 4, 1);
+
+  // 4-10. CLIFFS_SEA_RIM_1..7 - water with a rock lip on the sides where land meets it
+  for (let mask = 1; mask <= 7; mask++) {
+    const tx = 3 + mask;
+    paintCliffSea(tx, mask % 2);
+    if (mask & 1) {
+      // Land to the west: lip down the left side
+      rect(tx, 91, 0, 0, 2, 16, C_CLIFFROCK_LITE);
+      rect(tx, 91, 2, 0, 1, 16, C_CLIFFROCK_SHADE);
+      px(tx, 91, 3, 2, C_CLIFFSEA_CAP, 1, 3);
+      px(tx, 91, 3, 9, C_CLIFFSEA_CAP, 1, 4);
+    }
+    if (mask & 4) {
+      // Land to the east: lip down the right side
+      rect(tx, 91, 14, 0, 2, 16, C_CLIFFROCK_LITE);
+      rect(tx, 91, 13, 0, 1, 16, C_CLIFFROCK_SHADE);
+      px(tx, 91, 12, 4, C_CLIFFSEA_CAP, 1, 3);
+      px(tx, 91, 12, 11, C_CLIFFSEA_CAP, 1, 3);
+    }
+    if (mask & 2) {
+      // Land to the south: lip along the bottom
+      rect(tx, 91, 0, 14, 16, 2, C_CLIFFROCK_LITE);
+      rect(tx, 91, 0, 13, 16, 1, C_CLIFFROCK_SHADE);
+      px(tx, 91, 4, 12, C_CLIFFSEA_CAP, 3, 1);
+      px(tx, 91, 10, 12, C_CLIFFSEA_CAP, 3, 1);
+    }
+  }
+
   return canvas;
 }
 
@@ -18753,6 +18857,17 @@ export function getHarborTileSourceRect(tileId: number): { sx: number; sy: numbe
     // Screen 2: Market Stall & Newspapers & Fence & Town Props
     case HARBOR_TILES.STALL_L: return { sx: 4 * 16, sy: 68 * 16 };
     case HARBOR_TILES.STALL_R: return { sx: 5 * 16, sy: 68 * 16 };
+    case HARBOR_TILES.CLIFFS_SEA_A: return { sx: 0 * 16, sy: 91 * 16 };
+    case HARBOR_TILES.CLIFFS_SEA_B: return { sx: 1 * 16, sy: 91 * 16 };
+    case HARBOR_TILES.CLIFFS_SEA_FACE: return { sx: 2 * 16, sy: 91 * 16 };
+    case HARBOR_TILES.CLIFFS_SEA_FACE_BASE: return { sx: 3 * 16, sy: 91 * 16 };
+    case HARBOR_TILES.CLIFFS_SEA_RIM_1: return { sx: 4 * 16, sy: 91 * 16 };
+    case HARBOR_TILES.CLIFFS_SEA_RIM_2: return { sx: 5 * 16, sy: 91 * 16 };
+    case HARBOR_TILES.CLIFFS_SEA_RIM_3: return { sx: 6 * 16, sy: 91 * 16 };
+    case HARBOR_TILES.CLIFFS_SEA_RIM_4: return { sx: 7 * 16, sy: 91 * 16 };
+    case HARBOR_TILES.CLIFFS_SEA_RIM_5: return { sx: 8 * 16, sy: 91 * 16 };
+    case HARBOR_TILES.CLIFFS_SEA_RIM_6: return { sx: 9 * 16, sy: 91 * 16 };
+    case HARBOR_TILES.CLIFFS_SEA_RIM_7: return { sx: 10 * 16, sy: 91 * 16 };
     case HARBOR_TILES.TOWN_SOAPBOX: return { sx: 0 * 16, sy: 90 * 16 };
     case HARBOR_TILES.TOWN_WILDFLOWERS: return { sx: 1 * 16, sy: 90 * 16 };
     case HARBOR_TILES.TOWN_BUSH: return { sx: 2 * 16, sy: 90 * 16 };
@@ -23138,6 +23253,79 @@ export function buildCliffsScreen3(): HarborScreenData {
     objects[0][c] = HARBOR_TILES.CLIFFS_STUDIO_BALUSTRADE;
     solid[0][c] = true;
   }
+
+  // 4. THE SEA BELOW THE EAST EDGE
+  // The land ends in a drop on the right-hand side. Reading down the coast:
+  //   rows 0..6    the upper deck runs out to a point
+  //   rows 7..14   a cove bites in
+  //   rows 15..23  THE HEADLAND: a finger of land carrying the House of Green Wind,
+  //                with water to its north, east and south
+  //   rows 24..27  the sea takes the whole bottom-right corner
+  // Each number is the first column that is water on that row.
+  const CLIFFS_COAST: number[] = [
+    34, 34, 34, 34, 34, 34, 34, // 0..6
+    32, 30, 29, 29, 29, 29, 30, 31, // 7..14
+    31, 33, 34, 34, 34, 34, 34, 33, 31, // 15..23
+    28, 25, 22, 20, // 24..27
+  ];
+  const isCliffsSea = (c: number, r: number) =>
+    r >= 0 && r < EXTERIOR_ROWS && c >= 0 && c < EXTERIOR_COLS && c >= CLIFFS_COAST[r];
+  const isCliffsLand = (c: number, r: number) =>
+    r >= 0 && r < EXTERIOR_ROWS && c >= 0 && c < EXTERIOR_COLS && c < CLIFFS_COAST[r];
+  const CLIFFS_SEA_RIMS = [
+    0,
+    HARBOR_TILES.CLIFFS_SEA_RIM_1,
+    HARBOR_TILES.CLIFFS_SEA_RIM_2,
+    HARBOR_TILES.CLIFFS_SEA_RIM_3,
+    HARBOR_TILES.CLIFFS_SEA_RIM_4,
+    HARBOR_TILES.CLIFFS_SEA_RIM_5,
+    HARBOR_TILES.CLIFFS_SEA_RIM_6,
+    HARBOR_TILES.CLIFFS_SEA_RIM_7,
+  ];
+  for (let r = 0; r < EXTERIOR_ROWS; r++) {
+    for (let c = 0; c < EXTERIOR_COLS; c++) {
+      if (!isCliffsSea(c, r)) continue;
+      solid[r][c] = true;
+      if (isCliffsLand(c, r - 1)) {
+        // Clifftop directly above: this is the rock face
+        ground[r][c] = HARBOR_TILES.CLIFFS_SEA_FACE;
+      } else if (isCliffsSea(c, r - 1) && isCliffsLand(c, r - 2)) {
+        // One further down: the foot of the face, in the surf
+        ground[r][c] = HARBOR_TILES.CLIFFS_SEA_FACE_BASE;
+      } else {
+        const rim =
+          (isCliffsLand(c - 1, r) ? 1 : 0) + (isCliffsLand(c, r + 1) ? 2 : 0) + (isCliffsLand(c + 1, r) ? 4 : 0);
+        ground[r][c] = rim
+          ? CLIFFS_SEA_RIMS[rim]
+          : pseudoRand(c, r, 7) < 50
+          ? HARBOR_TILES.CLIFFS_SEA_A
+          : HARBOR_TILES.CLIFFS_SEA_B;
+      }
+    }
+  }
+
+  // Sea stacks standing off the coast
+  objects[11][33] = HARBOR_TILES.CLIFFS_GRANITE_BOULDER;
+  objects[12][35] = HARBOR_TILES.CLIFFS_BOULDER_LIMESTONE;
+  objects[27][27] = HARBOR_TILES.CLIFFS_SEAGULL_BOULDER;
+  objects[26][32] = HARBOR_TILES.CLIFFS_GRANITE_BOULDER;
+
+  // The headland: a worn track from the terrace out past the house to the point
+  for (let r = 21; r <= 22; r++) {
+    for (let c = 27; c <= 32; c++) {
+      ground[r][c] = pseudoRand(c, r, 11) < 55 ? HARBOR_TILES.CLIFFS_TRAIL_DUST : HARBOR_TILES.CLIFFS_SAND_PATCH;
+    }
+  }
+  // A bench facing out to sea, amphorae by the house wall, a cairn on the very tip
+  objects[17][31] = HARBOR_TILES.CLIFFS_LIMESTONE_BENCH_L;
+  objects[17][32] = HARBOR_TILES.CLIFFS_LIMESTONE_BENCH_R;
+  solid[17][31] = true;
+  solid[17][32] = true;
+  objects[20][29] = HARBOR_TILES.CLIFFS_AMPHORA_PAIR;
+  solid[20][29] = true;
+  objects[19][33] = HARBOR_TILES.CLIFFS_CAIRN;
+  solid[19][33] = true;
+  placeOlive(30, 14);
 
   // Collision map
   for (let r = 0; r < EXTERIOR_ROWS; r++) {
