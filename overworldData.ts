@@ -352,6 +352,13 @@ export const HARBOR_TILES = {
   CLIFFS_BIRDCAGE: 1012, // Open, empty cage on a post (Angelou)
   CLIFFS_ANCHOR: 1013, // Ship's anchor in the yard of the blue house (Neruda)
   CLIFFS_KESTREL: 1014, // Hovering falcon (Hopkins)
+  CLIFFS_ODE_ARTICHOKE: 1015, // Neruda's ode garden
+  CLIFFS_ODE_TOMATO: 1016,
+  CLIFFS_ODE_ONION: 1017,
+  CLIFFS_ODE_SOCKS: 1018, // One pair of wool socks on a line (Neruda)
+  CLIFFS_PIED_COW: 1019, // Brindled cow (Hopkins)
+  CLIFFS_LAMB: 1020, // Blake
+  CLIFFS_BLACK_PONY: 1021, // Lorca
 
   // Screen 2: Fence
   FENCE_WHITE_H: 89,
@@ -18837,6 +18844,128 @@ function createHarborTilesetCanvas(): HTMLCanvasElement {
   px(14, 91, 4, 5, '#3b2410', 1, 1); // Barring
   px(14, 91, 11, 5, '#3b2410', 1, 1);
 
+  // 15. CLIFFS_ODE_ARTICHOKE - armoured green globe on a stalk, spiked grey leaves
+  rect(15, 91, 0, 0, 16, 16, 'transparent');
+  px(15, 91, 7, 8, '#4d7c0f', 2, 6); // Stalk
+  px(15, 91, 2, 11, '#7c9a8a', 4, 1); // Leaves
+  px(15, 91, 10, 11, '#7c9a8a', 4, 1);
+  px(15, 91, 3, 12, '#5f7f70', 3, 1);
+  px(15, 91, 10, 12, '#5f7f70', 3, 1);
+  px(15, 91, 4, 13, '#7c9a8a', 8, 1);
+  rect(15, 91, 5, 3, 6, 6, '#3f6212'); // Globe
+  rect(15, 91, 6, 2, 4, 1, '#3f6212');
+  px(15, 91, 6, 4, '#65a30d', 1, 1); // Scales
+  px(15, 91, 9, 4, '#65a30d', 1, 1);
+  px(15, 91, 7, 6, '#65a30d', 2, 1);
+  px(15, 91, 5, 7, '#65a30d', 1, 1);
+  px(15, 91, 10, 7, '#65a30d', 1, 1);
+  px(15, 91, 7, 2, '#7e22ce', 2, 1); // Purple tip
+
+  // 16. CLIFFS_ODE_TOMATO - staked vine heavy with fruit
+  rect(16, 91, 0, 0, 16, 16, 'transparent');
+  px(16, 91, 8, 1, '#8b5a2b', 1, 14); // Stake
+  px(16, 91, 6, 3, '#15803d', 5, 2); // Leaves
+  px(16, 91, 4, 6, '#16a34a', 4, 2);
+  px(16, 91, 9, 7, '#15803d', 4, 2);
+  px(16, 91, 5, 10, '#16a34a', 3, 2);
+  px(16, 91, 9, 11, '#15803d', 3, 1);
+  rect(16, 91, 10, 4, 3, 3, '#dc2626'); // Fruit
+  rect(16, 91, 4, 8, 3, 3, '#ef4444');
+  rect(16, 91, 10, 9, 3, 3, '#dc2626');
+  px(16, 91, 11, 4, '#fca5a5', 1, 1);
+  px(16, 91, 5, 8, '#fca5a5', 1, 1);
+  px(16, 91, 11, 9, '#fca5a5', 1, 1);
+  px(16, 91, 6, 14, '#a16207', 5, 1); // Soil
+
+  // 17. CLIFFS_ODE_ONION - green shoots, the bulb's shoulder showing above the soil
+  rect(17, 91, 0, 0, 16, 16, 'transparent');
+  px(17, 91, 4, 4, '#4ade80', 1, 7); // Shoots
+  px(17, 91, 5, 6, '#22c55e', 1, 5);
+  px(17, 91, 10, 3, '#4ade80', 1, 8);
+  px(17, 91, 11, 5, '#22c55e', 1, 6);
+  px(17, 91, 7, 7, '#22c55e', 1, 4);
+  rect(17, 91, 3, 11, 4, 3, '#f5e6d3'); // Bulbs
+  rect(17, 91, 9, 11, 4, 3, '#f5e6d3');
+  px(17, 91, 3, 13, '#c084fc', 4, 1);
+  px(17, 91, 9, 13, '#c084fc', 4, 1);
+  px(17, 91, 4, 11, '#ffffff', 1, 1);
+  px(17, 91, 10, 11, '#ffffff', 1, 1);
+  px(17, 91, 2, 14, '#a16207', 12, 1); // Soil
+
+  // 18. CLIFFS_ODE_SOCKS - a washing line with one pair of thick wool socks on it
+  rect(18, 91, 0, 0, 16, 16, 'transparent');
+  px(18, 91, 1, 3, '#6b4423', 1, 13); // Posts
+  px(18, 91, 14, 3, '#6b4423', 1, 13);
+  px(18, 91, 1, 4, '#e7e5e4', 14, 1); // Line
+  px(18, 91, 4, 4, '#a16207', 1, 1); // Pegs
+  px(18, 91, 10, 4, '#a16207', 1, 1);
+  rect(18, 91, 3, 5, 3, 6, '#1d4ed8'); // Left sock
+  rect(18, 91, 3, 10, 5, 2, '#1d4ed8');
+  px(18, 91, 3, 6, '#facc15', 3, 1); // Gold thread
+  px(18, 91, 3, 8, '#facc15', 3, 1);
+  rect(18, 91, 9, 5, 3, 6, '#1d4ed8'); // Right sock
+  rect(18, 91, 9, 10, 5, 2, '#1d4ed8');
+  px(18, 91, 9, 6, '#facc15', 3, 1);
+  px(18, 91, 9, 8, '#facc15', 3, 1);
+
+  // 19. CLIFFS_PIED_COW - brindled cow grazing, seen side-on
+  rect(19, 91, 0, 0, 16, 16, 'transparent');
+  rect(19, 91, 3, 5, 11, 7, C_DARK_OUTLINE);
+  rect(19, 91, 4, 6, 9, 5, '#8a4b24'); // Body
+  px(19, 91, 5, 6, '#f5e6d3', 3, 2); // Dapples
+  px(19, 91, 9, 8, '#f5e6d3', 3, 2);
+  px(19, 91, 6, 10, '#f5e6d3', 2, 1);
+  px(19, 91, 11, 6, '#3b2410', 1, 1); // Brindle streaks
+  px(19, 91, 8, 6, '#3b2410', 1, 1);
+  px(19, 91, 5, 9, '#3b2410', 1, 1);
+  rect(19, 91, 0, 6, 4, 5, C_DARK_OUTLINE); // Head, lowered
+  rect(19, 91, 1, 7, 3, 3, '#8a4b24');
+  px(19, 91, 1, 9, '#f5e6d3', 2, 1); // Muzzle
+  px(19, 91, 2, 7, '#000000', 1, 1); // Eye
+  px(19, 91, 1, 5, '#e7e5e4', 1, 1); // Horn
+  px(19, 91, 4, 12, C_DARK_OUTLINE, 2, 3); // Legs
+  px(19, 91, 11, 12, C_DARK_OUTLINE, 2, 3);
+  px(19, 91, 7, 12, '#5b3a1e', 1, 3);
+  px(19, 91, 9, 12, '#5b3a1e', 1, 3);
+  px(19, 91, 14, 6, C_DARK_OUTLINE, 1, 5); // Tail
+  px(19, 91, 7, 11, '#fbcfe8', 2, 1); // Udder
+
+  // 20. CLIFFS_LAMB - small white lamb, dark face
+  rect(20, 91, 0, 0, 16, 16, 'transparent');
+  rect(20, 91, 4, 7, 9, 5, C_DARK_OUTLINE);
+  rect(20, 91, 5, 6, 7, 1, C_DARK_OUTLINE);
+  rect(20, 91, 5, 7, 7, 4, '#ffffff'); // Fleece
+  px(20, 91, 6, 8, '#e7e5e4', 2, 1);
+  px(20, 91, 9, 9, '#e7e5e4', 2, 1);
+  px(20, 91, 6, 11, '#e7e5e4', 5, 1);
+  rect(20, 91, 1, 6, 4, 4, C_DARK_OUTLINE); // Head
+  rect(20, 91, 2, 7, 2, 2, '#44403c');
+  px(20, 91, 2, 7, '#ffffff', 1, 1); // Eye glint
+  px(20, 91, 4, 5, '#44403c', 1, 2); // Ear
+  px(20, 91, 5, 12, '#44403c', 1, 3); // Legs
+  px(20, 91, 7, 12, '#44403c', 1, 2);
+  px(20, 91, 9, 12, '#44403c', 1, 3);
+  px(20, 91, 11, 12, '#44403c', 1, 2);
+  px(20, 91, 13, 8, '#ffffff', 1, 2); // Tail
+
+  // 21. CLIFFS_BLACK_PONY - small black horse, saddled, a saddlebag at its side
+  rect(21, 91, 0, 0, 16, 16, 'transparent');
+  rect(21, 91, 4, 6, 10, 5, '#1c1917'); // Body
+  rect(21, 91, 1, 2, 4, 6, '#1c1917'); // Neck and head
+  rect(21, 91, 0, 3, 3, 3, '#1c1917');
+  px(21, 91, 3, 1, '#1c1917', 1, 1); // Ear
+  px(21, 91, 4, 2, '#44403c', 2, 5); // Mane
+  px(21, 91, 1, 4, '#ffffff', 1, 1); // Eye
+  px(21, 91, 0, 5, '#a16207', 3, 1); // Bridle
+  rect(21, 91, 7, 5, 4, 2, '#9a3412'); // Saddle
+  rect(21, 91, 8, 7, 3, 3, '#d9b95c'); // Saddlebag
+  px(21, 91, 9, 8, '#4d7c0f', 1, 1); // An olive showing
+  px(21, 91, 5, 11, '#1c1917', 2, 4); // Legs
+  px(21, 91, 11, 11, '#1c1917', 2, 4);
+  px(21, 91, 8, 11, '#292524', 1, 3);
+  px(21, 91, 14, 6, '#44403c', 1, 6); // Tail
+  px(21, 91, 5, 7, '#44403c', 2, 1); // Sheen
+
   return canvas;
 }
 
@@ -18944,6 +19073,13 @@ export function getHarborTileSourceRect(tileId: number): { sx: number; sy: numbe
     case HARBOR_TILES.CLIFFS_BIRDCAGE: return { sx: 12 * 16, sy: 91 * 16 };
     case HARBOR_TILES.CLIFFS_ANCHOR: return { sx: 13 * 16, sy: 91 * 16 };
     case HARBOR_TILES.CLIFFS_KESTREL: return { sx: 14 * 16, sy: 91 * 16 };
+    case HARBOR_TILES.CLIFFS_ODE_ARTICHOKE: return { sx: 15 * 16, sy: 91 * 16 };
+    case HARBOR_TILES.CLIFFS_ODE_TOMATO: return { sx: 16 * 16, sy: 91 * 16 };
+    case HARBOR_TILES.CLIFFS_ODE_ONION: return { sx: 17 * 16, sy: 91 * 16 };
+    case HARBOR_TILES.CLIFFS_ODE_SOCKS: return { sx: 18 * 16, sy: 91 * 16 };
+    case HARBOR_TILES.CLIFFS_PIED_COW: return { sx: 19 * 16, sy: 91 * 16 };
+    case HARBOR_TILES.CLIFFS_LAMB: return { sx: 20 * 16, sy: 91 * 16 };
+    case HARBOR_TILES.CLIFFS_BLACK_PONY: return { sx: 21 * 16, sy: 91 * 16 };
     case HARBOR_TILES.TOWN_SOAPBOX: return { sx: 0 * 16, sy: 90 * 16 };
     case HARBOR_TILES.TOWN_WILDFLOWERS: return { sx: 1 * 16, sy: 90 * 16 };
     case HARBOR_TILES.TOWN_BUSH: return { sx: 2 * 16, sy: 90 * 16 };
@@ -23433,10 +23569,16 @@ export function buildCliffsScreen3(): HarborScreenData {
     for (let c = 22; c <= 24; c++) putSolid(c, vr, HARBOR_TILES.CLIFFS_TRELLIS_R);
   }
 
-  // 5c. THE LAVENDER FIELD (X: 19..21, Y: 16..19) against the west wall of the blue house
+  // 5c. NERUDA'S ODE GARDEN (X: 19..21, Y: 16..20) against the west wall of the blue
+  //     house, where he lives: a row each of the plain things he wrote odes to -
+  //     artichokes, tomatoes, onions - and one pair of wool socks drying on a line.
+  //     (The vineyard up the hill is the ode to wine.)
   for (let r = 16; r <= 19; r++) {
-    for (let c = 19; c <= 21; c++) putSoft(c, r, HARBOR_TILES.CLIFFS_LAVENDER);
+    putSoft(19, r, HARBOR_TILES.CLIFFS_ODE_ARTICHOKE);
+    putSoft(20, r, HARBOR_TILES.CLIFFS_ODE_TOMATO);
+    putSoft(21, r, HARBOR_TILES.CLIFFS_ODE_ONION);
   }
+  putSolid(20, 20, HARBOR_TILES.CLIFFS_ODE_SOCKS);
 
   // 5d. THE FORGE YARD: an anvil out front
   putSolid(14, 12, HARBOR_TILES.CLIFFS_ANVIL);
@@ -23448,6 +23590,8 @@ export function buildCliffsScreen3(): HarborScreenData {
 
   // 6. ONE THING PER POET
   putSolid(10, 12, HARBOR_TILES.CLIFFS_TYGER_CAT); // Blake: a striped cat asleep by the forge door
+  putSolid(6, 12, HARBOR_TILES.CLIFFS_LAMB); // Blake: a lamb, in plain sight of the tyger
+  putSolid(7, 20, HARBOR_TILES.CLIFFS_BLACK_PONY); // Lorca: the black pony, olives in the saddlebag
   putSolid(22, 21, HARBOR_TILES.CLIFFS_BIRDCAGE); // Angelou: a cage with its door open
   putSolid(27, 21, HARBOR_TILES.CLIFFS_ANCHOR); // Neruda: an anchor in the yard of the blue house
   putSolid(32, 3, HARBOR_TILES.CLIFFS_FIGUREHEAD_POST); // Neruda: a ship's figurehead by the studio
@@ -23475,9 +23619,9 @@ export function buildCliffsScreen3(): HarborScreenData {
     [7, 25], [10, 26], [12, 24], [15, 26], [4, 26], [20, 24], [22, 24],
   ];
   for (const [pc, pr] of cliffPoppies) putSoft(pc, pr, HARBOR_TILES.CLIFFS_POPPY);
-  // A boulder and a bench in the south meadow, under the kestrel
+  // A boulder and a brindled cow in the south meadow, under the kestrel
   putSolid(6, 25, HARBOR_TILES.CLIFFS_BOULDER_LIMESTONE);
-  putSolid(13, 25, HARBOR_TILES.CLIFFS_DRIFTWOOD_BENCH);
+  putSolid(13, 25, HARBOR_TILES.CLIFFS_PIED_COW); // Hopkins: glory be for dappled things
 
   // Collision map
   for (let r = 0; r < EXTERIOR_ROWS; r++) {
