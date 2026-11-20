@@ -348,6 +348,10 @@ export const HARBOR_TILES = {
   CLIFFS_SEA_RIM_5: 1008,
   CLIFFS_SEA_RIM_6: 1009,
   CLIFFS_SEA_RIM_7: 1010,
+  CLIFFS_TYGER_CAT: 1011, // Striped cat asleep by the forge (Blake)
+  CLIFFS_BIRDCAGE: 1012, // Open, empty cage on a post (Angelou)
+  CLIFFS_ANCHOR: 1013, // Ship's anchor in the yard of the blue house (Neruda)
+  CLIFFS_KESTREL: 1014, // Hovering falcon (Hopkins)
 
   // Screen 2: Fence
   FENCE_WHITE_H: 89,
@@ -18679,14 +18683,15 @@ function createHarborTilesetCanvas(): HTMLCanvasElement {
   // ROW 91: SCREEN 3 (THE CLIFFS) - THE SEA BELOW THE EAST EDGE
   // ==========================================================================
   // Deep water seen from high above: darker than the harbor, small whitecaps.
-  const C_CLIFFSEA_DEEP = '#1d4e89';
-  const C_CLIFFSEA_DARK = '#173f73';
-  const C_CLIFFSEA_LITE = '#2a66ab';
-  const C_CLIFFSEA_CAP = '#dbeafe';
-  const C_CLIFFROCK = '#c9b79a';
-  const C_CLIFFROCK_LITE = '#e6d9bf';
-  const C_CLIFFROCK_SHADE = '#9c8a70';
-  const C_CLIFFROCK_DARK = '#6f6252';
+  // Same cobalt and terracotta as the rest of the Cliffs art.
+  const C_CLIFFSEA_DEEP = C_CLIFF_SEA;
+  const C_CLIFFSEA_DARK = C_CLIFF_SEA_DK;
+  const C_CLIFFSEA_LITE = C_CLIFF_SEA_LT;
+  const C_CLIFFSEA_CAP = C_CLIFF_SEA_FOAM;
+  const C_CLIFFROCK = C_CLIFF_ROCK;
+  const C_CLIFFROCK_LITE = C_CLIFF_ROCK_LT;
+  const C_CLIFFROCK_SHADE = C_CLIFF_ROCK_DK;
+  const C_CLIFFROCK_DARK = C_CLIFF_ROCK_DEEP;
 
   const paintCliffSea = (tx: number, variant: number) => {
     rect(tx, 91, 0, 0, 16, 16, C_CLIFFSEA_DEEP);
@@ -18764,6 +18769,73 @@ function createHarborTilesetCanvas(): HTMLCanvasElement {
       px(tx, 91, 10, 12, C_CLIFFSEA_CAP, 3, 1);
     }
   }
+
+  // 11. CLIFFS_TYGER_CAT - orange striped cat curled up asleep
+  rect(11, 91, 0, 0, 16, 16, 'transparent');
+  rect(11, 91, 3, 9, 10, 5, C_DARK_OUTLINE);
+  rect(11, 91, 2, 10, 12, 3, C_DARK_OUTLINE);
+  rect(11, 91, 3, 10, 10, 3, '#e8892b'); // Body
+  rect(11, 91, 4, 9, 8, 1, '#e8892b');
+  rect(11, 91, 4, 13, 8, 1, '#c96f1a');
+  px(11, 91, 5, 9, '#3b2410', 1, 3); // Stripes
+  px(11, 91, 7, 9, '#3b2410', 1, 4);
+  px(11, 91, 9, 9, '#3b2410', 1, 3);
+  rect(11, 91, 10, 8, 4, 4, C_DARK_OUTLINE); // Head
+  rect(11, 91, 11, 9, 3, 3, '#f0a04b');
+  px(11, 91, 10, 7, C_DARK_OUTLINE, 2, 1); // Ears
+  px(11, 91, 13, 7, C_DARK_OUTLINE, 2, 1);
+  px(11, 91, 11, 8, '#e8892b', 1, 1);
+  px(11, 91, 13, 8, '#e8892b', 1, 1);
+  px(11, 91, 11, 10, '#3b2410', 2, 1); // Closed eyes
+  px(11, 91, 2, 12, '#e8892b', 2, 1); // Tail wrapped round
+  px(11, 91, 2, 13, '#3b2410', 1, 1);
+
+  // 12. CLIFFS_BIRDCAGE - brass cage on a post, door hanging open, nothing inside
+  rect(12, 91, 0, 0, 16, 16, 'transparent');
+  rect(12, 91, 7, 10, 2, 6, '#5b3a1e'); // Post
+  rect(12, 91, 5, 15, 6, 1, '#3f2a14');
+  rect(12, 91, 4, 2, 8, 9, C_DARK_OUTLINE);
+  rect(12, 91, 5, 3, 6, 7, '#f6e7b8'); // Empty inside, lit
+  px(12, 91, 6, 1, C_DARK_OUTLINE, 4, 1); // Dome
+  px(12, 91, 7, 0, '#d4a017', 2, 1); // Ring
+  px(12, 91, 5, 3, '#d4a017', 1, 7); // Bars
+  px(12, 91, 7, 3, '#d4a017', 1, 7);
+  px(12, 91, 10, 3, '#d4a017', 1, 7);
+  rect(12, 91, 4, 10, 8, 1, '#b8860b'); // Base
+  rect(12, 91, 12, 4, 3, 5, C_DARK_OUTLINE); // Door swung open
+  rect(12, 91, 12, 5, 2, 3, '#d4a017');
+  px(12, 91, 13, 5, '#f6e7b8', 1, 3);
+
+  // 13. CLIFFS_ANCHOR - iron ship's anchor propped upright, rust at the flukes
+  rect(13, 91, 0, 0, 16, 16, 'transparent');
+  rect(13, 91, 7, 3, 2, 11, '#374151'); // Shank
+  rect(13, 91, 4, 5, 8, 2, '#374151'); // Stock
+  rect(13, 91, 6, 0, 4, 3, '#374151'); // Ring
+  px(13, 91, 7, 1, '#d9b95c', 2, 1);
+  rect(13, 91, 2, 11, 2, 3, '#374151'); // Arms and flukes
+  rect(13, 91, 12, 11, 2, 3, '#374151');
+  rect(13, 91, 3, 13, 10, 2, '#374151');
+  px(13, 91, 1, 10, '#374151', 2, 2);
+  px(13, 91, 13, 10, '#374151', 2, 2);
+  px(13, 91, 7, 3, '#6b7280', 1, 10); // Highlight
+  px(13, 91, 3, 14, '#9a3412', 3, 1); // Rust
+  px(13, 91, 10, 14, '#9a3412', 3, 1);
+  px(13, 91, 5, 6, '#9a3412', 2, 1);
+
+  // 14. CLIFFS_KESTREL - small falcon hanging on the wind, wings spread, seen from above
+  rect(14, 91, 0, 0, 16, 16, 'transparent');
+  rect(14, 91, 7, 4, 2, 7, '#8a4b24'); // Body
+  px(14, 91, 7, 3, '#6b7280', 2, 2); // Grey head
+  px(14, 91, 7, 11, '#3b2410', 2, 2); // Tail
+  px(14, 91, 6, 13, '#3b2410', 4, 1);
+  rect(14, 91, 2, 5, 5, 2, '#a85d2e'); // Left wing
+  rect(14, 91, 9, 5, 5, 2, '#a85d2e'); // Right wing
+  px(14, 91, 0, 6, '#3b2410', 3, 1); // Dark wingtips
+  px(14, 91, 13, 6, '#3b2410', 3, 1);
+  px(14, 91, 3, 7, '#8a4b24', 3, 1);
+  px(14, 91, 10, 7, '#8a4b24', 3, 1);
+  px(14, 91, 4, 5, '#3b2410', 1, 1); // Barring
+  px(14, 91, 11, 5, '#3b2410', 1, 1);
 
   return canvas;
 }
@@ -18868,6 +18940,10 @@ export function getHarborTileSourceRect(tileId: number): { sx: number; sy: numbe
     case HARBOR_TILES.CLIFFS_SEA_RIM_5: return { sx: 8 * 16, sy: 91 * 16 };
     case HARBOR_TILES.CLIFFS_SEA_RIM_6: return { sx: 9 * 16, sy: 91 * 16 };
     case HARBOR_TILES.CLIFFS_SEA_RIM_7: return { sx: 10 * 16, sy: 91 * 16 };
+    case HARBOR_TILES.CLIFFS_TYGER_CAT: return { sx: 11 * 16, sy: 91 * 16 };
+    case HARBOR_TILES.CLIFFS_BIRDCAGE: return { sx: 12 * 16, sy: 91 * 16 };
+    case HARBOR_TILES.CLIFFS_ANCHOR: return { sx: 13 * 16, sy: 91 * 16 };
+    case HARBOR_TILES.CLIFFS_KESTREL: return { sx: 14 * 16, sy: 91 * 16 };
     case HARBOR_TILES.TOWN_SOAPBOX: return { sx: 0 * 16, sy: 90 * 16 };
     case HARBOR_TILES.TOWN_WILDFLOWERS: return { sx: 1 * 16, sy: 90 * 16 };
     case HARBOR_TILES.TOWN_BUSH: return { sx: 2 * 16, sy: 90 * 16 };
@@ -23114,40 +23190,49 @@ export function buildCliffsScreen3(): HarborScreenData {
     Math.abs(((x * 374761393) ^ (y * 668265263) ^ (seed * 1013904223)) % 100);
 
   // 1. BASE GROUND TERRAIN
-  // Switchback walkways:
-  // - Lower Olive Terrace: X: 4..26, Y: 21..24 connected to South Entrance X: 17..18, Y: 24..27
-  // - Western Stairs: X: 4..6, Y: 14..21
-  // - Middle Terrace: X: 4..28, Y: 12..15
-  // - Eastern Steps: X: 26..28, Y: 6..12
-  // - Upper Deck Promenade: X: 14..32, Y: 3..6 -> North Exit X: 17..18, Y: 0..3
+  // One flat clifftop. A two-tile dirt path switchbacks up it, following the route
+  // the old staircases took:
+  //   south entrance -> lower lane (Y: 22..23) -> west climb (X: 4..5) ->
+  //   middle lane (Y: 13..14) -> east climb (X: 26..27) -> upper lane (Y: 4..5) -> north exit
+  const isCliffsPath = (c: number, r: number) =>
+    ((c === 17 || c === 18) && r >= 22) || // South entrance
+    (r >= 22 && r <= 23 && c >= 4 && c <= 32) || // Lower lane, out to the point
+    (c >= 4 && c <= 5 && r >= 13 && r <= 23) || // West climb
+    (r >= 13 && r <= 14 && c >= 4 && c <= 27) || // Middle lane
+    (c >= 26 && c <= 27 && r >= 4 && r <= 14) || // East climb
+    (r >= 4 && r <= 5 && c >= 14 && c <= 32) || // Upper lane
+    ((c === 17 || c === 18) && r <= 5) || // North exit
+    (c === 25 && r === 21) || // Up to the blue house door
+    (c === 11 && r === 12); // Up to the forge door
   for (let r = 0; r < EXTERIOR_ROWS; r++) {
     for (let c = 0; c < EXTERIOR_COLS; c++) {
       const p = pseudoRand(c, r);
-      const isSouthEntrance = (c === 17 || c === 18) && r >= 24;
-      const isNorthExit = (c === 17 || c === 18) && r <= 3;
-      const isLowerTerrace = (c >= 4 && c <= 26) && (r >= 21 && r <= 24);
-      const isWestStairs = (c >= 4 && c <= 6) && (r >= 14 && r <= 21);
-      const isMiddleTerrace = (c >= 4 && c <= 28) && (r >= 12 && r <= 15);
-      const isEastSteps = (c >= 26 && c <= 28) && (r >= 6 && r <= 12);
-      const isUpperDeck = (c >= 14 && c <= 32) && (r >= 3 && r <= 6);
-      const isWalkway = isSouthEntrance || isNorthExit || isLowerTerrace || isWestStairs || isMiddleTerrace || isEastSteps || isUpperDeck;
-
-      if (isSouthEntrance && r >= 26) {
-        ground[r][c] = HARBOR_TILES.CLIFFS_STEPS;
-      } else if (isWestStairs || isEastSteps) {
-        ground[r][c] = HARBOR_TILES.CLIFFS_STEPS;
-      } else if (isUpperDeck && r <= 2 && c >= 20 && c <= 33) {
-        ground[r][c] = HARBOR_TILES.CLIFFS_STUDIO_FLOOR;
-      } else if (isWalkway) {
-        if (p < 30) ground[r][c] = HARBOR_TILES.CLIFFS_TRAIL_DUST;
-        else if (p < 55) ground[r][c] = HARBOR_TILES.CLIFFS_SAND_PATCH;
-        else ground[r][c] = HARBOR_TILES.CLIFFS_GRASS_GOLD;
+      if (isCliffsPath(c, r)) {
+        ground[r][c] = p < 72 ? HARBOR_TILES.CLIFFS_TRAIL_DUST : HARBOR_TILES.CLIFFS_SAND_PATCH;
       } else {
-        if (p < 25) ground[r][c] = HARBOR_TILES.CLIFFS_GRASS_PALE;
-        else if (p < 50) ground[r][c] = HARBOR_TILES.CLIFFS_GRASS_TUFT;
+        if (p < 10) ground[r][c] = HARBOR_TILES.CLIFFS_GRASS_PALE;
+        else if (p < 24) ground[r][c] = HARBOR_TILES.CLIFFS_GRASS_TUFT;
         else ground[r][c] = HARBOR_TILES.CLIFFS_GRASS_GOLD;
       }
     }
+  }
+
+  // The mountain behind: bare rock along the west edge and across the top-left,
+  // with a face where it looks down the screen. The gap at X: 17..18 is the way up.
+  for (let r = 3; r < EXTERIOR_ROWS; r++) {
+    for (let c = 0; c <= 1; c++) {
+      ground[r][c] = HARBOR_TILES.CLIFFS_ROCK_TAN;
+      solid[r][c] = true;
+    }
+  }
+  for (let c = 0; c <= 19; c++) {
+    if (c === 17 || c === 18) continue;
+    ground[0][c] = HARBOR_TILES.CLIFFS_ROCK_TAN;
+    ground[1][c] = pseudoRand(c, 1, 5) < 30 ? HARBOR_TILES.CLIFFS_FACE_CRACK : HARBOR_TILES.CLIFFS_FACE;
+    ground[2][c] = pseudoRand(c, 2, 5) < 30 ? HARBOR_TILES.CLIFFS_FACE_CRACK : HARBOR_TILES.CLIFFS_FACE;
+    solid[0][c] = true;
+    solid[1][c] = true;
+    solid[2][c] = true;
   }
 
   // 2. BUILDINGS
@@ -23295,11 +23380,8 @@ export function buildCliffsScreen3(): HarborScreenData {
       } else {
         const rim =
           (isCliffsLand(c - 1, r) ? 1 : 0) + (isCliffsLand(c, r + 1) ? 2 : 0) + (isCliffsLand(c + 1, r) ? 4 : 0);
-        ground[r][c] = rim
-          ? CLIFFS_SEA_RIMS[rim]
-          : pseudoRand(c, r, 7) < 50
-          ? HARBOR_TILES.CLIFFS_SEA_A
-          : HARBOR_TILES.CLIFFS_SEA_B;
+        // Open water is the Cliffs' own cobalt sea tile, which the renderer animates
+        ground[r][c] = rim ? CLIFFS_SEA_RIMS[rim] : HARBOR_TILES.CLIFFS_SEA_COBALT_0;
       }
     }
   }
@@ -23310,12 +23392,6 @@ export function buildCliffsScreen3(): HarborScreenData {
   objects[27][27] = HARBOR_TILES.CLIFFS_SEAGULL_BOULDER;
   objects[26][32] = HARBOR_TILES.CLIFFS_GRANITE_BOULDER;
 
-  // The headland: a worn track from the terrace out past the house to the point
-  for (let r = 21; r <= 22; r++) {
-    for (let c = 27; c <= 32; c++) {
-      ground[r][c] = pseudoRand(c, r, 11) < 55 ? HARBOR_TILES.CLIFFS_TRAIL_DUST : HARBOR_TILES.CLIFFS_SAND_PATCH;
-    }
-  }
   // A bench facing out to sea, amphorae by the house wall, a cairn on the very tip
   objects[17][31] = HARBOR_TILES.CLIFFS_LIMESTONE_BENCH_L;
   objects[17][32] = HARBOR_TILES.CLIFFS_LIMESTONE_BENCH_R;
@@ -23326,6 +23402,82 @@ export function buildCliffsScreen3(): HarborScreenData {
   objects[19][33] = HARBOR_TILES.CLIFFS_CAIRN;
   solid[19][33] = true;
   placeOlive(30, 14);
+
+  // 5. PLACES ON THE CLIFFTOP
+  const putSolid = (c: number, r: number, tile: number) => {
+    objects[r][c] = tile;
+    solid[r][c] = true;
+  };
+  const putSoft = (c: number, r: number, tile: number) => {
+    objects[r][c] = tile; // Walk-through
+  };
+
+  // 5a. THE OLIVE GROVE (X: 6..16, Y: 15..21): a second, staggered row behind the
+  //     original one, inside a low dry-stone wall with a gap to walk in by.
+  placeOlive(8, 16);
+  placeOlive(11, 16);
+  placeOlive(14, 16);
+  // (The north wall stops at X: 13 so the old dog has room to lie where he likes.)
+  for (let c = 7; c <= 13; c++) {
+    if (c === 10) continue; // Gate
+    putSolid(c, 15, HARBOR_TILES.CLIFFS_WALL_DRYSTONE);
+  }
+  for (let r = 16; r <= 19; r++) putSolid(17, r, HARBOR_TILES.CLIFFS_WALL_DRYSTONE);
+
+  // 5b. THE VINEYARD (X: 15..24, Y: 7..10): two rows of vines either side of an
+  //     aisle, grown out from the pergola that was already here.
+  for (const vr of [7, 10]) {
+    putSolid(15, vr, HARBOR_TILES.CLIFFS_TRELLIS_L);
+    for (let c = 16; c <= 19; c++) putSolid(c, vr, HARBOR_TILES.CLIFFS_TRELLIS_R);
+    putSolid(21, vr, HARBOR_TILES.CLIFFS_TRELLIS_L);
+    for (let c = 22; c <= 24; c++) putSolid(c, vr, HARBOR_TILES.CLIFFS_TRELLIS_R);
+  }
+
+  // 5c. THE LAVENDER FIELD (X: 19..21, Y: 16..19) against the west wall of the blue house
+  for (let r = 16; r <= 19; r++) {
+    for (let c = 19; c <= 21; c++) putSoft(c, r, HARBOR_TILES.CLIFFS_LAVENDER);
+  }
+
+  // 5d. THE FORGE YARD: an anvil out front
+  putSolid(14, 12, HARBOR_TILES.CLIFFS_ANVIL);
+
+  // 5e. LORCA'S LEMON CORNER: a second lemon tree and a water jar by the guitar
+  overlay[20][3] = HARBOR_TILES.TREE_CANOPY_LEMON;
+  putSolid(3, 21, HARBOR_TILES.TREE_TRUNK_LEMON);
+  putSolid(8, 21, HARBOR_TILES.CLIFFS_AMPHORA);
+
+  // 6. ONE THING PER POET
+  putSolid(10, 12, HARBOR_TILES.CLIFFS_TYGER_CAT); // Blake: a striped cat asleep by the forge door
+  putSolid(22, 21, HARBOR_TILES.CLIFFS_BIRDCAGE); // Angelou: a cage with its door open
+  putSolid(27, 21, HARBOR_TILES.CLIFFS_ANCHOR); // Neruda: an anchor in the yard of the blue house
+  putSolid(32, 3, HARBOR_TILES.CLIFFS_FIGUREHEAD_POST); // Neruda: a ship's figurehead by the studio
+  overlay[25][10] = HARBOR_TILES.CLIFFS_KESTREL; // Hopkins: a kestrel hanging on the wind
+  overlay[11][20] = HARBOR_TILES.TREE_CANOPY_PINE; // Gibran: a lone cedar
+  putSolid(20, 12, HARBOR_TILES.TREE_TRUNK_PINE);
+
+  // 7. PLANTING
+  // Agave along the brink, where nothing else will grow
+  const cliffAgaves: Array<[number, number]> = [
+    [33, 5], [31, 7], [28, 9], [33, 21], [30, 23], [27, 24], [24, 25], [21, 26],
+  ];
+  for (const [ac, ar] of cliffAgaves) putSolid(ac, ar, HARBOR_TILES.CLIFFS_AGAVE);
+  // Marram grass in the wind off the sea and in the dry south meadow
+  const cliffMarram: Array<[number, number]> = [
+    [32, 6], [29, 13], [31, 16], [32, 20], [26, 24], [22, 25], [3, 24], [8, 26], [14, 24],
+  ];
+  for (const [mc, mr] of cliffMarram) putSoft(mc, mr, HARBOR_TILES.CLIFFS_MARRAM_GRASS);
+  // Rosemary by the paths and walls
+  const cliffRosemary: Array<[number, number]> = [[14, 6], [20, 6], [25, 6], [7, 11], [29, 21]];
+  for (const [rc, rr] of cliffRosemary) putSoft(rc, rr, HARBOR_TILES.CLIFFS_ROSEMARY);
+  // Poppies in the two open meadows
+  const cliffPoppies: Array<[number, number]> = [
+    [3, 5], [5, 6], [7, 5], [6, 9], [2, 10], [5, 11], [3, 12],
+    [7, 25], [10, 26], [12, 24], [15, 26], [4, 26], [20, 24], [22, 24],
+  ];
+  for (const [pc, pr] of cliffPoppies) putSoft(pc, pr, HARBOR_TILES.CLIFFS_POPPY);
+  // A boulder and a bench in the south meadow, under the kestrel
+  putSolid(6, 25, HARBOR_TILES.CLIFFS_BOULDER_LIMESTONE);
+  putSolid(13, 25, HARBOR_TILES.CLIFFS_DRIFTWOOD_BENCH);
 
   // Collision map
   for (let r = 0; r < EXTERIOR_ROWS; r++) {
