@@ -89,6 +89,7 @@ import {
   INITIAL_RENTED_ROOM_NPCS,
   createFreshHarborNpcs,
   createFreshTownNpcs,
+  arrangeSoapbox,
   createFreshNightingaleNpcs,
   createFreshLunchNpcs,
   createFreshCliffsNpcs,
@@ -1854,6 +1855,10 @@ export default function App() {
   const visitedCantosRef = useRef<Set<string>>(visitedCantos);
   visitedCantosRef.current = visitedCantos;
 
+  // Screens reached during the current climb. Unlike visitedCantos (which is saved
+  // forever and only decides when chapter cards show), this starts over with each new game.
+  const climbVisitedScreensRef = useRef<Set<string>>(new Set(['HARBOR']));
+
   const [cantoCardText, setCantoCardText] = useState<string>('CANTO I: THE HARBOR — THE FOOT OF PARNASSUS');
   const [isCantoCardVisible, setIsCantoCardVisible] = useState<boolean>(false);
   const cantoTimerRef = useRef<number | null>(null);
@@ -3417,6 +3422,7 @@ export default function App() {
   const startClimbOverworld = useCallback((customName?: string, customStyle?: PlayerCustomization) => {
     setSelectedGameMode('CLIMB');
     setHasStartedClimb(true);
+    climbVisitedScreensRef.current = new Set(['HARBOR']);
     animTimeRef.current = 0;
     if (customName) setPlayerName(customName);
     if (customStyle) {
@@ -3896,6 +3902,12 @@ export default function App() {
         lunchNpcsRef.current = createFreshLunchNpcs();
         setLunchNpcsState(lunchNpcsRef.current);
       }
+      climbVisitedScreensRef.current.add(targetScreen);
+      if (targetScreen === 'TOWN') {
+        // Whoever's turn it is takes the soapbox, based on how far the Reader has climbed this game
+        townNpcsRef.current = arrangeSoapbox(townNpcsRef.current, climbVisitedScreensRef.current);
+        setTownNpcsState(townNpcsRef.current);
+      }
       setActiveOverworldScreen(targetScreen);
       activeOverworldScreenRef.current = targetScreen;
 
@@ -3992,6 +4004,42 @@ export default function App() {
       }, 150);
     }, 200);
   }, [hasLaurel, triggerCantoCard]);
+
+  // STUDIO TOOL: jump straight to a spot for testing. Does nothing unless the address
+  // has ?warp= in it, e.g.  ?warp=TOWN,30,25  or  ?warp=TOWN,30,25&seen=CLIFFS,RUINS
+  // ("seen" pretends the Reader has already reached those screens this climb).
+  const warpDoneRef = useRef(false);
+  useEffect(() => {
+    if (warpDoneRef.current) return;
+    let warp: string | null = null;
+    let seen: string | null = null;
+    try {
+      const params = new URLSearchParams(window.location.search);
+      warp = params.get('warp');
+      seen = params.get('seen');
+    } catch {
+      return;
+    }
+    if (!warp) return;
+    const [screen, wx, wy] = warp.split(',');
+    const x = Number(wx);
+    const y = Number(wy);
+    if (!screen || !Number.isFinite(x) || !Number.isFinite(y)) return;
+    const timer = window.setTimeout(() => {
+      if (warpDoneRef.current) return;
+      warpDoneRef.current = true;
+      startClimbOverworld('READER');
+      setScreenCurtainAlpha(0);
+      setCinematicCurtainAlpha(0);
+      setIsCinematicHudVisible(true);
+      setIsCinematicLocked(false);
+      if (seen) seen.split(',').forEach((id) => climbVisitedScreensRef.current.add(id.trim()));
+      window.setTimeout(() => {
+        transitionOverworldScreen(screen as OverworldScreenId, x, y, 'DOWN');
+      }, 300);
+    }, 400);
+    return () => window.clearTimeout(timer);
+  }, [startClimbOverworld, transitionOverworldScreen]);
 
   // Present Pokemon-style TALK / DUEL / LEAVE choice prompt for overworld poets
   // Supports cycling lines in-place, seamless DUEL transition, and LEAVE dismissal.

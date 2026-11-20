@@ -1715,6 +1715,161 @@ export const INITIAL_HARBOR_NPCS: HarborNPC[] = [
   },
 ];
 
+// ============================================================================
+// THE SOAPBOX CORNER (Town, east lawn)
+// ============================================================================
+// One crate, three regulars. The speaker stands on the crate; the other two stand
+// in the grass and face it. The speaker changes each time the Reader reaches a new
+// tier of the mountain, in the order the cast is listed here.
+//
+// To change who is here or what they say, edit SOAPBOX_CAST. Nothing else needs
+// touching. Each person must be someone who appears nowhere else in the game.
+export const SOAPBOX_CRATE = { x: 31, y: 24 };
+const SOAPBOX_GRASS_SPOTS = [
+  { x: 30, y: 26 },
+  { x: 32, y: 26 },
+];
+// Reaching each of these screens moves the box on to the next speaker.
+const SOAPBOX_TIER_SCREENS = ['CLIFFS', 'RUINS', 'TREELINE', 'SUMMIT'];
+
+interface SoapboxRegular {
+  id: string;
+  name: string;
+  poetId: string;
+  spriteKey: string;
+  greeting: string; // Said every time you start talking to them
+  onTheBox: string[]; // Lines when it is their turn on the crate
+  onTheGrass: string[]; // Lines when they are listening
+}
+
+export const SOAPBOX_CAST: SoapboxRegular[] = [
+  {
+    id: 'npc_town_soapbox_lorde',
+    name: 'AUDRE LORDE',
+    poetId: 'LORDE',
+    spriteKey: 'LORDE',
+    greeting: "Afternoon. Audre Lorde.",
+    onTheBox: [
+      "Somebody left a crate out, so now it's a stage.",
+      "Keeping quiet never kept anybody safe. So I got on the box.",
+      "People say poetry is a luxury. Those people have never needed one.",
+    ],
+    onTheGrass: [
+      "I had my turn. Now I get to listen, which is harder.",
+      "I don't agree with half of it. I'm staying for the other half.",
+      "Nobody up there has said anything they could get in trouble for yet. I'm waiting.",
+    ],
+  },
+  {
+    id: 'npc_town_soapbox_cummings',
+    name: 'E. E. CUMMINGS',
+    poetId: 'CUMMINGS',
+    spriteKey: 'CUMMINGS',
+    greeting: "hello. cummings. small c, if you're writing it down.",
+    onTheBox: [
+      "they gave me the box. i asked for a smaller one.",
+      "i have one speech. it's about spring. i give it all year.",
+      "stand closer. i don't raise my voice, i lower the letters.",
+    ],
+    onTheGrass: [
+      "i'm not heckling. i'm punctuating.",
+      "it's a good speech. i'd have broken the line sooner.",
+      "spring is the only season i've ever agreed with.",
+    ],
+  },
+  {
+    id: 'npc_town_soapbox_bishop',
+    name: 'ELIZABETH BISHOP',
+    poetId: 'BISHOP',
+    spriteKey: 'BISHOP',
+    greeting: "Oh. Hello. Elizabeth Bishop.",
+    onTheBox: [
+      "I didn't want the box. They said it was my turn. I checked. It was.",
+      "I've been working on what to say for some years. Come back, it may be ready.",
+      "From up here you can see the harbor. I'd rather talk about that.",
+    ],
+    onTheGrass: [
+      "I'm only here to look at the crate. It's a very well-made crate.",
+      "I like to get a thing exactly right before I say it. So I'm standing down here.",
+      "Don't mind me. I'm counting the poppies. I keep getting a different number.",
+    ],
+  },
+];
+
+// How far up the mountain the Reader has been: 0 (Town or below) to 4 (Summit).
+export function getSoapboxTier(visitedScreens: Iterable<string>): number {
+  const visited = new Set(visitedScreens);
+  let tier = 0;
+  SOAPBOX_TIER_SCREENS.forEach((screen, i) => {
+    if (visited.has(screen)) tier = i + 1;
+  });
+  return tier;
+}
+
+// Where one regular stands, which way they face and what they say, for a given tier.
+function soapboxPlacement(castIndex: number, tier: number) {
+  const speakerIndex = tier % SOAPBOX_CAST.length;
+  const person = SOAPBOX_CAST[castIndex];
+  if (castIndex === speakerIndex) {
+    return {
+      x: SOAPBOX_CRATE.x,
+      y: SOAPBOX_CRATE.y,
+      pxX: SOAPBOX_CRATE.x * TILE_SIZE,
+      pxY: SOAPBOX_CRATE.y * TILE_SIZE - 6, // Raised so they stand on the crate
+      facing: 'DOWN' as FacingDirection,
+      talkLines: person.onTheBox,
+    };
+  }
+  // Listeners fill the grass spots in cast order
+  const listenerIndex = ((castIndex - speakerIndex + SOAPBOX_CAST.length) % SOAPBOX_CAST.length) - 1;
+  const spot = SOAPBOX_GRASS_SPOTS[listenerIndex];
+  return {
+    x: spot.x,
+    y: spot.y,
+    pxX: spot.x * TILE_SIZE,
+    pxY: spot.y * TILE_SIZE,
+    facing: 'UP' as FacingDirection,
+    talkLines: person.onTheGrass,
+  };
+}
+
+function buildSoapboxNpcs(tier: number): HarborNPC[] {
+  return SOAPBOX_CAST.map((person, i) => ({
+    id: person.id,
+    name: person.name,
+    poetId: person.poetId,
+    ...soapboxPlacement(i, tier),
+    introLine: person.greeting,
+    greeting: person.greeting,
+    normalLines: [],
+    dialogueLines: [],
+    currentDialogueIndex: 0,
+    hasSeenIntro: false,
+    greeted: false,
+    talkIndex: 0,
+    isFightable: false,
+    isDuelist: false,
+    spriteKey: person.spriteKey,
+    isActive: true,
+    isMoving: false,
+    walkStep: 0,
+    isInteracting: false,
+  }));
+}
+
+// Moves the soapbox regulars to where they belong for the Reader's progress.
+// Leaves every other Town character exactly as it was.
+export function arrangeSoapbox(npcs: HarborNPC[], visitedScreens: Iterable<string>): HarborNPC[] {
+  const tier = getSoapboxTier(visitedScreens);
+  return npcs.map((npc) => {
+    const castIndex = SOAPBOX_CAST.findIndex((person) => person.id === npc.id);
+    if (castIndex === -1) return npc;
+    const placement = soapboxPlacement(castIndex, tier);
+    if (npc.x === placement.x && npc.y === placement.y) return npc; // Already in place
+    return { ...npc, ...placement, talkIndex: 0, isInteracting: false, isMoving: false };
+  });
+}
+
 // Initial NPCs for Screen 1 (Canto II: The Unreal City • 36x28)
 export const INITIAL_TOWN_NPCS: HarborNPC[] = [
   // 1. Langston Hughes: Outside West Jazz Alley at (X: 8, Y: 15). FIGHTABLE.
@@ -1901,71 +2056,10 @@ export const INITIAL_TOWN_NPCS: HarborNPC[] = [
     walkStep: 0,
     isInteracting: false,
   },
-  // 6. Audre Lorde: on the soapbox in the east lawn (X: 31, Y: 24). Non-Duelist.
-  //    Shares her tile with the crate and is drawn 6px high so she stands on it.
-  //    Any NPC whose id starts with 'npc_town_soapbox_' talks using the greeting
-  //    and talkLines written here, so the cast can change without touching App.tsx.
-  {
-    id: 'npc_town_soapbox_lorde',
-    name: 'AUDRE LORDE',
-    poetId: 'LORDE',
-    x: 31,
-    y: 24,
-    pxX: 31 * TILE_SIZE,
-    pxY: 24 * TILE_SIZE - 6,
-    facing: 'DOWN',
-    introLine: "Afternoon. Audre Lorde. Somebody left a crate out, so now it's a stage.",
-    greeting: "Afternoon. Audre Lorde. Somebody left a crate out, so now it's a stage.",
-    talkLines: [
-      "Keeping quiet never kept anybody safe. So I got on the box.",
-      "People say poetry is a luxury. Those people have never needed one.",
-      "You're the reader. Good. I've been talking to a man who won't use capital letters.",
-    ],
-    normalLines: [],
-    dialogueLines: [],
-    currentDialogueIndex: 0,
-    hasSeenIntro: false,
-    greeted: false,
-    talkIndex: 0,
-    isFightable: false,
-    isDuelist: false,
-    spriteKey: 'LORDE',
-    isActive: true,
-    isMoving: false,
-    walkStep: 0,
-    isInteracting: false,
-  },
-  // 7. E. E. Cummings: heckling from the grass below the soapbox (X: 30, Y: 26). Non-Duelist.
-  {
-    id: 'npc_town_soapbox_cummings',
-    name: 'E. E. CUMMINGS',
-    poetId: 'CUMMINGS',
-    x: 30,
-    y: 26,
-    pxX: 30 * TILE_SIZE,
-    pxY: 26 * TILE_SIZE,
-    facing: 'UP',
-    introLine: "hello. cummings. small c, if you're writing it down.",
-    greeting: "hello. cummings. small c, if you're writing it down.",
-    talkLines: [
-      "i'm not heckling. i'm punctuating.",
-      "she's right, mostly. i'd have broken the line sooner.",
-      "spring is the only season i've ever agreed with.",
-    ],
-    normalLines: [],
-    dialogueLines: [],
-    currentDialogueIndex: 0,
-    hasSeenIntro: false,
-    greeted: false,
-    talkIndex: 0,
-    isFightable: false,
-    isDuelist: false,
-    spriteKey: 'CUMMINGS',
-    isActive: true,
-    isMoving: false,
-    walkStep: 0,
-    isInteracting: false,
-  },
+  // 6-8. THE SOAPBOX CORNER (east lawn). Three regulars share one crate: one speaks,
+  //      two stand in the grass. Who has the box changes as the Reader climbs.
+  //      Everything about them is written in SOAPBOX_CAST above.
+  ...buildSoapboxNpcs(0),
 ];
 
 // Initial NPCs for Interior 1: The Nightingale
