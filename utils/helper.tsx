@@ -236,6 +236,13 @@ export const useInput = (
       return;
     }
 
+    // The game reads keys once per animation frame. A very quick tap (key down and up
+    // inside one frame, or during a slow frame) used to vanish before the game looked.
+    // So every press is held for at least MIN_PRESS_MS, long enough to be seen.
+    const MIN_PRESS_MS = 80;
+    const pressedAt: Record<string, number> = {};
+    const releaseTimers: Record<string, number> = {};
+
     const handleKeyDown = (event: KeyboardEvent) => {
       let action = ACTION_KEYS[event.key];
       if (!action) {
@@ -265,6 +272,11 @@ export const useInput = (
       ) {
         event.preventDefault();
       }
+      if (releaseTimers[action] !== undefined) {
+        window.clearTimeout(releaseTimers[action]);
+        delete releaseTimers[action];
+      }
+      if (!inputRef.current.actions[action]) pressedAt[action] = performance.now();
       inputRef.current.actions[action] = true;
     };
 
@@ -283,7 +295,17 @@ export const useInput = (
         }
       }
       if (!action) return;
-      inputRef.current.actions[action] = false;
+      const releasedAction = action;
+      const heldFor = performance.now() - (pressedAt[releasedAction] ?? 0);
+      if (heldFor >= MIN_PRESS_MS) {
+        inputRef.current.actions[releasedAction] = false;
+        return;
+      }
+      if (releaseTimers[releasedAction] !== undefined) window.clearTimeout(releaseTimers[releasedAction]);
+      releaseTimers[releasedAction] = window.setTimeout(() => {
+        inputRef.current.actions[releasedAction] = false;
+        delete releaseTimers[releasedAction];
+      }, MIN_PRESS_MS - heldFor);
     };
 
     const canvas = canvasRef.current;
@@ -323,6 +345,10 @@ export const useInput = (
     };
 
     const handleBlur = () => {
+      for (const key of Object.keys(releaseTimers)) {
+        window.clearTimeout(releaseTimers[key]);
+        delete releaseTimers[key];
+      }
       inputRef.current.actions = createEmptyActions();
       if (inputRef.current.pointer) {
         inputRef.current.pointer.down = false;
