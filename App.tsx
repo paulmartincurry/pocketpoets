@@ -10614,28 +10614,30 @@ export default function App() {
         return;
       }
       // Check The Nightingale Door Entry via Action button (if facing door directly)
-      const isTheNightingaleDoor = (facingX === 3 || facingX === 4) && facingY === 10;
+      const isTheNightingaleDoor = facingX === 5 && facingY === 14; // was (3..4, 10), the old half-size map
       if (isTheNightingaleDoor && p.dir === 'UP') {
         transitionOverworldScreen('NIGHTINGALE', 7, 10, 'UP');
         return;
       }
 
       // Check The Lunch Counter Door Entry via Action button
-      const isTheLunchCounterDoor = (facingX === 19 || facingX === 20) && facingY === 10;
+      // Was (19..20, 10): open plaza since the map was doubled, so pressing the action
+      // button there dropped the Reader into the Lunch Counter from the middle of the square.
+      const isTheLunchCounterDoor = facingX === 30 && facingY === 14;
       if (isTheLunchCounterDoor && p.dir === 'UP') {
         transitionOverworldScreen('LUNCH_COUNTER', 7, 10, 'UP');
         return;
       }
 
-      // Check Top-Left House Door (The Rented Room - Charles Baudelaire) at X: 3, Y: 3
-      const isTheRentedRoomDoor = facingX === 3 && facingY === 3;
+      // Top-left house door (The Rented Room) at X: 5, Y: 6. Was (3, 3), which is now its roof.
+      const isTheRentedRoomDoor = facingX === 5 && facingY === 6;
       if (isTheRentedRoomDoor) {
         transitionOverworldScreen('RENTED_ROOM', 7, 9, 'UP');
         return;
       }
 
-      // Check Notice / Bulletin Board at (13, 4)
-      if (facingX === 13 && facingY === 4) {
+      // Notice / Bulletin Board at (19, 9). Was (13, 4), now blank wall.
+      if (facingX === 19 && facingY === 9) {
         gameAudio.playCrispClick();
         triggerHaptics(30);
         const bulletinLines = [
@@ -10652,26 +10654,11 @@ export default function App() {
         return;
       }
 
-      // Check Bouquiniste Bookstalls at (14..16, 13)
-      if ((facingX >= 14 && facingX <= 16) && facingY === 13) {
-        gameAudio.playPageTurn();
-        triggerHaptics(30);
-        const bookstallLines = [
-          'A bouquiniste open-air bookstall crammed with second-hand volumes of French verse and jazz ballads.',
-          'Every book inside appears to have been written by a different Portuguese man who looks suspiciously like the vendor.',
-        ];
-        const curIdx = (propInspectIndexRef.current.TOWN_BOOKSTALLS ?? 0) % bookstallLines.length;
-        propInspectIndexRef.current.TOWN_BOOKSTALLS = (curIdx + 1) % bookstallLines.length;
-        setOverworldDialogue({
-          active: true,
-          speakerName: 'BOUQUINISTE STALL',
-          text: bookstallLines[curIdx],
-        });
-        return;
-      }
+      // (A second bookstall handler lived here at (14..16, 13). Nothing stands there now but
+      // the fountain's edge, so it is gone. The real stall is the PARISIAN BOUQUINISTE above.)
 
       // Check Sidewalk Café Bistro Tables & Chairs (Lower table at 15, 9, or upper table only if Rumi has been recruited)
-      const isNearLowerTable = (facingX === 15 && facingY === 9) || ((facingX === 14 || facingX === 16) && facingY === 9);
+      const isNearLowerTable = false; // the lower table at (15, 9) did not survive the map doubling; (14, 9) is a planter
       const isNearUpperTableUnoccupied = (facingX === 15 || facingX === 14 || facingX === 16) && facingY === 7 && capturedPoetIds.includes('RUMI');
       if (isNearLowerTable || isNearUpperTableUnoccupied) {
         gameAudio.playCrispClick();
@@ -10690,8 +10677,8 @@ export default function App() {
         return;
       }
 
-      // Check East Wooden Park Bench (North Ridge • X: 14..15, Y: 5) (ARTIFACT 1: Rilke's Panther)
-      if ((facingX === 14 || facingX === 15) && facingY === 5) {
+      // East park bench at X: 22..23, Y: 9 (was 14..15, 5) (ARTIFACT 1: Rilke's Panther)
+      if ((facingX === 22 || facingX === 23) && facingY === 9) {
         gameAudio.playFootstepWood();
         triggerHaptics(30);
         const pantherLines = [
@@ -10708,8 +10695,8 @@ export default function App() {
         return;
       }
 
-      // Check West Wooden Park Bench (North Ridge • X: 8..9, Y: 5)
-      if ((facingX === 8 || facingX === 9) && facingY === 5) {
+      // West park bench at X: 12..13, Y: 9 (was 8..9, 5, now the eave of the Rented Room)
+      if ((facingX === 12 || facingX === 13) && facingY === 9) {
         gameAudio.playFootstepWood();
         triggerHaptics(30);
         const benchLines = [
@@ -10726,8 +10713,9 @@ export default function App() {
         return;
       }
 
-      // Check Belle Époque Streetlamps at corners (7, 5), (16, 5), (7, 12), (16, 12)
-      if ((facingX === 7 || facingX === 16) && (facingY === 5 || facingY === 12)) {
+      // Belle Époque streetlamps at the plaza corners (11, 10), (24, 10), (11, 19), (24, 19).
+      // Was (7|16, 5|12) on the old half-size map.
+      if ((facingX === 11 || facingX === 24) && (facingY === 10 || facingY === 19)) {
         gameAudio.playHoverMicroTone();
         triggerHaptics(30);
         const lampLines = [
