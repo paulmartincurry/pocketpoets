@@ -11566,7 +11566,7 @@ export default function App() {
       return;
     }
 
-    if (facingObj === HARBOR_TILES.SIGNPOST || (facingX === 14 && facingY === 2) || (facingX === 16 && facingY === 1)) {
+    if (facingObj === HARBOR_TILES.SIGNPOST || (facingX === 14 && facingY === 2)) {
       gameAudio.playCrispClick();
       triggerHaptics(30);
       const signpostLines = [
@@ -11640,7 +11640,7 @@ export default function App() {
     }
 
     // Check Milestone
-    if (facingObj === HARBOR_TILES.MILESTONE || (facingX === 14 && facingY === 16) || (facingX === 13 && facingY === 16)) {
+    if (facingObj === HARBOR_TILES.MILESTONE || (facingX === 14 && facingY === 16)) {
       gameAudio.playCrispClick();
       triggerHaptics(30);
       const milestoneLines = [
@@ -11743,7 +11743,9 @@ export default function App() {
         });
         return;
       }
-      if ((facingX === 15 || facingX === 13 || facingX === 14) && (facingY === 19 || facingY === 18)) {
+      // Only the tile the signpost stands on (15, 19). It used to answer from five open
+      // road and sand tiles around it as well.
+      if (facingX === 15 && facingY === 19) {
         gameAudio.playCrispClick();
         triggerHaptics(30);
         setOverworldDialogue({
