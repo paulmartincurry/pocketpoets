@@ -4340,15 +4340,57 @@ export default function App() {
             }
             gameAudio.playArcadeLaser();
             triggerHaptics([40, 60]);
-            setOverworldDialogue({
-              active: true,
-              speakerName,
-              text: duelText,
-              onComplete: () => {
-                const heroId = activePlayerPoetId || (capturedPoetIds[0] ?? 'WHITMAN');
-                initBattle(heroId, enemyPoetId);
-              },
-            });
+            const beginDuel = () =>
+              setOverworldDialogue({
+                active: true,
+                speakerName,
+                text: duelText,
+                onComplete: () => {
+                  const heroId = activePlayerPoetId || (capturedPoetIds[0] ?? 'WHITMAN');
+                  initBattle(heroId, enemyPoetId);
+                },
+              });
+            // BEFORE THE VERY FIRST DUEL: three things an attack-only player never finds out.
+            // (In the balance simulator, attack-only wins the first duel about one time in
+            // four; healing and using the blank book wins it nearly every time.) Shown once
+            // per browser. Copy is a draft.
+            let coached = true;
+            try {
+              coached = localStorage.getItem('poetmon_first_duel_coached') === '1';
+            } catch {
+              coached = true;
+            }
+            if (!coached && selectedGameMode === 'CLIMB' && capturedPoetIds.length <= 1) {
+              try {
+                localStorage.setItem('poetmon_first_duel_coached', '1');
+              } catch {
+                // ignore
+              }
+              const lead = getPoetById(activePlayerPoetId || playerLineupRef.current[0] || 'WHITMAN');
+              const isWalt = lead.id === 'WHITMAN';
+              const coachName = lead.name.toUpperCase();
+              const tips = isWalt
+                ? [
+                    'Before your first duel, Camerado, three things. Watch the INTENT line. It tells you what they mean to recite next.',
+                    'Let me open with a boost. And heal me before I am desperate, not after.',
+                    'When they are down to a quarter of their strength, stop hitting. Choose CAPTURE, open a blank book, and bind them. That is how poets are won.',
+                  ]
+                : [
+                    'Before your first duel, three things. Watch the INTENT line. It tells you what they mean to recite next.',
+                    'Open with a boost if I have one. Heal me before I am desperate, not after.',
+                    'When they are down to a quarter of their strength, stop hitting. Choose CAPTURE, open a blank book, and bind them.',
+                  ];
+              const say = (i: number) =>
+                setOverworldDialogue({
+                  active: true,
+                  speakerName: coachName,
+                  text: tips[i],
+                  onComplete: () => (i + 1 < tips.length ? say(i + 1) : beginDuel()),
+                });
+              say(0);
+              return;
+            }
+            beginDuel();
           },
         });
       }
@@ -13414,7 +13456,7 @@ export default function App() {
         if (overworldDialogueRef.current?.active && overworldDialogueRef.current.speakerName === 'AWAKENING') {
           dismissAwakeningOrDialogue();
         }
-      }, 2500);
+      }, Math.max(2500, (overworldDialogueRef.current?.text?.length ?? 0) * 60));
       return () => clearTimeout(timer);
     }
   }, [overworldDialogue?.active, overworldDialogue?.speakerName, dismissAwakeningOrDialogue]);
