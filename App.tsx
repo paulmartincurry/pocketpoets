@@ -1,5 +1,20 @@
 // Pocket Poets: 2D Literary Verse-Battler & RPG Exploration
 import { PROP_LINES, GRAVES, GATE_LINES } from './propLines';
+import {
+  POET_TRAITS,
+  traitDamageMultiplier,
+  traitSeasonMultiplier,
+  traitDamageCap,
+  traitHealWhenHit,
+  traitLifesteal,
+  traitHealMultiplier,
+  traitBuffBonusTurns,
+  traitDebuffImmune,
+  traitStunImmune,
+  traitReviveFraction,
+  traitRoundEndHeal,
+  enemyRecitesFirst,
+} from './poetTraits';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {
   Volume2,
@@ -3140,11 +3155,13 @@ export default function App() {
     // 1) player.stunTokens > 0
     // 2) player.stunImmuneTurns > 0
     // 3) Enemy used STATUS on the immediately preceding round
-    const canUseStatus = canEnemyAiSelectStatus(
-      playerStunTokensRef.current,
-      playerStunImmuneTurnsRef.current,
-      enemyUsedStatusLastRoundRef.current
-    );
+    const canUseStatus =
+      !traitStunImmune(playerPoetRef.current.id) &&
+      canEnemyAiSelectStatus(
+        playerStunTokensRef.current,
+        playerStunImmuneTurnsRef.current,
+        enemyUsedStatusLastRoundRef.current
+      );
 
     if (!canUseStatus) {
       const nonStatus = validMoves.filter((m) => m.effectType !== 'STATUS');
@@ -3172,7 +3189,7 @@ export default function App() {
 
     // 3. If player not debuffed and DEBUFF move available, 40% chance
     const debuffMove = validMoves.find((m) => m.effectType === 'DEBUFF');
-    if (debuffMove && !playerDebuffActiveRef.current && Math.random() < 0.4) {
+    if (debuffMove && !playerDebuffActiveRef.current && !traitDebuffImmune(playerPoetRef.current.id) && Math.random() < 0.4) {
       setEnemyIntentMove(debuffMove);
       enemyIntentMoveRef.current = debuffMove;
       return;
@@ -3293,10 +3310,16 @@ export default function App() {
   // A duel is won once. Without this latch every extra press on the victory screen
   // re-ran the win: the score and the loot were awarded again each time.
   const victoryLatchRef = useRef(false);
+  // Signature-trait bookkeeping for the duel in progress: verses recited per poet
+  // ('p_WHITMAN', 'e_DANTE') and who has already used a once-a-duel trait.
+  const traitVersesRef = useRef<Record<string, number>>({});
+  const traitUsedRef = useRef<Record<string, boolean>>({});
   const climbLossCountRef = useRef(0);
   const initBattle = useCallback(
     (customPlayerId?: string, customEnemyId?: string, customArenaId?: string) => {
       victoryLatchRef.current = false;
+      traitVersesRef.current = {};
+      traitUsedRef.current = {};
       setOverworldDialogue(null);
       overworldDialogueRef.current = null;
       setScreenCurtainAlpha(1);
@@ -11957,7 +11980,11 @@ export default function App() {
 
       const attackerSeason = attackerPoet.season;
       const defenderSeason = defenderPoet.season;
-      const seasonMultiplier = calculateSeasonMultiplier(attackerSeason, defenderSeason);
+      // Dickinson's verses are never resisted (see poetTraits.ts)
+      const seasonMultiplier = traitSeasonMultiplier(attackerPoet.id, calculateSeasonMultiplier(attackerSeason, defenderSeason));
+      const verseKey = `${isPlayer ? 'p' : 'e'}_${attackerPoet.id}`;
+      const versesBefore = traitVersesRef.current[verseKey] ?? 0;
+      traitVersesRef.current[verseKey] = versesBefore + 1;
       const isSuperEffective = seasonMultiplier >= 1.4;
       const isResisted = seasonMultiplier <= 0.8;
 
@@ -11965,7 +11992,10 @@ export default function App() {
       const isAttackerDebuffed = isPlayer ? playerDebuffActiveRef.current : enemyDebuffActiveRef.current;
 
       if (move.effectType === 'HEAL') {
-        const healAmt = Math.max(BATTLE_CONFIG.healAmount, Math.round(attackerPoet.hp * (BATTLE_CONFIG.healPercent ?? 0.3)));
+        const healAmt = Math.round(
+          Math.max(BATTLE_CONFIG.healAmount, Math.round(attackerPoet.hp * (BATTLE_CONFIG.healPercent ?? 0.3))) *
+            traitHealMultiplier(attackerPoet.id),
+        );
         if (isPlayer) {
           const maxHp = playerPoetRef.current.hp;
           const newHp = Math.min(maxHp, playerHpRef.current + healAmt);
@@ -11990,7 +12020,7 @@ export default function App() {
           setOutcomeNarration(`${attackerPoet.name} recited ${move.name}, recovering +${healed} HP!`);
         }
       } else if (move.effectType === 'BUFF') {
-        const buffDur = BATTLE_CONFIG.buffDuration ?? 3;
+        const buffDur = (BATTLE_CONFIG.buffDuration ?? 3) + traitBuffBonusTurns(attackerPoet.id);
         if (isPlayer) {
           setPlayerBuffActive(true);
           playerBuffActiveRef.current = true;
@@ -12006,7 +12036,18 @@ export default function App() {
           gameAudio.playPowerupChime();
           addFloatingText(ePos.x, ePos.y - 20, `DAMAGE BUFF (1.35x)!`, '#3b82f6', 15);
         }
-        setOutcomeNarration(`${attackerPoet.name}'s outgoing damage is boosted (1.35x) for 3 turns!`);
+        setOutcomeNarration(`${attackerPoet.name}'s outgoing damage is boosted (1.35x) for ${buffDur} turns!`);
+      } else if (move.effectType === 'DEBUFF' && traitDebuffImmune(defenderPoet.id)) {
+        // Angelou cannot be weakened
+        gameAudio.playShieldBlock();
+        addFloatingText(isPlayer ? ePos.x : pPos.x, (isPlayer ? ePos.y : pPos.y) - 20, (POET_TRAITS[defenderPoet.id]?.name ?? 'UNMOVED').toUpperCase(), '#8B5CF6', 15);
+        setOutcomeNarration(`${defenderPoet.name} cannot be weakened.`);
+      } else if (move.effectType === 'STATUS' && traitStunImmune(defenderPoet.id)) {
+        // Sor Juana cannot be silenced
+        if (!isPlayer) enemyUsedStatusThisRoundRef.current = true;
+        gameAudio.playShieldBlock();
+        addFloatingText(isPlayer ? ePos.x : pPos.x, (isPlayer ? ePos.y : pPos.y) - 25, (POET_TRAITS[defenderPoet.id]?.name ?? 'IMMUNE').toUpperCase(), '#8B5CF6', 15);
+        setOutcomeNarration(`${defenderPoet.name} cannot be made Lost for Words.`);
       } else if (move.effectType === 'DEBUFF') {
         const debuffDur = BATTLE_CONFIG.debuffDuration ?? 3;
         if (isPlayer) {
@@ -12062,12 +12103,69 @@ export default function App() {
         const baseDmg = move.effectType === 'HEAVY' ? BATTLE_CONFIG.heavyDamage : BATTLE_CONFIG.lightDamage;
         // Tier scaling (see calculateTierMultiplier in poetsData.ts)
         const tierScale = calculateTierMultiplier(attackerPoet.hp, defenderPoet.hp);
-        const totalDmg = calculateDamage(
-          baseDmg,
-          isAttackerBuffed,
-          isAttackerDebuffed,
-          seasonMultiplier * tierScale,
+        // Signature traits (poetTraits.ts): one multiplier, a possible cap, and after-effects
+        const attackerHpNow = isPlayer ? playerHpRef.current : enemyHpRef.current;
+        const defenderHpNow = isPlayer ? enemyHpRef.current : playerHpRef.current;
+        const readingsLeftAfter = isPlayer
+          ? poetReadingsMapRef.current[attackerPoet.id]?.[move.id] ?? 0
+          : enemyReadingsRef.current[move.id] ?? 0;
+        const defenderSilenced = isPlayer
+          ? enemyStunTokensRef.current > 0 || enemyStunImmuneTurnsRef.current > 0
+          : playerStunTokensRef.current > 0 || playerStunImmuneTurnsRef.current > 0;
+        const trait = traitDamageMultiplier({
+          attackerId: attackerPoet.id,
+          defenderId: defenderPoet.id,
+          moveType: move.effectType,
+          attackerHp: attackerHpNow,
+          attackerMaxHp: attackerPoet.hp,
+          defenderHp: defenderHpNow,
+          defenderMaxHp: defenderPoet.hp,
+          versesBefore,
+          readingsLeftAfter,
+          defenderLostForWords: defenderSilenced,
+          roll: Math.random(),
+        });
+        const totalDmg = Math.min(
+          calculateDamage(baseDmg, isAttackerBuffed, isAttackerDebuffed, seasonMultiplier * tierScale * trait.mult),
+          traitDamageCap(defenderPoet.id, defenderPoet.hp),
         );
+        if (trait.fired) {
+          addFloatingText(isPlayer ? pPos.x : ePos.x, (isPlayer ? pPos.y : ePos.y) - 48, trait.fired, '#F4B41B', 13);
+        }
+        const defenderKey = `${isPlayer ? 'e' : 'p'}_${defenderPoet.id}`;
+        const reviveFraction = traitReviveFraction(defenderPoet.id);
+        // After the blow lands: Plath stands back up once, Rumi takes something from a heavy
+        // verse, Baudelaire feeds on his own. Returns the defender's HP after all of it.
+        const settleTraits = (hpAfterBlow: number): number => {
+          let hp = hpAfterBlow;
+          if (hp <= 0 && reviveFraction > 0 && !traitUsedRef.current[defenderKey]) {
+            traitUsedRef.current[defenderKey] = true;
+            hp = Math.round(defenderPoet.hp * reviveFraction);
+            addFloatingText(isPlayer ? ePos.x : pPos.x, (isPlayer ? ePos.y : pPos.y) - 62, (POET_TRAITS[defenderPoet.id]?.name ?? 'RISES').toUpperCase(), '#F4B41B', 14);
+          } else if (hp > 0) {
+            const welcomed = traitHealWhenHit(defenderPoet.id, move.effectType);
+            if (welcomed > 0) {
+              hp = Math.min(defenderPoet.hp, hp + welcomed);
+              addFloatingText(isPlayer ? ePos.x : pPos.x, (isPlayer ? ePos.y : pPos.y) - 62, `+${welcomed} HP`, '#059669', 13);
+            }
+          }
+          const fed = traitLifesteal(attackerPoet.id, move.effectType, totalDmg);
+          if (fed > 0) {
+            if (isPlayer) {
+              const nh = Math.min(attackerPoet.hp, playerHpRef.current + fed);
+              setPlayerHp(nh);
+              playerHpRef.current = nh;
+              setLineupHpMap((prev) => ({ ...prev, [attackerPoet.id]: nh }));
+              lineupHpMapRef.current[attackerPoet.id] = nh;
+            } else {
+              const nh = Math.min(attackerPoet.hp, enemyHpRef.current + fed);
+              setEnemyHp(nh);
+              enemyHpRef.current = nh;
+            }
+            addFloatingText(isPlayer ? pPos.x : ePos.x, (isPlayer ? pPos.y : ePos.y) - 62, `+${fed} HP`, '#059669', 13);
+          }
+          return hp;
+        };
 
         if (isSuperEffective) {
           gameAudio.playSuperEffectiveImpact();
@@ -12081,7 +12179,7 @@ export default function App() {
 
         if (isPlayer) {
           const oldHp = enemyHpRef.current;
-          const newHp = Math.max(0, oldHp - totalDmg);
+          const newHp = settleTraits(Math.max(0, oldHp - totalDmg));
           setEnemyHp(newHp);
           enemyHpRef.current = newHp;
           enemyFlashRef.current = 0.8;
@@ -12101,7 +12199,7 @@ export default function App() {
             setOutcomeNarration(`${attackerPoet.name}'s ${move.name} dealt ${totalDmg} damage!`);
           }
         } else {
-          const newHp = Math.max(0, playerHpRef.current - totalDmg);
+          const newHp = settleTraits(Math.max(0, playerHpRef.current - totalDmg));
           setPlayerHp(newHp);
           playerHpRef.current = newHp;
           setLineupHpMap((prev) => ({ ...prev, [playerPoetRef.current.id]: newHp }));
@@ -12253,6 +12351,13 @@ export default function App() {
     }
 
     // Player UI Feedback: Prevent wasting one of the player's 2 Readings on an immune target
+    if (move.effectType === 'STATUS' && traitStunImmune(enemyPoetRef.current.id)) {
+      gameAudio.playErrorBuzz();
+      triggerHaptics(60);
+      addFloatingText(500, 70, (POET_TRAITS[enemyPoetRef.current.id]?.name ?? 'IMMUNE').toUpperCase(), '#8B5CF6', 15);
+      setOutcomeNarration(`${enemyPoetRef.current.name} cannot be made Lost for Words.`);
+      return;
+    }
     if (move.effectType === 'STATUS') {
       if (enemyStunTokensRef.current > 0 || enemyStunImmuneTurnsRef.current > 0) {
         gameAudio.playErrorBuzz();
@@ -12263,9 +12368,13 @@ export default function App() {
       }
     }
 
-    const playerSpd = playerPoetRef.current.spd;
-    const enemySpd = enemyPoetRef.current.spd;
-    const enemyIsFaster = enemySpd > playerSpd;
+    // Faster poet recites first; Bashō always does (poetTraits.ts)
+    const enemyIsFaster = enemyRecitesFirst(
+      playerPoetRef.current.id,
+      playerPoetRef.current.spd,
+      enemyPoetRef.current.id,
+      enemyPoetRef.current.spd,
+    );
 
     if (enemyIsFaster) {
       // Enemy is faster: executes telegraphed move first in this round!
@@ -12545,6 +12654,22 @@ export default function App() {
     // Reset round-scoped skip flag
     enemySkippedByStunThisRoundRef.current = false;
     setEnemySkippedByStunThisRound(false);
+
+    // Thoreau recovers a little at the end of every round (poetTraits.ts)
+    const playerRest = traitRoundEndHeal(playerPoetRef.current.id);
+    if (playerRest > 0 && playerHpRef.current > 0 && playerHpRef.current < playerPoetRef.current.hp) {
+      const nh = Math.min(playerPoetRef.current.hp, playerHpRef.current + playerRest);
+      setPlayerHp(nh);
+      playerHpRef.current = nh;
+      setLineupHpMap((prev) => ({ ...prev, [playerPoetRef.current.id]: nh }));
+      lineupHpMapRef.current[playerPoetRef.current.id] = nh;
+    }
+    const enemyRest = traitRoundEndHeal(enemyPoetRef.current.id);
+    if (enemyRest > 0 && enemyHpRef.current > 0 && enemyHpRef.current < enemyPoetRef.current.hp) {
+      const nh = Math.min(enemyPoetRef.current.hp, enemyHpRef.current + enemyRest);
+      setEnemyHp(nh);
+      enemyHpRef.current = nh;
+    }
 
     // Tick Buff / Debuff turns
     if (playerBuffTurnsRef.current > 0) {
@@ -18528,6 +18653,12 @@ export default function App() {
                             <div className="text-[10px] text-[#4B5563] font-serif italic">
                               {insPoet.title} • {insPoet.lifespan}
                             </div>
+                            {POET_TRAITS[insPoet.id] && (
+                              <div className="text-[10px] text-[#1F2937] font-serif mt-1 leading-snug">
+                                <span className="font-black tracking-wide">✦ {POET_TRAITS[insPoet.id].name.toUpperCase()}.</span>{' '}
+                                {POET_TRAITS[insPoet.id].text}
+                              </div>
+                            )}
                           </div>
                         </div>
 
@@ -18778,6 +18909,13 @@ export default function App() {
                 <span>{isEnemyInCaptureWindow ? 'READY TO BIND' : 'WILD POET'}</span>
                 <span style={{ color: '#FFE89E' }}>{Math.ceil(Math.max(0, enemyHp))}/{enemyMaxHp}</span>
               </div>
+              {POET_TRAITS[enemyPoet.id] && (
+                <div
+                  title={POET_TRAITS[enemyPoet.id].text}
+                  style={{ fontFamily: "'VT323', monospace", fontSize: '13px', color: '#F4B41B', letterSpacing: '1px', lineHeight: 1.1 }}>
+                  ✦ {POET_TRAITS[enemyPoet.id].name.toUpperCase()}
+                </div>
+              )}
             </div>
 
             {/* PLAYER HP BOX */}
@@ -18924,6 +19062,13 @@ export default function App() {
                 <span>LINEUP ({activeLineupIndexRef.current + 1}/{playerLineup.length})</span>
                 <span style={{ color: '#FFE89E' }}>{Math.ceil(Math.max(0, playerHp))}/{playerMaxHp}</span>
               </div>
+              {POET_TRAITS[playerPoet.id] && (
+                <div
+                  title={POET_TRAITS[playerPoet.id].text}
+                  style={{ fontFamily: "'VT323', monospace", fontSize: '13px', color: '#F4B41B', letterSpacing: '1px', lineHeight: 1.1 }}>
+                  ✦ {POET_TRAITS[playerPoet.id].name.toUpperCase()}
+                </div>
+              )}
             </div>
 
             {/* MASTERPIECE CINEMATIC */}
@@ -19080,11 +19225,34 @@ export default function App() {
                             style={{ fontFamily: "'VT323', monospace", fontSize: '14px', color: '#8E9BB0' }}>
                             <span>
                               {m.effectType === 'HEAVY' || m.effectType === 'LIGHT'
-                                ? `${Math.max(1, Math.round(
-                                    (m.effectType === 'HEAVY' ? BATTLE_CONFIG.heavyDamage : BATTLE_CONFIG.lightDamage) *
-                                      calculateSeasonMultiplier(playerPoet.season, enemyPoet.season) *
-                                      calculateTierMultiplier(playerPoet.hp, enemyPoet.hp),
-                                  ))} DMG`
+                                ? (() => {
+                                    const base =
+                                      (m.effectType === 'HEAVY' ? BATTLE_CONFIG.heavyDamage : BATTLE_CONFIG.lightDamage) *
+                                      traitSeasonMultiplier(playerPoet.id, calculateSeasonMultiplier(playerPoet.season, enemyPoet.season)) *
+                                      calculateTierMultiplier(playerPoet.hp, enemyPoet.hp) *
+                                      (playerBuffActive ? BATTLE_CONFIG.buffMultiplier ?? 1.35 : 1) *
+                                      (playerDebuffActive ? BATTLE_CONFIG.debuffMultiplier ?? 0.7 : 1);
+                                    const at = (roll: number) =>
+                                      Math.min(
+                                        traitDamageCap(enemyPoet.id, enemyPoet.hp),
+                                        Math.max(1, Math.round(base * traitDamageMultiplier({
+                                          attackerId: playerPoet.id,
+                                          defenderId: enemyPoet.id,
+                                          moveType: m.effectType,
+                                          attackerHp: playerHp,
+                                          attackerMaxHp: playerPoet.hp,
+                                          defenderHp: enemyHp,
+                                          defenderMaxHp: enemyPoet.hp,
+                                          versesBefore: traitVersesRef.current[`p_${playerPoet.id}`] ?? 0,
+                                          readingsLeftAfter: remainingReadings - 1,
+                                          defenderLostForWords: enemyStunTokens > 0 || enemyStunImmuneTurns > 0,
+                                          roll,
+                                        }).mult)),
+                                      );
+                                    const lo = at(0.99);
+                                    const hi = at(0);
+                                    return lo === hi ? `${hi} DMG` : `${lo}-${hi} DMG`;
+                                  })()
                                 : m.powerLabel}
                             </span>
                             <span style={{ color: '#F4B41B' }}>({remainingReadings}/{m.maxReadings})</span>
@@ -19130,6 +19298,13 @@ export default function App() {
                           }}>
                           {curMove.descriptionShort}
                         </div>
+                        {POET_TRAITS[enemyPoet.id] && (
+                          <div
+                            className="mt-1 not-italic hidden sm:block"
+                            style={{ fontFamily: "'VT323', monospace", fontSize: '13px', color: '#F4B41B', lineHeight: 1.15 }}>
+                            ✦ {enemyPoet.name.split(' ').slice(-1)[0].toUpperCase()}: {POET_TRAITS[enemyPoet.id].text}
+                          </div>
+                        )}
                         {isTargetImmune && (
                           <div
                             className="mt-1 text-[#C4B5FD] font-mono text-[11px] not-italic font-bold"

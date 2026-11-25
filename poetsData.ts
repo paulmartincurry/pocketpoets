@@ -2,6 +2,7 @@
 // Types: Exactly 4 Seasons (SPRING, SUMMER, AUTUMN, WINTER)
 // Cycle: Spring beats Winter. Winter beats Autumn. Autumn beats Summer. Summer beats Spring.
 
+import { traitExtraReadings } from './poetTraits';
 import { BATTLE_CONFIG } from './constants';
 export { BATTLE_CONFIG };
 
@@ -3826,6 +3827,19 @@ export const ALL_POETS: PoetData[] = [
     ],
   },
 ];
+
+// Signature traits that change how many readings a verse has (Neruda, Frost) are applied
+// to the data once, here, so the duel, the Anthology and the simulator all read one number.
+for (const poet of ALL_POETS) {
+  for (const move of poet.moves) {
+    const extra = traitExtraReadings(poet.id, move.effectType);
+    if (extra > 0) {
+      const before = move.maxReadings;
+      move.maxReadings = before + extra;
+      move.descriptionShort = move.descriptionShort.replace(`(${before} readings)`, `(${before + extra} readings)`);
+    }
+  }
+}
 
 export const getPoetById = (id: string): PoetData => {
   if (!id) return ALL_POETS[0];
