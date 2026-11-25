@@ -7,8 +7,9 @@ It reads the game's own numbers (`poetsData.ts`, `poetTraits.ts`), so changing a
 damage value and re-running shows the effect straight away. It is not part of the game build.
 
     npm run balance                # 400 climbs, the game as it is
-    npm run balance -- 400 2 10 full
-                                   # climbs, lineup size, capture books, Summit rest (none|full)
+    npm run balance -- 400 99 10 none
+                                   # climbs, lineup size, capture books, Summit rest (full|none)
+                                   # (99 and none = the old rules: everyone fights, no rest)
 
 The three players:
 

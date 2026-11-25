@@ -214,6 +214,11 @@ export const calculateSeasonMultiplier = (
 
 export const calculateAffinityMultiplier = calculateSeasonMultiplier;
 
+// HOW MANY POETS STAND IN A DUEL: a lead and a second. Everyone else waits in the Anthology.
+// (Until this rule, every recruited poet stepped in when one fell, so by the Summit it was
+// nineteen against one and no duel after the first could be lost. See tools/balance.)
+export const LINEUP_SIZE = 2;
+
 // TIER SCALING. Higher tiers have bigger HP pools (100 / 120 / 140 / 160 / 200). Left
 // alone, that made a Winter duel 60% longer than a Spring one and a Summit duel twice
 // as long. Two small factors fix the length without flattening the mountain:

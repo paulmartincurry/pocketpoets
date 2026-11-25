@@ -72,6 +72,7 @@ import {
   getMoveCurrentStanza,
   getMoveStanzaIndex,
   calculateTierMultiplier,
+  LINEUP_SIZE,
 } from './poetsData';
 import {
   canEnemyAiSelectStatus,
@@ -2785,6 +2786,9 @@ export default function App() {
   // THE COMMONPLACE BOOK (commonplace.ts): props that quote verse, and the lines copied from them
   const [commonplaceFound, setCommonplaceFound] = useState<Record<string, string>>({});
   const commonplaceFoundRef = useRef<Record<string, string>>({});
+  // True while the Anthology was opened from the overworld (to name a lead and a second),
+  // so its back button returns there whatever the last duel left behind.
+  const [anthologyFromOverworld, setAnthologyFromOverworld] = useState(false);
   const [isCommonplaceOpen, setIsCommonplaceOpen] = useState(false);
   const commonplaceOpenRef = useRef(false);
   commonplaceOpenRef.current = isCommonplaceOpen;
@@ -3341,6 +3345,8 @@ export default function App() {
   // A duel is won once. Without this latch every extra press on the victory screen
   // re-ran the win: the score and the loot were awarded again each time.
   const victoryLatchRef = useRef(false);
+  // The poets standing in the current duel: the lead and the second (LINEUP_SIZE).
+  const duelStandingRef = useRef<string[]>([]);
   // Signature-trait bookkeeping for the duel in progress: verses recited per poet
   // ('p_WHITMAN', 'e_DANTE') and who has already used a once-a-duel trait.
   const traitVersesRef = useRef<Record<string, number>>({});
@@ -3349,6 +3355,7 @@ export default function App() {
   const initBattle = useCallback(
     (customPlayerId?: string, customEnemyId?: string, customArenaId?: string) => {
       victoryLatchRef.current = false;
+      setAnthologyFromOverworld(false);
       traitVersesRef.current = {};
       traitUsedRef.current = {};
       setOverworldDialogue(null);
@@ -3361,19 +3368,16 @@ export default function App() {
         const targetEnemy = customEnemyId ? getPoetById(customEnemyId) : getPoetById('HUGHES');
         const isSummitFight = selectedGameMode === 'CLIMB' && ['SAPPHO', 'SHAKESPEARE', 'KEATS', 'DANTE'].includes(targetEnemy.id);
 
-        let pPoet: PoetData;
-
-        if (isSummitFight) {
-          // Gauntlet Battle System: Find first poet in lineup with HP > 0
-          const currentLineup = playerLineupRef.current;
-          const alivePoetId = currentLineup.find(
-            (id) => (lineupHpMapRef.current[id] ?? getPoetById(id).hp) > 0,
-          ) || currentLineup[0] || customPlayerId || 'WHITMAN';
-
-          pPoet = getPoetById(alivePoetId);
-        } else {
-          pPoet = customPlayerId ? getPoetById(customPlayerId) : playerPoetRef.current;
-        }
+        // WHO STANDS: on the climb, the lead is the first poet in the lineup and the second is
+        // the next. (It used to start with whoever fought last, and every recruited poet could
+        // step in.) In a Free Duel the lead is the champion you picked.
+        const lineupNow = playerLineupRef.current;
+        const leadId =
+          selectedGameMode === 'CLIMB' && lineupNow.length > 0
+            ? lineupNow[0]
+            : customPlayerId || playerPoetRef.current?.id || lineupNow[0] || 'WHITMAN';
+        const pPoet: PoetData = getPoetById(leadId);
+        duelStandingRef.current = [leadId, ...lineupNow.filter((id) => id !== leadId)].slice(0, LINEUP_SIZE);
 
         setActivePlayerPoetId(pPoet.id);
         playerPoetRef.current = pPoet;
@@ -3396,20 +3400,16 @@ export default function App() {
         setPlayerMaxHp(pMax);
         setEnemyMaxHp(eMax);
 
-        let pCurrentHp = pMax;
-        if (isSummitFight) {
-          pCurrentHp = lineupHpMapRef.current[pPoet.id] ?? pMax;
-        } else {
-          // Reset all lineup HP for non-summit fights
-          const freshLineupHp: Record<string, number> = {};
-          for (const poetId of playerLineupRef.current) {
-            freshLineupHp[poetId] = getPoetById(poetId).hp;
-          }
-          if (!freshLineupHp[pPoet.id]) freshLineupHp[pPoet.id] = pMax;
-          setLineupHpMap(freshLineupHp);
-          lineupHpMapRef.current = freshLineupHp;
-          pCurrentHp = pMax;
+        // Every duel starts rested, the four Summit duels included. (Health and readings used to
+        // carry across the Summit, which only worked while the whole Anthology could step in.)
+        const freshLineupHp: Record<string, number> = {};
+        for (const poetId of playerLineupRef.current) {
+          freshLineupHp[poetId] = getPoetById(poetId).hp;
         }
+        if (!freshLineupHp[pPoet.id]) freshLineupHp[pPoet.id] = pMax;
+        setLineupHpMap(freshLineupHp);
+        lineupHpMapRef.current = freshLineupHp;
+        const pCurrentHp = pMax;
 
         setPlayerHp(pCurrentHp);
         setEnemyHp(eMax);
@@ -3418,10 +3418,9 @@ export default function App() {
         playerDisplayHpRef.current = pCurrentHp;
         enemyDisplayHpRef.current = eMax;
 
-        const pIdx = playerLineupRef.current.indexOf(pPoet.id);
-        activeLineupIndexRef.current = pIdx >= 0 ? pIdx : 0;
+        activeLineupIndexRef.current = 0;
 
-        if (!isSummitFight || Object.keys(poetReadingsMapRef.current).length === 0) {
+        {
           const initialReadings: Record<string, Record<string, number>> = {};
           for (const p of ALL_POETS) {
             initialReadings[p.id] = createInitialReadingsForPoet(p);
@@ -12638,13 +12637,15 @@ export default function App() {
       const recruitBark = DUELIST_BATTLE_BARKS[enemyPoetRef.current.id]?.recruited || enemyPoetRef.current.dialogue.captured || enemyPoetRef.current.dialogue.lose;
       const formattedRecruit = (recruitBark.startsWith('"') || recruitBark.startsWith('“')) ? recruitBark : `“${recruitBark}”`;
       setDialogueLines([formattedRecruit]);
-      setOutcomeNarration(`${enemyPoetRef.current.name} was defeated and joined your Anthology!`);
+      setOutcomeNarration(
+        `${enemyPoetRef.current.name} was defeated and joined your Anthology!${playerLineupRef.current.length >= LINEUP_SIZE ? ' Two poets stand in a duel. Name a new lead or second there.' : ''}`,
+      );
       setGameState((prev) => ({...prev, status: 'VICTORY', score: prev.score + finalScore}));
       return;
     }
 
     if (playerHpRef.current <= 0) {
-      const curLineup = playerLineupRef.current;
+      const curLineup = duelStandingRef.current.length ? duelStandingRef.current : playerLineupRef.current.slice(0, LINEUP_SIZE);
       const nextIndex = activeLineupIndexRef.current + 1;
 
       // Find next alive poet in lineup
@@ -13419,7 +13420,9 @@ export default function App() {
           const recruitBark = DUELIST_BATTLE_BARKS[enemyPoetRef.current.id]?.recruited || enemyPoetRef.current.dialogue.captured || enemyPoetRef.current.dialogue.lose;
           const formattedRecruit = (recruitBark.startsWith('"') || recruitBark.startsWith('“')) ? recruitBark : `“${recruitBark}”`;
           setDialogueLines([formattedRecruit]);
-          setOutcomeNarration(`${enemyPoetRef.current.name} was defeated and joined your Anthology!`);
+          setOutcomeNarration(
+        `${enemyPoetRef.current.name} was defeated and joined your Anthology!${playerLineupRef.current.length >= LINEUP_SIZE ? ' Two poets stand in a duel. Name a new lead or second there.' : ''}`,
+      );
           setGameState((prev) => ({
             ...prev,
             status: 'VICTORY',
@@ -13525,6 +13528,13 @@ export default function App() {
         e.preventDefault();
         e.stopPropagation();
         setIsCommonplaceOpen(false);
+        return;
+      }
+      if ((e.key === 'p' || e.key === 'P') && currentScreenRef.current === 'OVERWORLD' && !overworldDialogueRef.current?.active && !commonplaceOpenRef.current) {
+        e.preventDefault();
+        gameAudio.playCrispClick();
+        setAnthologyFromOverworld(true);
+        setCurrentScreen('ANTHOLOGY');
         return;
       }
       if ((e.key === 'b' || e.key === 'B') && currentScreenRef.current === 'OVERWORLD' && !overworldDialogueRef.current?.active) {
@@ -15715,7 +15725,9 @@ export default function App() {
             const recruitBark = DUELIST_BATTLE_BARKS[enemyPoetRef.current.id]?.recruited || enemyPoetRef.current.dialogue.captured;
             const displayCap = recruitBark.startsWith('"') || recruitBark.startsWith('“') ? recruitBark : `“${recruitBark}”`;
             setDialogueLines([displayCap]);
-            setOutcomeNarration(`${enemyPoetRef.current.name} was successfully recruited into your Anthology!`);
+            setOutcomeNarration(
+              `${enemyPoetRef.current.name} was successfully recruited into your Anthology!${playerLineupRef.current.length >= LINEUP_SIZE ? ' Two poets stand in a duel. Name a new lead or second there.' : ''}`,
+            );
           } else {
             b.phase = 'FAILED';
             b.active = false;
@@ -17747,6 +17759,25 @@ export default function App() {
               <button
                 type="button"
                 onClick={() => {
+                  gameAudio.playCrispClick();
+                  setAnthologyFromOverworld(true);
+                  setCurrentScreen('ANTHOLOGY');
+                }}
+                style={{
+                  borderRadius: '0px',
+                  background: '#1B2138',
+                  border: '1px solid #4D5C80',
+                  color: '#FFE89E',
+                  fontFamily: "'VT323', monospace",
+                  boxShadow: '0 2px 0 #06070E',
+                }}
+                className="h-7 px-2.5 py-0 text-sm sm:text-base flex items-center gap-1.5 cursor-pointer hover:bg-[#252E4D] hover:border-[#F4B41B] hover:text-white transition-all"
+                title="Your poets: name a lead and a second [P]">
+                <span>[P] POETS</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => {
                   gameAudio.playPageTurn();
                   setIsCommonplaceOpen(true);
                 }}
@@ -18704,7 +18735,10 @@ export default function App() {
                 type="button"
                 onClick={() => {
                   gameAudio.playMenuCancel();
-                  if (turnStage === 'ACTIONS') {
+                  if (anthologyFromOverworld) {
+                    setAnthologyFromOverworld(false);
+                    setCurrentScreen('OVERWORLD');
+                  } else if (turnStage === 'ACTIONS') {
                     setCurrentScreen('BATTLE');
                   } else if (selectedGameMode === 'CLIMB') {
                     setCurrentScreen('OVERWORLD');
@@ -18714,7 +18748,7 @@ export default function App() {
                 }}
                 className="bg-[#FFFFFF] hover:bg-[#FFEB66] border-2 border-[#000000] text-[#000000] rounded-lg px-2.5 py-1 text-xs font-mono font-black transition-colors flex items-center gap-1 cursor-pointer shadow-[2px_2px_0_0_#000000]">
                 <ArrowLeft size={13} />
-                <span>{turnStage === 'ACTIONS' ? 'BACK TO DUEL' : selectedGameMode === 'CLIMB' ? 'BACK TO OVERWORLD' : 'TITLE'}</span>
+                <span>{anthologyFromOverworld ? 'BACK TO OVERWORLD' : turnStage === 'ACTIONS' ? 'BACK TO DUEL' : selectedGameMode === 'CLIMB' ? 'BACK TO OVERWORLD' : 'TITLE'}</span>
               </button>
             </div>
 
@@ -18743,7 +18777,8 @@ export default function App() {
                   {ALL_POETS.filter((p) => anthologyFilterSeason === 'ALL' || p.season === anthologyFilterSeason).map((poet) => {
                     const isRecruited = capturedPoetIds.includes(poet.id);
                     const isSelected = inspectedAnthologyPoetId === poet.id;
-                    const isLead = activePlayerPoetId === poet.id;
+                    const isLead = (playerLineup[0] ?? activePlayerPoetId) === poet.id;
+                    const isSecond = !isLead && playerLineup[1] === poet.id;
 
                     return (
                       <button
@@ -18765,6 +18800,11 @@ export default function App() {
                             LEAD
                           </div>
                         )}
+                        {isSecond && (
+                          <div className="absolute top-1 left-1 bg-[#000000] text-white text-[7px] font-black px-1 rounded">
+                            SECOND
+                          </div>
+                        )}
                         <PoetPixelAvatar
                           poet={poet}
                           size={40}
@@ -18783,7 +18823,9 @@ export default function App() {
               {(() => {
                 const insPoet = getPoetById(inspectedAnthologyPoetId);
                 const isRecruited = capturedPoetIds.includes(insPoet.id);
-                const isLead = activePlayerPoetId === insPoet.id;
+                const isLead = (playerLineup[0] ?? activePlayerPoetId) === insPoet.id;
+                const isSecond = !isLead && playerLineup[1] === insPoet.id;
+                const midDuel = turnStage === 'ACTIONS' && !anthologyFromOverworld;
                 const sMeta = SEASON_CONFIG[insPoet.season];
 
                 return (
@@ -18833,23 +18875,55 @@ export default function App() {
                         </div>
 
                         {isRecruited && (
-                          <div>
-                            {isLead ? (
+                          <div className="flex flex-col items-end gap-1">
+                            {isLead && (
                               <span className="text-[10px] font-black bg-[#3B4CCA] text-white px-2.5 py-1 rounded-lg border border-[#000000]">
-                                ACTIVE LEAD
+                                LEAD
                               </span>
-                            ) : (
+                            )}
+                            {isSecond && (
+                              <span className="text-[10px] font-black bg-[#000000] text-white px-2.5 py-1 rounded-lg border border-[#000000]">
+                                SECOND
+                              </span>
+                            )}
+                            {/* Two poets stand in a duel. The lineup cannot change while one is under way. */}
+                            {!midDuel && !isLead && (
                               <button
                                 type="button"
                                 onClick={() => {
                                   gameAudio.playConfirmSelect();
                                   setActivePlayerPoetId(insPoet.id);
                                   playerPoetRef.current = insPoet;
-                                  setPlayerLineup((prev) => [insPoet.id, ...prev.filter((id) => id !== insPoet.id)]);
+                                  // Swap places with the current lead, so naming a new lead never
+                                  // quietly replaces the second you chose.
+                                  setPlayerLineup((prev) => {
+                                    const next = prev.includes(insPoet.id) ? [...prev] : [...prev, insPoet.id];
+                                    const from = next.indexOf(insPoet.id);
+                                    [next[0], next[from]] = [next[from], next[0]];
+                                    return next;
+                                  });
                                 }}
-                                className="px-3 py-1 bg-[#FFDE00] hover:bg-[#FFEB66] text-[#000000] text-[10px] font-black rounded-lg border-2 border-[#000000] shadow-xs cursor-pointer">
+                                className="px-3 py-1 bg-[#FFDE00] hover:bg-[#FFEB66] text-[#000000] text-[10px] font-black rounded-lg border-2 border-[#000000] cursor-pointer">
                                 SET AS LEAD
                               </button>
+                            )}
+                            {!midDuel && !isLead && !isSecond && playerLineup.length > 0 && (
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  gameAudio.playConfirmSelect();
+                                  setPlayerLineup((prev) => {
+                                    const lead = prev[0];
+                                    if (!lead || lead === insPoet.id) return prev;
+                                    return [lead, insPoet.id, ...prev.filter((id) => id !== lead && id !== insPoet.id)];
+                                  });
+                                }}
+                                className="px-3 py-1 bg-white hover:bg-[#F4F5F9] text-[#000000] text-[10px] font-black rounded-lg border-2 border-[#000000] cursor-pointer">
+                                SET AS SECOND
+                              </button>
+                            )}
+                            {midDuel && !isLead && !isSecond && (
+                              <span className="text-[9px] italic text-[#4B5563] text-right">Waiting in the Anthology</span>
                             )}
                           </div>
                         )}
@@ -18858,6 +18932,7 @@ export default function App() {
                       <div className="bg-[#FFFDE7] p-2 rounded-lg border border-[#000000]/30 text-[10px]">
                         <span className="font-black text-[#000000]">Type Advantage: </span>
                         <span>{sMeta.name} beats {sMeta.beats} (1.5x damage). Resisted by {sMeta.weakTo} (0.75x).</span>
+                        <span className="block mt-0.5 text-[#4B5563]">Two poets stand in a duel: your lead, and a second who steps in if the lead falls.</span>
                       </div>
 
                       <div className="text-xs text-[#1e293b] font-serif italic border-l-3 border-[#3B4CCA] pl-2.5 py-0.5 bg-[#F4F5F9] rounded-r">
@@ -19229,7 +19304,7 @@ export default function App() {
                   color: '#C5D1E0',
                   letterSpacing: '1px',
                 }}>
-                <span>LINEUP ({activeLineupIndexRef.current + 1}/{playerLineup.length})</span>
+                <span>{activeLineupIndexRef.current === 0 ? 'LEAD' : 'SECOND'} ({activeLineupIndexRef.current + 1}/{Math.max(1, duelStandingRef.current.length)})</span>
                 <span style={{ color: '#FFE89E' }}>{Math.ceil(Math.max(0, playerHp))}/{playerMaxHp}</span>
               </div>
               {POET_TRAITS[playerPoet.id] && (

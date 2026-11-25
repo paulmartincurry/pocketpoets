@@ -1,11 +1,11 @@
 // @ts-nocheck  (a Node script, not part of the game build)
 // Plays the whole climb many times at three skill levels and prints, per duel:
 // first-try win rate / rounds / poets lost.   usage: node climb.js [climbs] [cap] [books] [rest]
-//   cap   lineup size (99 = everyone you have recruited)
-//   rest  Summit gauntlet: 'none' (HP and readings carry across all four), 'full' (rested between each)
+//   cap   lineup size (default: the game's LINEUP_SIZE; 99 = everyone you have recruited, the old rule)
+//   rest  Summit: 'full' (rested between the four duels, the game's rule) or 'none' (the old carry-over)
 import { ALL_POETS, CHAPTER_GATES, POLICIES, duel, mulberry, byId } from './engine';
-import { calculateSeasonMultiplier } from '../../poetsData';
-const N = +(process.argv[2] ?? 400), cap = +(process.argv[3] ?? 99), BOOKS = +(process.argv[4] ?? 10), REST = process.argv[5] ?? 'none'; const HOME = (process.argv[6] ?? '1,1,1,1,1').split(',').map(Number);
+import { calculateSeasonMultiplier, LINEUP_SIZE } from '../../poetsData';
+const N = +(process.argv[2] ?? 400), cap = +(process.argv[3] ?? LINEUP_SIZE), BOOKS = +(process.argv[4] ?? 10), REST = process.argv[5] ?? 'full'; const HOME = (process.argv[6] ?? '1,1,1,1,1').split(',').map(Number);
 const DMG = (process.argv[7] ?? '1,1,1,1,1').split(',').map(Number);
 const chapterOf = (id: string) => CHAPTER_GATES.findIndex((c) => c.poetIds.includes(id));
 const order = CHAPTER_GATES.flatMap((c) => c.poetIds).filter((id) => id !== 'WHITMAN'); const SUMMIT = ['SAPPHO', 'SHAKESPEARE', 'KEATS', 'DANTE'];
