@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "balance": "esbuild tools/balance/climb.ts --bundle --platform=node --outfile=node_modules/.cache/balance.js --log-level=error && node node_modules/.cache/balance.js"
   },
   "dependencies": {
     "@fontsource/press-start-2p": "^5.3.0",
