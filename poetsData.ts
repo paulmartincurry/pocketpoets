@@ -213,6 +213,22 @@ export const calculateSeasonMultiplier = (
 
 export const calculateAffinityMultiplier = calculateSeasonMultiplier;
 
+// TIER SCALING. Higher tiers have bigger HP pools (100 / 120 / 140 / 160 / 200). Left
+// alone, that made a Winter duel 60% longer than a Spring one and a Summit duel twice
+// as long. Two small factors fix the length without flattening the mountain:
+//   - a bigger poet takes proportionally more (half of the extra HP is cancelled)
+//   - a higher-tier poet hits a little harder (a quarter of the tier difference)
+// Two poets of the same tier now trade about 3.1 to 3.4 heavy verses at every tier,
+// and a starter still cannot walk through a Summit poet.
+export const TIER_DEFENDER_WEIGHT = 0.5;
+export const TIER_ATTACKER_WEIGHT = 0.25;
+export const calculateTierMultiplier = (attackerMaxHp: number, defenderMaxHp: number): number => {
+  const base = BATTLE_CONFIG.healthByRegion.SPRING;
+  const d = 1 + Math.max(0, defenderMaxHp / base - 1) * TIER_DEFENDER_WEIGHT;
+  const a = 1 + Math.max(0, attackerMaxHp / base - 1) * TIER_ATTACKER_WEIGHT;
+  return d * a;
+};
+
 export interface ChapterGateSpec {
   chapter: 1 | 2 | 3 | 4 | 5;
   season: SeasonType;
@@ -509,7 +525,7 @@ export const ALL_POETS: PoetData[] = [
         damage: BATTLE_CONFIG.heavyDamage,
         maxReadings: BATTLE_CONFIG.heavyReadings,
         powerLabel: '32 DMG',
-        descriptionShort: 'HEAVY: 32 damage, more against bigger poets (3 readings).',
+        descriptionShort: 'HEAVY: 32 base damage (3 readings).',
         stanzas: [
           'Meanwhile the world goes on.',
           'Meanwhile the sun and the clear pebbles of the rain',
@@ -532,7 +548,7 @@ export const ALL_POETS: PoetData[] = [
         damage: BATTLE_CONFIG.lightDamage,
         maxReadings: BATTLE_CONFIG.lightReadings,
         powerLabel: '18 DMG',
-        descriptionShort: 'LIGHT: 18 damage, more against bigger poets (6 readings).',
+        descriptionShort: 'LIGHT: 18 base damage (6 readings).',
         stanzas: [
           'Who made the world?',
           'Who made the swan, and the black bear?',
@@ -655,7 +671,7 @@ export const ALL_POETS: PoetData[] = [
         damage: BATTLE_CONFIG.heavyDamage,
         maxReadings: BATTLE_CONFIG.heavyReadings,
         powerLabel: '32 DMG',
-        descriptionShort: 'HEAVY: 32 damage, more against bigger poets (3 readings).',
+        descriptionShort: 'HEAVY: 32 base damage (3 readings).',
         stanzas: [
           'We have on this earth what makes life worth living:',
           'the scent of bread at dawn, a woman’s thoughts on men,',
@@ -723,7 +739,7 @@ export const ALL_POETS: PoetData[] = [
         damage: BATTLE_CONFIG.lightDamage,
         maxReadings: BATTLE_CONFIG.lightReadings,
         powerLabel: '18 DMG',
-        descriptionShort: 'LIGHT: 18 damage, more against bigger poets (6 readings).',
+        descriptionShort: 'LIGHT: 18 base damage (6 readings).',
         stanzas: [
           'Between Rita and my eyes',
           'there is a rifle.',
@@ -804,7 +820,7 @@ export const ALL_POETS: PoetData[] = [
         damage: BATTLE_CONFIG.heavyDamage,
         maxReadings: BATTLE_CONFIG.heavyReadings,
         powerLabel: '32 DMG',
-        descriptionShort: 'HEAVY: 32 damage, more against bigger poets (3 readings).',
+        descriptionShort: 'HEAVY: 32 base damage (3 readings).',
         stanzas: [
           'What happens to a dream deferred?',
           'Does it dry up like a raisin in the sun?',
@@ -827,7 +843,7 @@ export const ALL_POETS: PoetData[] = [
         damage: BATTLE_CONFIG.lightDamage,
         maxReadings: BATTLE_CONFIG.lightReadings,
         powerLabel: '18 DMG',
-        descriptionShort: 'LIGHT: 18 damage, more against bigger poets (6 readings).',
+        descriptionShort: 'LIGHT: 18 base damage (6 readings).',
         stanzas: [
           'I’ve known rivers:',
           'I’ve known rivers ancient as the world.',
@@ -953,7 +969,7 @@ export const ALL_POETS: PoetData[] = [
         damage: BATTLE_CONFIG.heavyDamage,
         maxReadings: BATTLE_CONFIG.heavyReadings,
         powerLabel: '32 DMG',
-        descriptionShort: 'HEAVY: 32 damage, more against bigger poets (3 readings).',
+        descriptionShort: 'HEAVY: 32 base damage (3 readings).',
         stanzas: [
           'I too am not a bit tamed, I too am untranslatable,',
           'I sound my barbaric yawp over the roofs of the world.',
@@ -1019,7 +1035,7 @@ export const ALL_POETS: PoetData[] = [
         damage: BATTLE_CONFIG.lightDamage,
         maxReadings: BATTLE_CONFIG.lightReadings,
         powerLabel: '18 DMG',
-        descriptionShort: 'LIGHT: 18 damage, more against bigger poets (6 readings).',
+        descriptionShort: 'LIGHT: 18 base damage (6 readings).',
         stanzas: [
           'Afoot and light-hearted I take to the open road,',
           'Healthy, free, the world before me.',
@@ -1099,7 +1115,7 @@ export const ALL_POETS: PoetData[] = [
         damage: BATTLE_CONFIG.heavyDamage,
         maxReadings: BATTLE_CONFIG.heavyReadings,
         powerLabel: '32 DMG',
-        descriptionShort: 'HEAVY: 32 damage, more against bigger poets (3 readings).',
+        descriptionShort: 'HEAVY: 32 base damage (3 readings).',
         stanzas: [
           'Dance, when you’re broken open.',
           'Dance, if you’ve torn the bandage off.',
@@ -1166,7 +1182,7 @@ export const ALL_POETS: PoetData[] = [
         damage: BATTLE_CONFIG.lightDamage,
         maxReadings: BATTLE_CONFIG.lightReadings,
         powerLabel: '18 DMG',
-        descriptionShort: 'LIGHT: 18 damage, more against bigger poets (6 readings).',
+        descriptionShort: 'LIGHT: 18 base damage (6 readings).',
         stanzas: [
           'When the soul lies down in that grass,',
           'the world is too full to talk about.',
@@ -1251,7 +1267,7 @@ export const ALL_POETS: PoetData[] = [
         damage: BATTLE_CONFIG.heavyDamage,
         maxReadings: BATTLE_CONFIG.heavyReadings,
         powerLabel: '32 DMG',
-        descriptionShort: 'HEAVY: 32 damage, more against bigger poets (3 readings).',
+        descriptionShort: 'HEAVY: 32 base damage (3 readings).',
         stanzas: [
           'Here on the island the sea, and so much sea,',
           'overflows, arrives, bursts.',
@@ -1316,7 +1332,7 @@ export const ALL_POETS: PoetData[] = [
         damage: BATTLE_CONFIG.lightDamage,
         maxReadings: BATTLE_CONFIG.lightReadings,
         powerLabel: '18 DMG',
-        descriptionShort: 'LIGHT: 18 damage, more against bigger poets (6 readings).',
+        descriptionShort: 'LIGHT: 18 base damage (6 readings).',
         stanzas: [
           'I love you as certain dark things are to be loved,',
           'in secret, between the shadow and the soul.',
@@ -1395,7 +1411,7 @@ export const ALL_POETS: PoetData[] = [
         damage: BATTLE_CONFIG.heavyDamage,
         maxReadings: BATTLE_CONFIG.heavyReadings,
         powerLabel: '32 DMG',
-        descriptionShort: 'HEAVY: 32 damage, more against bigger poets (3 readings).',
+        descriptionShort: 'HEAVY: 32 base damage (3 readings).',
         stanzas: [
           'The duende loves the rim of the wound.',
           'It tears through the musician’s cloak.',
@@ -1459,7 +1475,7 @@ export const ALL_POETS: PoetData[] = [
         damage: BATTLE_CONFIG.lightDamage,
         maxReadings: BATTLE_CONFIG.lightReadings,
         powerLabel: '18 DMG',
-        descriptionShort: 'LIGHT: 18 damage, more against bigger poets (6 readings).',
+        descriptionShort: 'LIGHT: 18 base damage (6 readings).',
         stanzas: [
           'A las cinco de la tarde.',
           'Eran las cinco en punto de la tarde.',
@@ -1539,7 +1555,7 @@ export const ALL_POETS: PoetData[] = [
         damage: BATTLE_CONFIG.heavyDamage,
         maxReadings: BATTLE_CONFIG.heavyReadings,
         powerLabel: '32 DMG',
-        descriptionShort: 'HEAVY: 32 damage, more against bigger poets (3 readings).',
+        descriptionShort: 'HEAVY: 32 base damage (3 readings).',
         stanzas: [
           'You may shoot me with your words,',
           'You may cut me with your eyes,',
@@ -1606,7 +1622,7 @@ export const ALL_POETS: PoetData[] = [
         damage: BATTLE_CONFIG.lightDamage,
         maxReadings: BATTLE_CONFIG.lightReadings,
         powerLabel: '18 DMG',
-        descriptionShort: 'LIGHT: 18 damage, more against bigger poets (6 readings).',
+        descriptionShort: 'LIGHT: 18 base damage (6 readings).',
         stanzas: [
           'Lift up your eyes upon',
           'This day breaking for you.',
@@ -1686,7 +1702,7 @@ export const ALL_POETS: PoetData[] = [
         damage: BATTLE_CONFIG.heavyDamage,
         maxReadings: BATTLE_CONFIG.heavyReadings,
         powerLabel: '32 DMG',
-        descriptionShort: 'HEAVY: 32 damage, more against bigger poets (3 readings).',
+        descriptionShort: 'HEAVY: 32 base damage (3 readings).',
         stanzas: [
           'Tyger Tyger, burning bright,',
           'In the forests of the night;',
@@ -1710,7 +1726,7 @@ export const ALL_POETS: PoetData[] = [
         damage: BATTLE_CONFIG.lightDamage,
         maxReadings: BATTLE_CONFIG.lightReadings,
         powerLabel: '18 DMG',
-        descriptionShort: 'LIGHT: 18 damage, more against bigger poets (6 readings).',
+        descriptionShort: 'LIGHT: 18 base damage (6 readings).',
         stanzas: [
           'Little Lamb who made thee',
           'Dost thou know who made thee',
@@ -1839,7 +1855,7 @@ export const ALL_POETS: PoetData[] = [
         damage: BATTLE_CONFIG.heavyDamage,
         maxReadings: BATTLE_CONFIG.heavyReadings,
         powerLabel: '32 DMG',
-        descriptionShort: 'HEAVY: 32 damage, more against bigger poets (3 readings).',
+        descriptionShort: 'HEAVY: 32 base damage (3 readings).',
         stanzas: [
           '古池や (Furu ike ya)',
           '蛙飛びこむ (Kawazu tobikomu)',
@@ -1906,7 +1922,7 @@ export const ALL_POETS: PoetData[] = [
         damage: BATTLE_CONFIG.lightDamage,
         maxReadings: BATTLE_CONFIG.lightReadings,
         powerLabel: '18 DMG',
-        descriptionShort: 'LIGHT: 18 damage, more against bigger poets (6 readings).',
+        descriptionShort: 'LIGHT: 18 base damage (6 readings).',
         stanzas: [
           '閑さや (Shizukesa ya)',
           '岩にしみ入る (Iwa ni shimi-iru)',
@@ -1987,7 +2003,7 @@ export const ALL_POETS: PoetData[] = [
         damage: BATTLE_CONFIG.heavyDamage,
         maxReadings: BATTLE_CONFIG.heavyReadings,
         powerLabel: '32 DMG',
-        descriptionShort: 'HEAVY: 32 damage, more against bigger poets (3 readings).',
+        descriptionShort: 'HEAVY: 32 base damage (3 readings).',
         stanzas: [
           '君不见黄河之水天上来 (Yellow River waters come from heaven)',
           '奔流到海不复回 (Rushing to the ocean, never to return!)',
@@ -2030,7 +2046,7 @@ export const ALL_POETS: PoetData[] = [
         damage: BATTLE_CONFIG.lightDamage,
         maxReadings: BATTLE_CONFIG.lightReadings,
         powerLabel: '18 DMG',
-        descriptionShort: 'LIGHT: 18 damage, more against bigger poets (6 readings).',
+        descriptionShort: 'LIGHT: 18 base damage (6 readings).',
         stanzas: [
           '飞流直下三千尺 (Flying torrent plunged three thousand feet straight down)',
           '疑是银河落九天 (Suspecting the Milky Way fell from ninth heaven)',
@@ -2131,7 +2147,7 @@ export const ALL_POETS: PoetData[] = [
         damage: BATTLE_CONFIG.heavyDamage,
         maxReadings: BATTLE_CONFIG.heavyReadings,
         powerLabel: '32 DMG',
-        descriptionShort: 'HEAVY: 32 damage, more against bigger poets (3 readings).',
+        descriptionShort: 'HEAVY: 32 base damage (3 readings).',
         stanzas: [
           'Piramidal, funesta, de la tierra',
           'nacida sombra, al Cielo encaminaba.',
@@ -2153,7 +2169,7 @@ export const ALL_POETS: PoetData[] = [
         damage: BATTLE_CONFIG.lightDamage,
         maxReadings: BATTLE_CONFIG.lightReadings,
         powerLabel: '18 DMG',
-        descriptionShort: 'LIGHT: 18 damage, more against bigger poets (6 readings).',
+        descriptionShort: 'LIGHT: 18 base damage (6 readings).',
         stanzas: [
           'Have they not a rational soul as men do?',
           'My mind ascends through truth.',
@@ -2296,7 +2312,7 @@ export const ALL_POETS: PoetData[] = [
         damage: BATTLE_CONFIG.heavyDamage,
         maxReadings: BATTLE_CONFIG.heavyReadings,
         powerLabel: '32 DMG',
-        descriptionShort: 'HEAVY: 32 damage, more against bigger poets (3 readings).',
+        descriptionShort: 'HEAVY: 32 base damage (3 readings).',
         stanzas: [
           'if you’re going to try, go all the way.',
           'there is no other feeling like that.',
@@ -2318,7 +2334,7 @@ export const ALL_POETS: PoetData[] = [
         damage: BATTLE_CONFIG.lightDamage,
         maxReadings: BATTLE_CONFIG.lightReadings,
         powerLabel: '18 DMG',
-        descriptionShort: 'LIGHT: 18 damage, more against bigger poets (6 readings).',
+        descriptionShort: 'LIGHT: 18 base damage (6 readings).',
         stanzas: [
           'the glass clatters down upon the scarred counter.',
           'another line echoes in the smoke.',
@@ -2419,7 +2435,7 @@ export const ALL_POETS: PoetData[] = [
         damage: BATTLE_CONFIG.heavyDamage,
         maxReadings: BATTLE_CONFIG.heavyReadings,
         powerLabel: '32 DMG',
-        descriptionShort: 'HEAVY: 32 damage, more against bigger poets (3 readings).',
+        descriptionShort: 'HEAVY: 32 base damage (3 readings).',
         stanzas: [
           'To extract beauty from evil...',
           'A strange blossom sprung from darkness.',
@@ -2464,7 +2480,7 @@ export const ALL_POETS: PoetData[] = [
         damage: BATTLE_CONFIG.lightDamage,
         maxReadings: BATTLE_CONFIG.lightReadings,
         powerLabel: '18 DMG',
-        descriptionShort: 'LIGHT: 18 damage, more against bigger poets (6 readings).',
+        descriptionShort: 'LIGHT: 18 base damage (6 readings).',
         stanzas: [
           'The Poet resembles the prince of clouds',
           'Who haunts the storm and laughs at the archer;',
@@ -2571,7 +2587,7 @@ export const ALL_POETS: PoetData[] = [
         damage: BATTLE_CONFIG.lightDamage,
         maxReadings: BATTLE_CONFIG.lightReadings,
         powerLabel: '18 DMG',
-        descriptionShort: 'LIGHT: 18 damage, more against bigger poets (6 readings).',
+        descriptionShort: 'LIGHT: 18 base damage (6 readings).',
         stanzas: [
           'Two roads diverged in a yellow wood,',
           'And I took the one less traveled by.',
@@ -2614,7 +2630,7 @@ export const ALL_POETS: PoetData[] = [
         damage: BATTLE_CONFIG.heavyDamage,
         maxReadings: BATTLE_CONFIG.heavyReadings,
         powerLabel: '32 DMG',
-        descriptionShort: 'HEAVY: 32 damage, more against bigger poets (3 readings).',
+        descriptionShort: 'HEAVY: 32 base damage (3 readings).',
         stanzas: [
           'Some say the world will end in fire,',
           'Some say in ice.',
@@ -2714,7 +2730,7 @@ export const ALL_POETS: PoetData[] = [
         damage: BATTLE_CONFIG.heavyDamage,
         maxReadings: BATTLE_CONFIG.heavyReadings,
         powerLabel: '32 DMG',
-        descriptionShort: 'HEAVY: 32 damage, more against bigger poets (3 readings).',
+        descriptionShort: 'HEAVY: 32 base damage (3 readings).',
         stanzas: [
           'Tell all the truth but tell it slant —',
           'Success in Circuit lies.',
@@ -2736,7 +2752,7 @@ export const ALL_POETS: PoetData[] = [
         damage: BATTLE_CONFIG.lightDamage,
         maxReadings: BATTLE_CONFIG.lightReadings,
         powerLabel: '18 DMG',
-        descriptionShort: 'LIGHT: 18 damage, more against bigger poets (6 readings).',
+        descriptionShort: 'LIGHT: 18 base damage (6 readings).',
         stanzas: [
           'I’m Nobody! Who are you?',
           'Are you – Nobody – too?',
@@ -2859,7 +2875,7 @@ export const ALL_POETS: PoetData[] = [
         damage: BATTLE_CONFIG.heavyDamage,
         maxReadings: BATTLE_CONFIG.heavyReadings,
         powerLabel: '32 DMG',
-        descriptionShort: 'HEAVY: 32 damage, more against bigger poets (3 readings).',
+        descriptionShort: 'HEAVY: 32 base damage (3 readings).',
         stanzas: [
           'Quoth the Raven: “Nevermore!”',
           'And my soul from out that shadow shall be lifted nevermore.',
@@ -2924,7 +2940,7 @@ export const ALL_POETS: PoetData[] = [
         damage: BATTLE_CONFIG.lightDamage,
         maxReadings: BATTLE_CONFIG.lightReadings,
         powerLabel: '18 DMG',
-        descriptionShort: 'LIGHT: 18 damage, more against bigger poets (6 readings).',
+        descriptionShort: 'LIGHT: 18 base damage (6 readings).',
         stanzas: [
           'All that we see or seem',
           'Is but a dream within a dream.',
@@ -3003,7 +3019,7 @@ export const ALL_POETS: PoetData[] = [
         damage: BATTLE_CONFIG.heavyDamage,
         maxReadings: BATTLE_CONFIG.heavyReadings,
         powerLabel: '32 DMG',
-        descriptionShort: 'HEAVY: 32 damage, more against bigger poets (3 readings).',
+        descriptionShort: 'HEAVY: 32 base damage (3 readings).',
         stanzas: [
           'Out of the ash I rise with my red hair',
           'And I eat men like air.',
@@ -3025,7 +3041,7 @@ export const ALL_POETS: PoetData[] = [
         damage: BATTLE_CONFIG.lightDamage,
         maxReadings: BATTLE_CONFIG.lightReadings,
         powerLabel: '18 DMG',
-        descriptionShort: 'LIGHT: 18 damage, more against bigger poets (6 readings).',
+        descriptionShort: 'LIGHT: 18 base damage (6 readings).',
         stanzas: [
           'Something else',
           'Hauls me through air —',
@@ -3147,7 +3163,7 @@ export const ALL_POETS: PoetData[] = [
         damage: BATTLE_CONFIG.heavyDamage,
         maxReadings: BATTLE_CONFIG.heavyReadings,
         powerLabel: '32 DMG',
-        descriptionShort: 'HEAVY: 32 damage, more against bigger poets (3 readings).',
+        descriptionShort: 'HEAVY: 32 base damage (3 readings).',
         stanzas: [
           'I went to the woods because I wished to live deliberately,',
           'to front only the essential facts of life.',
@@ -3211,7 +3227,7 @@ export const ALL_POETS: PoetData[] = [
         damage: BATTLE_CONFIG.lightDamage,
         maxReadings: BATTLE_CONFIG.lightReadings,
         powerLabel: '18 DMG',
-        descriptionShort: 'LIGHT: 18 damage, more against bigger poets (6 readings).',
+        descriptionShort: 'LIGHT: 18 base damage (6 readings).',
         stanzas: [
           'I wanted to live deep and suck out all the marrow of life,',
           'to live so sturdily and Spartan-like.',
@@ -3296,7 +3312,7 @@ export const ALL_POETS: PoetData[] = [
         damage: BATTLE_CONFIG.heavyDamage,
         maxReadings: BATTLE_CONFIG.heavyReadings,
         powerLabel: '32 DMG',
-        descriptionShort: 'HEAVY: 32 damage, more against bigger poets (3 readings).',
+        descriptionShort: 'HEAVY: 32 base damage (3 readings).',
         stanzas: [
           'Someone, I tell you,',
           'in another time will remember us.',
@@ -3318,7 +3334,7 @@ export const ALL_POETS: PoetData[] = [
         damage: BATTLE_CONFIG.lightDamage,
         maxReadings: BATTLE_CONFIG.lightReadings,
         powerLabel: '18 DMG',
-        descriptionShort: 'LIGHT: 18 damage, more against bigger poets (6 readings).',
+        descriptionShort: 'LIGHT: 18 base damage (6 readings).',
         stanzas: [
           'Golden sandals bound upon feet of dawn,',
           'swift across Aegean waves.',
@@ -3460,7 +3476,7 @@ export const ALL_POETS: PoetData[] = [
         damage: BATTLE_CONFIG.lightDamage,
         maxReadings: BATTLE_CONFIG.lightReadings,
         powerLabel: '18 DMG',
-        descriptionShort: 'LIGHT: 18 damage, more against bigger poets (6 readings).',
+        descriptionShort: 'LIGHT: 18 base damage (6 readings).',
         stanzas: [
           'Rough winds do shake the darling buds of May,',
           'And summer’s lease hath all too short a date.',
@@ -3503,7 +3519,7 @@ export const ALL_POETS: PoetData[] = [
         damage: BATTLE_CONFIG.heavyDamage,
         maxReadings: BATTLE_CONFIG.heavyReadings,
         powerLabel: '32 DMG',
-        descriptionShort: 'HEAVY: 32 damage, more against bigger poets (3 readings).',
+        descriptionShort: 'HEAVY: 32 base damage (3 readings).',
         stanzas: [
           'Bare ruin’d choirs, where late the sweet birds sang.',
           'In me thou see’st the glowing of such fire.',
@@ -3582,7 +3598,7 @@ export const ALL_POETS: PoetData[] = [
         damage: BATTLE_CONFIG.heavyDamage,
         maxReadings: BATTLE_CONFIG.heavyReadings,
         powerLabel: '32 DMG',
-        descriptionShort: 'HEAVY: 32 damage, more against bigger poets (3 readings).',
+        descriptionShort: 'HEAVY: 32 base damage (3 readings).',
         stanzas: [
           'Away! away! for I will fly to thee,',
           'Not charioted by Bacchus and his pards,',
@@ -3605,7 +3621,7 @@ export const ALL_POETS: PoetData[] = [
         damage: BATTLE_CONFIG.lightDamage,
         maxReadings: BATTLE_CONFIG.lightReadings,
         powerLabel: '18 DMG',
-        descriptionShort: 'LIGHT: 18 damage, more against bigger poets (6 readings).',
+        descriptionShort: 'LIGHT: 18 base damage (6 readings).',
         stanzas: [
           'Bright star, would I were stedfast as thou art—',
           'Not in lone splendour hung aloft the night.',
@@ -3728,7 +3744,7 @@ export const ALL_POETS: PoetData[] = [
         damage: BATTLE_CONFIG.heavyDamage,
         maxReadings: BATTLE_CONFIG.heavyReadings,
         powerLabel: '32 DMG',
-        descriptionShort: 'HEAVY: 32 damage, more against bigger poets (3 readings).',
+        descriptionShort: 'HEAVY: 32 base damage (3 readings).',
         stanzas: [
           'Midway upon the journey of our life',
           'I found myself within a forest dark,',
@@ -3751,7 +3767,7 @@ export const ALL_POETS: PoetData[] = [
         damage: BATTLE_CONFIG.lightDamage,
         maxReadings: BATTLE_CONFIG.lightReadings,
         powerLabel: '18 DMG',
-        descriptionShort: 'LIGHT: 18 damage, more against bigger poets (6 readings).',
+        descriptionShort: 'LIGHT: 18 base damage (6 readings).',
         stanzas: [
           'The infernal hurricane that never rests',
           'Drives on the spirits with its violent sweep.',

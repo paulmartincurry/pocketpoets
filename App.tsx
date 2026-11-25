@@ -55,6 +55,7 @@ import {
   getPoetCrossPairingDialogue,
   getMoveCurrentStanza,
   getMoveStanzaIndex,
+  calculateTierMultiplier,
 } from './poetsData';
 import {
   canEnemyAiSelectStatus,
@@ -12043,10 +12044,8 @@ export default function App() {
         }
       } else {
         const baseDmg = move.effectType === 'HEAVY' ? BATTLE_CONFIG.heavyDamage : BATTLE_CONFIG.lightDamage;
-        // Tier scaling: a poet with a bigger HP pool takes proportionally more,
-        // so a Winter or Summit duel runs close to Spring length (kept a touch longer).
-        const springHp = BATTLE_CONFIG.healthByRegion?.SPRING ?? 100;
-        const tierScale = 1 + Math.max(0, defenderPoet.hp / springHp - 1) * 0.75;
+        // Tier scaling (see calculateTierMultiplier in poetsData.ts)
+        const tierScale = calculateTierMultiplier(attackerPoet.hp, defenderPoet.hp);
         const totalDmg = calculateDamage(
           baseDmg,
           isAttackerBuffed,
@@ -19042,7 +19041,15 @@ export default function App() {
                           <div
                             className="flex items-center gap-1"
                             style={{ fontFamily: "'VT323', monospace", fontSize: '14px', color: '#8E9BB0' }}>
-                            <span>{m.powerLabel}</span>
+                            <span>
+                              {m.effectType === 'HEAVY' || m.effectType === 'LIGHT'
+                                ? `${Math.max(1, Math.round(
+                                    (m.effectType === 'HEAVY' ? BATTLE_CONFIG.heavyDamage : BATTLE_CONFIG.lightDamage) *
+                                      calculateSeasonMultiplier(playerPoet.season, enemyPoet.season) *
+                                      calculateTierMultiplier(playerPoet.hp, enemyPoet.hp),
+                                  ))} DMG`
+                                : m.powerLabel}
+                            </span>
                             <span style={{ color: '#F4B41B' }}>({remainingReadings}/{m.maxReadings})</span>
                           </div>
                         </div>
