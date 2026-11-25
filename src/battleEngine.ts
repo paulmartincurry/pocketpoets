@@ -1,6 +1,7 @@
 import { DUELIST_BATTLE_BARKS, DuelistBattleBark } from '../overworldData';
 import { getPoetById, PoetData, PoemMove } from '../poetsData';
 import { BATTLE_CONFIG } from '../constants';
+import { bookThreshold } from '../difficulty';
 import { CombatantStunState, StunApplyResult, StunConsumeResult } from './types';
 
 export { DUELIST_BATTLE_BARKS };
@@ -130,11 +131,15 @@ export function checkCaptureWindow(
   enemyHp: number,
   enemyMaxHp: number,
   enemyStunTokens: number,
-  enemySkippedThisRoundByStun: boolean
+  enemySkippedThisRoundByStun: boolean,
+  /** The poet being challenged on the climb, if any: some hold out longer on home ground (difficulty.ts). */
+  homeGroundPoetId?: string
 ): boolean {
+  return enemyHp <= enemyMaxHp * captureWindowPct(enemyStunTokens, enemySkippedThisRoundByStun, homeGroundPoetId);
+}
+
+export function captureWindowPct(enemyStunTokens: number, enemySkippedThisRoundByStun: boolean, homeGroundPoetId?: string): number {
   const isBonusWindow = enemyStunTokens > 0 || enemySkippedThisRoundByStun;
-  const thresholdPct = isBonusWindow
-    ? BATTLE_CONFIG.statusCaptureWindow
-    : BATTLE_CONFIG.baseCaptureWindow;
-  return enemyHp <= enemyMaxHp * thresholdPct;
+  if (homeGroundPoetId) return bookThreshold(homeGroundPoetId, BATTLE_CONFIG.baseCaptureWindow, BATTLE_CONFIG.statusCaptureWindow, isBonusWindow);
+  return isBonusWindow ? BATTLE_CONFIG.statusCaptureWindow : BATTLE_CONFIG.baseCaptureWindow;
 }

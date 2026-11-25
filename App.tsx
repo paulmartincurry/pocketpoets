@@ -77,7 +77,9 @@ import {
 import {
   canEnemyAiSelectStatus,
   checkCaptureWindow,
+  captureWindowPct,
 } from './src/battleEngine';
+import { homeEdge, homeGuard, onHomeGround, summitPoetWaits, SUMMIT_LOSS_RESUMES, SUMMIT_POET_IDS } from './difficulty';
 import {
   EXTERIOR_COLS,
   EXTERIOR_ROWS,
@@ -1460,7 +1462,7 @@ export const INITIAL_BAG_INVENTORY: BagItem[] = [
   {
     id: 'BLANK_BOOK',
     name: 'BLANK ANTHOLOGY BOOK',
-    desc: 'Capture Action: Captures a wild poet if health is <= 25% (or <= 35% when Lost for Words). Costs a turn.',
+    desc: 'Capture Action: Captures a wild poet if health is <= 25% (or <= 35% when Lost for Words). The four on the Summit hold out to 20%. Costs a turn.',
     category: 'CAPTURE',
     count: 10,
     icon: '📖',
@@ -2017,6 +2019,8 @@ export default function App() {
     'MARY_OLIVER',
     'DICKINSON',
   ]);
+  const capturedPoetIdsRef = useRef<string[]>(capturedPoetIds);
+  capturedPoetIdsRef.current = capturedPoetIds;
   const [playerLineup, setPlayerLineup] = useState<string[]>([
     'MARY_OLIVER',
     'DICKINSON',
@@ -2686,7 +2690,8 @@ export default function App() {
     triggerHaptics([40, 70, 110]);
 
     setCapturedPoetIds((prev) => (prev.includes(poetId) ? prev : [...prev, poetId]));
-    setPlayerLineup((prev) => (prev.includes(poetId) ? prev : [...prev, poetId]));
+    // (The four on the Summit wait up there until the last is beaten: difficulty.ts)
+    if (!SUMMIT_POET_IDS.includes(poetId)) setPlayerLineup((prev) => (prev.includes(poetId) ? prev : [...prev, poetId]));
     setActivePlayerPoetId(poetId);
 
     const startDissolve = (npcsList: HarborNPC[]): HarborNPC[] =>
@@ -3371,7 +3376,11 @@ export default function App() {
         // WHO STANDS: on the climb, the lead is the first poet in the lineup and the second is
         // the next. (It used to start with whoever fought last, and every recruited poet could
         // step in.) In a Free Duel the lead is the champion you picked.
-        const lineupNow = playerLineupRef.current;
+        const lineupAll = playerLineupRef.current;
+        // Beaten Summit poets wait on the Summit until all four are beaten (older saves may
+        // have one in the lineup already; they simply do not stand).
+        const lineupFree = selectedGameMode === 'CLIMB' ? lineupAll.filter((id) => !summitPoetWaits(id, capturedPoetIdsRef.current)) : lineupAll;
+        const lineupNow = lineupFree.length > 0 ? lineupFree : lineupAll;
         const leadId =
           selectedGameMode === 'CLIMB' && lineupNow.length > 0
             ? lineupNow[0]
@@ -4274,6 +4283,8 @@ export default function App() {
         },
         choose: (label: string) => overworldDialogueRef.current?.choiceOptions?.find((c) => c.label === label)?.action(),
         clear: () => setOverworldDialogue(null),
+        roster: (captured: string[], lineup: string[]) => { setCapturedPoetIds(captured); setPlayerLineup(lineup); },
+        team: () => ({ captured: capturedPoetIdsRef.current, lineup: playerLineupRef.current }),
       };
       window.setTimeout(() => {
         transitionOverworldScreen(screen as OverworldScreenId, x, y, 'DOWN');
@@ -12203,8 +12214,11 @@ export default function App() {
           defenderLostForWords: defenderSilenced,
           roll: Math.random(),
         });
+        // Home ground (difficulty.ts): on the climb, a few poets hit harder and take less
+        // where they live. Only ever the poet being challenged.
+        const homeScale = selectedGameMode === 'CLIMB' ? (isPlayer ? homeGuard(defenderPoet.id) : homeEdge(attackerPoet.id)) : 1;
         const totalDmg = Math.min(
-          calculateDamage(baseDmg, isAttackerBuffed, isAttackerDebuffed, seasonMultiplier * tierScale * trait.mult),
+          calculateDamage(baseDmg, isAttackerBuffed, isAttackerDebuffed, seasonMultiplier * tierScale * trait.mult * homeScale),
           traitDamageCap(defenderPoet.id, defenderPoet.hp),
         );
         if (trait.fired) {
@@ -12421,7 +12435,8 @@ export default function App() {
     const curPoetId = activePlayerPoetId;
     const curReadings = poetReadingsMapRef.current[curPoetId]?.[move.id] ?? move.maxReadings;
 
-    if (curReadings <= 0) {
+    const allSpent = getPoetById(curPoetId).moves.every((mm) => (poetReadingsMapRef.current[curPoetId]?.[mm.id] ?? mm.maxReadings) <= 0);
+    if (curReadings <= 0 && !(allSpent && move.effectType === 'LIGHT')) {
       gameAudio.playErrorBuzz();
       triggerHaptics(60);
       addFloatingText(140, 220, `NO READINGS LEFT!`, '#ef4444', 15);
@@ -12470,7 +12485,11 @@ export default function App() {
   const awardVictoryLoot = (isCaptured: boolean) => {
     if (isCaptured && !capturedPoetIds.includes(activeEnemyPoetId)) {
       setCapturedPoetIds((prev) => [...prev, activeEnemyPoetId]);
-      setPlayerLineup((prev) => (prev.includes(activeEnemyPoetId) ? prev : [...prev, activeEnemyPoetId]));
+      // A Summit poet does not step into the lineup on their own: they wait up there until
+      // the fourth is beaten (difficulty.ts).
+      if (!(selectedGameMode === 'CLIMB' && SUMMIT_POET_IDS.includes(activeEnemyPoetId))) {
+        setPlayerLineup((prev) => (prev.includes(activeEnemyPoetId) ? prev : [...prev, activeEnemyPoetId]));
+      }
     }
 
     if (selectedGameMode === 'GRAND_TOUR') {
@@ -12515,7 +12534,9 @@ export default function App() {
       // and Sappho walked out of your Anthology.)
       const summitPoetIds = ['SAPPHO', 'SHAKESPEARE', 'KEATS', 'DANTE'];
       const lostToId = enemyPoetRef.current?.id ?? '';
-      if (summitPoetIds.includes(lostToId)) {
+      // Now a Summit loss costs the walk back and nothing else: the ones you have beaten
+      // stay beaten, and you pick up at the poet who stopped you (SUMMIT_LOSS_RESUMES).
+      if (summitPoetIds.includes(lostToId) && !SUMMIT_LOSS_RESUMES) {
         setCapturedPoetIds((prev) => prev.filter((id) => !summitPoetIds.includes(id)));
         setPlayerLineup((prev) => prev.filter((id) => !summitPoetIds.includes(id)));
         summitNpcsRef.current = createFreshSummitNpcs();
@@ -12600,10 +12621,25 @@ export default function App() {
         `${lostToName} again. A thought for the walk back: a poet at a quarter strength can be bound in a blank book. You do not have to finish every duel.`,
         `Back on the pier. Your poets are rested. An opening verse can be a boost instead of a blow, and a tired poet can be bound.`,
       ];
+      // The other thing nobody discovers alone: who leads matters more than anything. If the
+      // lead was not a season counter and a counter is in the Anthology, name it. (Draft.)
+      let seasonLine: string | null = null;
+      const lostTo = enemyPoetRef.current;
+      if (lostTo) {
+        const cap = (x: string) => x.charAt(0) + x.slice(1).toLowerCase();
+        const owned = Array.from(new Set([...playerLineupRef.current, ...capturedPoetIdsRef.current])).filter((id) => !summitPoetWaits(id, capturedPoetIdsRef.current));
+        const leadNow = getPoetById(playerLineupRef.current[0] ?? owned[0] ?? 'WHITMAN');
+        const leadCounters = calculateSeasonMultiplier(leadNow.season, lostTo.season) > 1;
+        const counter = owned.map((id) => getPoetById(id)).filter((pp) => calculateSeasonMultiplier(pp.season, lostTo.season) > 1).sort((a, b) => b.hp - a.hp)[0];
+        if (!leadCounters && counter) {
+          seasonLine = `${lostTo.name} is a ${cap(lostTo.season)} poet, and ${cap(counter.season)} has the better of ${cap(lostTo.season)}. ${counter.name} is in your Anthology. Open POETS [P] and let them lead.`;
+        }
+      }
+      const useSeasonLine = seasonLine && (climbLossCountRef.current >= 2 || (lostTo && onHomeGround(lostTo.id)));
       setOverworldDialogue({
         active: true,
         speakerName: 'AWAKENING',
-        text: lossLines[Math.min(climbLossCountRef.current - 1, 2)],
+        text: useSeasonLine ? `Back on the pier, rested. ${seasonLine}` : lossLines[Math.min(climbLossCountRef.current - 1, 2)],
       });
 
       setCurrentScreen('OVERWORLD');
@@ -12824,7 +12860,8 @@ export default function App() {
       enemyHpRef.current,
       enemyPoetRef.current.hp,
       enemyStunTokensRef.current,
-      enemySkippedByStunThisRoundRef.current
+      enemySkippedByStunThisRoundRef.current,
+      selectedGameMode === 'CLIMB' ? enemyPoetRef.current.id : undefined
     );
 
     const captureMove: PoemMove = {
@@ -16914,7 +16951,8 @@ export default function App() {
     enemyHp,
     enemyMaxHp,
     enemyStunTokens,
-    enemySkippedByStunThisRound
+    enemySkippedByStunThisRound,
+    selectedGameMode === 'CLIMB' ? enemyPoet.id : undefined
   );
 
   const telegraphInfo = getTelegraphBannerInfo();
@@ -18887,7 +18925,10 @@ export default function App() {
                               </span>
                             )}
                             {/* Two poets stand in a duel. The lineup cannot change while one is under way. */}
-                            {!midDuel && !isLead && (
+                            {!midDuel && selectedGameMode === 'CLIMB' && summitPoetWaits(insPoet.id, capturedPoetIds) && (
+                              <span className="text-[9px] italic text-[#4B5563] text-right max-w-[130px]">Waits on the Summit until all four are beaten</span>
+                            )}
+                            {!midDuel && !isLead && !(selectedGameMode === 'CLIMB' && summitPoetWaits(insPoet.id, capturedPoetIds)) && (
                               <button
                                 type="button"
                                 onClick={() => {
@@ -18907,7 +18948,7 @@ export default function App() {
                                 SET AS LEAD
                               </button>
                             )}
-                            {!midDuel && !isLead && !isSecond && playerLineup.length > 0 && (
+                            {!midDuel && !isLead && !isSecond && playerLineup.length > 0 && !(selectedGameMode === 'CLIMB' && summitPoetWaits(insPoet.id, capturedPoetIds)) && (
                               <button
                                 type="button"
                                 onClick={() => {
@@ -19102,7 +19143,7 @@ export default function App() {
                       fontFamily: "'VT323', monospace",
                       fontSize: '13px',
                     }}>
-                    CAPTURE WINDOW (35%)
+                    CAPTURE WINDOW ({Math.round(100 * captureWindowPct(enemyStunTokens, enemySkippedByStunThisRound, selectedGameMode === 'CLIMB' ? enemyPoet.id : undefined))}%)
                   </span>
                 )}
               </div>
@@ -19159,6 +19200,13 @@ export default function App() {
                   title={POET_TRAITS[enemyPoet.id].text}
                   style={{ fontFamily: "'VT323', monospace", fontSize: '13px', color: '#F4B41B', letterSpacing: '1px', lineHeight: 1.1 }}>
                   ✦ {POET_TRAITS[enemyPoet.id].name.toUpperCase()}
+                </div>
+              )}
+              {selectedGameMode === 'CLIMB' && onHomeGround(enemyPoet.id) && (
+                <div
+                  title="On home ground this poet hits harder and takes less."
+                  style={{ fontFamily: "'VT323', monospace", fontSize: '13px', color: '#EE1515', letterSpacing: '1px', lineHeight: 1.1 }}>
+                  ▲ HOME GROUND
                 </div>
               )}
             </div>
@@ -19417,7 +19465,13 @@ export default function App() {
                   {playerPoet.moves.map((m, idx) => {
                     const isSelected = selectedMoveIndex === idx;
                     const remainingReadings = poetReadingsMap[activePlayerPoetId]?.[m.id] ?? m.maxReadings;
-                    const isAvailable = remainingReadings > 0;
+                    // FROM MEMORY: a poet with every verse spent can still say the light one. (The
+                    // other side has always been allowed this; the player used to be left with
+                    // nothing to press but LEAVE.)
+                    const fromMemory =
+                      m.effectType === 'LIGHT' &&
+                      playerPoet.moves.every((mm) => (poetReadingsMap[activePlayerPoetId]?.[mm.id] ?? mm.maxReadings) <= 0);
+                    const isAvailable = remainingReadings > 0 || fromMemory;
                     const isStatusMove = m.effectType === 'STATUS';
                     const isTargetImmune = isStatusMove && (enemyStunTokens > 0 || enemyStunImmuneTurns > 0);
                     const isDisabled = !isAvailable || isTargetImmune;
@@ -19475,6 +19529,7 @@ export default function App() {
                                       (m.effectType === 'HEAVY' ? BATTLE_CONFIG.heavyDamage : BATTLE_CONFIG.lightDamage) *
                                       traitSeasonMultiplier(playerPoet.id, calculateSeasonMultiplier(playerPoet.season, enemyPoet.season)) *
                                       calculateTierMultiplier(playerPoet.hp, enemyPoet.hp) *
+                                      (selectedGameMode === 'CLIMB' ? homeGuard(enemyPoet.id) : 1) *
                                       (playerBuffActive ? BATTLE_CONFIG.buffMultiplier ?? 1.35 : 1) *
                                       (playerDebuffActive ? BATTLE_CONFIG.debuffMultiplier ?? 0.7 : 1);
                                     const at = (roll: number) =>
@@ -19500,7 +19555,7 @@ export default function App() {
                                   })()
                                 : m.powerLabel}
                             </span>
-                            <span style={{ color: '#F4B41B' }}>({remainingReadings}/{m.maxReadings})</span>
+                            <span style={{ color: '#F4B41B' }}>{fromMemory ? '(FROM MEMORY)' : `(${remainingReadings}/${m.maxReadings})`}</span>
                           </div>
                         </div>
                       </button>
@@ -20138,7 +20193,7 @@ export default function App() {
                     gameAudio.playConfirmSelect();
                     const isSummitFight = ['SAPPHO', 'SHAKESPEARE', 'KEATS', 'DANTE'].includes(activeEnemyPoetId);
 
-                    if (isSummitFight) {
+                    if (isSummitFight && !SUMMIT_LOSS_RESUMES) {
                       // Summit wipeout: reset all 4 summit poets to uncaptured, restore lineup, teleport to (11, 17) facing UP
                       const summitPoetIds = ['SAPPHO', 'SHAKESPEARE', 'KEATS', 'DANTE'];
                       setCapturedPoetIds((prev) => prev.filter((id) => !summitPoetIds.includes(id)));

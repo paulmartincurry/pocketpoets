@@ -8,6 +8,13 @@
 //   - boosts and weakens tick down at round end; a fallen poet is replaced automatically
 import { ALL_POETS, BATTLE_CONFIG, CHAPTER_GATES, calculateSeasonMultiplier, calculateTierMultiplier } from '../../poetsData';
 import * as TRreal from '../../poetTraits';
+import { homeEdge as fileEdge, homeGuard as fileGuard, bookThreshold as fileBook } from '../../difficulty';
+// EDGE="KEATS:1.4,POE:1.5" and BOOK="DANTE:0.2" try values without editing difficulty.ts
+const envMap = (v?: string) => Object.fromEntries((v ?? '').split(',').filter(Boolean).map((x) => { const [k, n] = x.split(':'); return [k, +n]; }));
+const EDGE_TRY = envMap(process.env.EDGE), BOOK_TRY = envMap(process.env.BOOK), READ_TRY = envMap(process.env.READ), GUARD_TRY = envMap(process.env.GUARD);
+const homeGuard = (id: string) => GUARD_TRY[id] ?? fileGuard(id);
+const homeEdge = (id: string) => EDGE_TRY[id] ?? fileEdge(id);
+const bookThreshold = (id: string, base: number, bonus: number, lost: boolean) => BOOK_TRY[id] !== undefined ? BOOK_TRY[id] + (lost ? bonus - base : 0) : fileBook(id, base, bonus, lost);
 export { ALL_POETS, CHAPTER_GATES, BATTLE_CONFIG };
 export type Poet = (typeof ALL_POETS)[number];
 export type Move = Poet['moves'][number];
@@ -60,13 +67,15 @@ function act(a: Side, d: Side, m: Move, rnd: () => number, dmgScale = 1) {
 
 export type Policy = (me: Side, foe: Side, intent: Move | null, canCapture: boolean) => Move | 'CAPTURE';
 const pick = (s: Side, t: string) => avail(s).find((m) => m.effectType === t);
-export const inWindow = (e: Side, skipped: boolean) => e.hp > 0 && e.hp <= e.poet.hp * ((e.stun > 0 || skipped) ? BATTLE_CONFIG.statusCaptureWindow : BATTLE_CONFIG.baseCaptureWindow);
-const attack = (s: Side) => pick(s, 'HEAVY') ?? pick(s, 'LIGHT') ?? avail(s)[0] ?? s.poet.moves[0];
+export const inWindow = (e: Side, skipped: boolean) => e.hp > 0 && e.hp <= e.poet.hp * bookThreshold(e.poet.id, BATTLE_CONFIG.baseCaptureWindow, BATTLE_CONFIG.statusCaptureWindow, e.stun > 0 || skipped);
+// with every verse spent, the light one can still be said from memory (same in the game)
+const attack = (s: Side) => pick(s, 'HEAVY') ?? pick(s, 'LIGHT') ?? (avail(s).length ? avail(s)[0] : s.poet.moves.find((m) => m.effectType === 'LIGHT') ?? s.poet.moves[0]);
 export const POLICIES: Record<string, Policy> = {
   // presses the big button and nothing else
   novice: (me) => attack(me),
   // heals when hurt, binds when the window opens
   average: (me, foe, _i, cap) => { if (cap && inWindow(foe, false)) return 'CAPTURE'; const h = pick(me, 'HEAL'); if (h && me.hp < me.poet.hp * 0.4) return h; return attack(me); },
+  heals: (me, foe, i, cap) => POLICIES.average(me, foe, i, cap),
   // also opens with a boost, and silences a telegraphed heavy or heal
   skilled: (me, foe, intent, cap) => {
     if (cap && inWindow(foe, false)) return 'CAPTURE';
@@ -81,15 +90,15 @@ export interface DuelResult { win: boolean; rounds: number; fallen: number; capt
 export function duel(lineupIds: string[], enemyId: string, policy: Policy, rnd: () => number, opts: { books?: number; carry?: Record<string, { hp: number; readings: Record<string, number> }>; enemyHpScale?: number; enemyDmgScale?: number; smart?: number } = {}): DuelResult {
   const carry = opts.carry; const team = lineupIds.map((id) => fresh(byId(id), carry?.[id]?.hp, carry?.[id] ? { ...carry[id].readings } : undefined));
   let idx = team.findIndex((s) => s.hp > 0); if (idx < 0) idx = 0;
-  let p = team[idx]; const e = fresh(byId(enemyId)); if (opts.enemyHpScale) e.hp = Math.round(e.hp * opts.enemyHpScale);
+  let p = team[idx]; const e = fresh(byId(enemyId)); { const extra = READ_TRY[enemyId] ?? 0; if (extra) for (const k of Object.keys(e.readings)) e.readings[k] += extra; } if (opts.enemyHpScale) e.hp = Math.round(e.hp * opts.enemyHpScale);
   const books0 = opts.books ?? 99; let books = books0; let rounds = 0, fallen = 0, usedStatusLast = false, captured = false;
   while (rounds < 200) {
     rounds++; let usedStatusThis = false;
     const intent = enemyIntent(e, p, usedStatusLast, rnd);
-    const enemyTurn = () => { if (e.stun > 0) { e.stun = 0; e.immune = 1; e.gainedImmune = true; return; } const m = intent ?? e.poet.moves[0]; if (m.effectType === 'STATUS') usedStatusThis = true; act(e, p, m, rnd, opts.enemyDmgScale ?? 1); };
+    const enemyTurn = () => { if (e.stun > 0) { e.stun = 0; e.immune = 1; e.gainedImmune = true; return; } const m = intent ?? e.poet.moves[0]; if (m.effectType === 'STATUS') usedStatusThis = true; act(e, p, m, rnd, (opts.enemyDmgScale ?? 1) * homeEdge(e.poet.id)); };
     let choice: Move | 'CAPTURE' | null = p.stun > 0 ? null : policy(p, e, intent, books > 0);
     if (choice && choice !== 'CAPTURE' && (p.readings[choice.id] ?? 0) <= 0) choice = attack(p);
-    const playerTurn = () => { if (p.stun > 0) { p.stun = 0; p.immune = 1; p.gainedImmune = true; return; } if (choice && choice !== 'CAPTURE') act(p, e, choice, rnd); };
+    const playerTurn = () => { if (p.stun > 0) { p.stun = 0; p.immune = 1; p.gainedImmune = true; return; } if (choice && choice !== 'CAPTURE') act(p, e, choice, rnd, homeGuard(e.poet.id)); };
     if (choice === 'CAPTURE') { books--; if (inWindow(e, false)) { captured = true; break; } enemyTurn(); }
     else if (TR.enemyRecitesFirst(p.poet.id, p.poet.spd, e.poet.id, e.poet.spd)) { enemyTurn(); if (p.hp > 0 && e.hp > 0) playerTurn(); }
     else { playerTurn(); if (e.hp > 0) enemyTurn(); }
