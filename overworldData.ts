@@ -37314,3 +37314,67 @@ export function drawHarborOverworldScreen(
 
 
 
+
+// ============================================================================
+// THE CAST SHEET: ONE HOME PER POET
+// ============================================================================
+// Every poet appears in exactly one place: wherever that poet would really be.
+// The game was built with twelve of them standing both outside a building and
+// inside it. The copies named here are the ones that were retired. To bring one
+// back, take its id off this list (and add the other copy's id instead).
+//
+//   INSIDE:  Poe (graveyard), Dickinson (her house), Plath (kitchen), Thoreau (cabin),
+//            Sor Juana (library), Blake (forge), Neruda (blue house),
+//            Hughes (the Nightingale), O'Hara (lunch counter)
+//   OUTSIDE: Sappho (on the summit with the other three), Angelou (by her birdcage),
+//            Baudelaire (on the street by the bookstall)
+const RETIRED_NPC_IDS = new Set<string>([
+  'npc_treeline_poe',
+  'npc_treeline_dickinson',
+  'npc_treeline_plath',
+  'npc_treeline_thoreau',
+  'npc_ruins_sor_juana',
+  'npc_cliffs_blake',
+  'npc_cliffs_neruda',
+  'npc_town_hughes',
+  'npc_town_ohara',
+  'npc_sanctuary_sappho',
+  'npc_bluehouse_angelou',
+  'baudelaire', // The Rented Room copy. The Town copy is 'npc_town_baudelaire'.
+]);
+
+function retireFrom(list: HarborNPC[]): void {
+  for (let i = list.length - 1; i >= 0; i--) {
+    if (RETIRED_NPC_IDS.has(list[i].id)) list.splice(i, 1);
+  }
+}
+[
+  INITIAL_TREELINE_NPCS,
+  INITIAL_RUINS_NPCS,
+  INITIAL_CLIFFS_NPCS,
+  INITIAL_TOWN_NPCS,
+  INITIAL_LYRIC_SANCTUARY_NPCS,
+  INITIAL_BLUEHOUSE_NPCS,
+  INITIAL_RENTED_ROOM_NPCS,
+].forEach(retireFrom);
+
+// RUMI COMES DOWN TO THE TOWN. He is a Spring poet and Chapter I needs him beaten,
+// but he was standing in the Ruins, three tiers up. He goes back to the cafe table
+// outside the Cafe de Flore (X: 14, Y: 7), which the Town already knows how to draw
+// and talk to under the id 'npc_town_rumi'.
+{
+  const i = INITIAL_RUINS_NPCS.findIndex((n) => n.id === 'npc_ruins_rumi');
+  if (i !== -1) {
+    const [rumi] = INITIAL_RUINS_NPCS.splice(i, 1);
+    INITIAL_TOWN_NPCS.push({
+      ...rumi,
+      id: 'npc_town_rumi',
+      x: 14,
+      y: 7,
+      pxX: 14 * TILE_SIZE,
+      pxY: 7 * TILE_SIZE,
+      facing: 'RIGHT',
+      movement: undefined,
+    });
+  }
+}
