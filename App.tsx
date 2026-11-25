@@ -1826,6 +1826,10 @@ export default function App() {
   // in the browser, so closing the tab does not lose the climb. CONTINUE on the title
   // picks it up; NEW CLIMB throws it away and starts again.
   const [hasSavedClimb, setHasSavedClimb] = useState<boolean>(() => readClimbSave() !== null);
+  // NEW CLIMB only means something when there is a climb to replace; without one it is hidden
+  // (BEGIN already starts a new climb). The ref is filled in below, once both flags exist.
+  const titleMenuCountRef = useRef<number>(TITLE_MENU_ITEMS.length);
+  titleMenuCountRef.current = hasStartedClimb || hasSavedClimb ? TITLE_MENU_ITEMS.length : TITLE_MENU_ITEMS.length - 1;
   const resumeSavedClimbRef = useRef<(save: ClimbSave) => void>(() => {});
 
   const activateTitleOption = useCallback(
@@ -4102,6 +4106,36 @@ export default function App() {
       // ignore: the game still plays, it just will not be remembered
     }
   }, [hasStartedClimb, selectedGameMode, playerName, playerCustom, capturedPoetIds, playerLineup, activePlayerPoetId, climbSaveTick]);
+
+  // Keep the saved position fresh. The save above only notes where the Reader is when a
+  // door is walked through, so quitting mid-screen used to bring you back at that door.
+  // Every few seconds, and whenever the tab is hidden or closed, the stored position is
+  // updated to where the Reader is actually standing.
+  useEffect(() => {
+    const flushPosition = () => {
+      if (!climbSaveReadyRef.current || currentScreenRef.current !== 'OVERWORLD') return;
+      if (isTransitioningScreenRef.current || overworldPlayerRef.current.isMoving) return;
+      try {
+        const raw = localStorage.getItem(CLIMB_SAVE_KEY);
+        if (!raw) return;
+        const save = JSON.parse(raw) as ClimbSave;
+        const pl = overworldPlayerRef.current;
+        save.pos = { screen: activeOverworldScreenRef.current, x: pl.gridX, y: pl.gridY };
+        climbSavePosRef.current = save.pos;
+        localStorage.setItem(CLIMB_SAVE_KEY, JSON.stringify(save));
+      } catch {
+        // ignore
+      }
+    };
+    const timer = window.setInterval(flushPosition, 4000);
+    window.addEventListener('pagehide', flushPosition);
+    document.addEventListener('visibilitychange', flushPosition);
+    return () => {
+      window.clearInterval(timer);
+      window.removeEventListener('pagehide', flushPosition);
+      document.removeEventListener('visibilitychange', flushPosition);
+    };
+  }, []);
 
   // Pick a saved climb back up from the title screen.
   resumeSavedClimbRef.current = (save: ClimbSave) => {
@@ -12663,6 +12697,12 @@ export default function App() {
     }
 
     if (item.id === 'BLACK_INK_ELIXIR') {
+      if (playerHpRef.current >= playerPoetRef.current.hp) {
+        // Already at full strength: do not spend the elixir or the turn (it used to heal +0)
+        gameAudio.playErrorBuzz();
+        triggerHaptics(60);
+        return;
+      }
       setBagInventory((prev) =>
         prev.map((i) => (i.id === item.id ? { ...i, count: Math.max(0, i.count - 1) } : i))
       );
@@ -16302,10 +16342,10 @@ export default function App() {
 
         if (screen === 'TITLE') {
           if (upPressed && !lastUpRef.current) {
-            setTitleMenuIndex((prev) => (prev > 0 ? prev - 1 : TITLE_MENU_ITEMS.length - 1));
+            setTitleMenuIndex((prev) => (prev > 0 ? prev - 1 : titleMenuCountRef.current - 1));
             gameAudio.playHoverMicroTone();
           } else if (downPressed && !lastDownRef.current) {
-            setTitleMenuIndex((prev) => (prev < TITLE_MENU_ITEMS.length - 1 ? prev + 1 : 0));
+            setTitleMenuIndex((prev) => (prev < titleMenuCountRef.current - 1 ? prev + 1 : 0));
             gameAudio.playHoverMicroTone();
           } else if (confirmPressed && !lastConfirmRef.current) {
             activateTitleOptionRef.current(titleMenuIndexRef.current);
@@ -16802,6 +16842,7 @@ export default function App() {
             }}>
             <div className="w-full flex flex-col items-center space-y-1 sm:space-y-1.5">
               {TITLE_MENU_ITEMS.map((item, idx) => {
+                if (item.id === 'NEW_CLIMB' && !(hasStartedClimb || hasSavedClimb)) return null;
                 const isSelected = titleMenuIndex === idx;
                 const label = idx === 0 ? (hasStartedClimb || hasSavedClimb ? 'CONTINUE' : 'BEGIN') : item.label;
                 return (
@@ -16913,7 +16954,7 @@ export default function App() {
                 skipOpeningScene();
               }}
               className="bg-stone-900/60 hover:bg-stone-800 text-stone-400 hover:text-stone-200 border border-stone-800 hover:border-stone-700 px-3.5 py-1.5 min-h-[44px] sm:min-h-[48px] rounded-md text-[10px] sm:text-xs uppercase font-bold cursor-pointer transition-colors shadow-xs flex items-center justify-center tracking-wider">
-              {isMobile ? 'SKIP [TAP]' : 'SKIP [ESC]'}
+              {isMobile ? 'SKIP [HOLD]' : 'SKIP [HOLD ESC]'}
             </button>
           </div>
 
@@ -18357,10 +18398,10 @@ export default function App() {
                 <BookOpen size={20} className="text-[#10B981]" />
                 <div>
                   <h2 className="text-sm sm:text-base md:text-lg font-black uppercase text-[#000000] tracking-wider">
-                    THE IMMORTAL ANTHOLOGY ({capturedPoetIds.length}/20 RECRUITED)
+                    THE IMMORTAL ANTHOLOGY ({capturedPoetIds.length}/{ALL_POETS.length} RECRUITED)
                   </h2>
                   <div className="text-[10px] text-[#4B5563] font-bold">
-                    Inspect all 20 poets, 4 standardized poems, seasonal advantages, and set your battle lineup
+                    Inspect all {ALL_POETS.length} poets, their four poems, seasonal advantages, and set your battle lineup
                   </div>
                 </div>
               </div>
@@ -18523,7 +18564,7 @@ export default function App() {
                       </div>
 
                       <div className="space-y-1.5">
-                        <div className="text-[10px] font-black uppercase text-[#000000]">4 STANDARDIZED POEMS (READINGS REFILL EACH FIGHT):</div>
+                        <div className="text-[10px] font-black uppercase text-[#000000]">FOUR POEMS (READINGS REFILL EACH DUEL):</div>
                         <div className="grid grid-cols-2 gap-1.5">
                           {insPoet.moves.map((m, idx) => (
                             <div key={m.id} className="p-1.5 bg-[#F4F5F9] rounded border border-[#000000] text-[10px]">
