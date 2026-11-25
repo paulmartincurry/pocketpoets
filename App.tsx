@@ -1,5 +1,6 @@
 // Pocket Poets: 2D Literary Verse-Battler & RPG Exploration
 import { PROP_LINES, GRAVES, GATE_LINES } from './propLines';
+import { CANTOS, COMMONPLACE, COMMONPLACE_KEYS, commonplaceKey, quotesVerse } from './commonplace';
 import {
   POET_TRAITS,
   traitDamageMultiplier,
@@ -1737,6 +1738,8 @@ interface ClimbSave {
   active: string;
   pos: { screen: string; x: number; y: number } | null;
   visited: string[];
+  /** commonplace book: entry key -> the line that was copied out */
+  found?: Record<string, string>;
 }
 const CLIMB_SAVE_KEY = 'poetmon_climb_save';
 function readClimbSave(): ClimbSave | null {
@@ -2779,13 +2782,41 @@ export default function App() {
   const overworldDialogueRef = useRef(overworldDialogue);
   overworldDialogueRef.current = overworldDialogue;
 
+  // THE COMMONPLACE BOOK (commonplace.ts): props that quote verse, and the lines copied from them
+  const [commonplaceFound, setCommonplaceFound] = useState<Record<string, string>>({});
+  const commonplaceFoundRef = useRef<Record<string, string>>({});
+  const [isCommonplaceOpen, setIsCommonplaceOpen] = useState(false);
+  const commonplaceOpenRef = useRef(false);
+  commonplaceOpenRef.current = isCommonplaceOpen;
+  const [commonplaceToast, setCommonplaceToast] = useState<string | null>(null);
+  const commonplaceToastTimerRef = useRef<number | null>(null);
+  const noteForCommonplaceBook = useCallback((speakerName: string, text: string) => {
+    const key = commonplaceKey(activeOverworldScreenRef.current, speakerName);
+    if (!COMMONPLACE_KEYS.has(key)) return;
+    const had = commonplaceFoundRef.current[key];
+    const isVerse = quotesVerse(text);
+    if (had !== undefined && (quotesVerse(had) || !isVerse)) return; // already copied out
+    const next = { ...commonplaceFoundRef.current, [key]: isVerse ? text : had ?? '' };
+    commonplaceFoundRef.current = next;
+    setCommonplaceFound(next);
+    if (had === undefined) {
+      const title = COMMONPLACE.find((e) => e.key === key)?.title ?? speakerName;
+      setCommonplaceToast(`${title}  (${Object.keys(next).length}/${COMMONPLACE.length})`);
+      if (commonplaceToastTimerRef.current) window.clearTimeout(commonplaceToastTimerRef.current);
+      commonplaceToastTimerRef.current = window.setTimeout(() => setCommonplaceToast(null), 3200);
+    }
+  }, []);
+
   const setOverworldDialogue = useCallback((val: React.SetStateAction<typeof overworldDialogue>) => {
+    if (val && typeof val !== 'function' && val.active && val.speakerName && !val.showChoiceMenu) {
+      noteForCommonplaceBook(val.speakerName, val.text ?? '');
+    }
     _setOverworldDialogue((prev) => {
       const next = typeof val === 'function' ? (val as (p: typeof overworldDialogue) => typeof overworldDialogue)(prev) : val;
       overworldDialogueRef.current = next;
       return next;
     });
-  }, []);
+  }, [noteForCommonplaceBook]);
 
   // Cleanly dismiss overworld dialogue or awakening message and restore all movement
   const dismissAwakeningOrDialogue = useCallback(() => {
@@ -3523,6 +3554,8 @@ export default function App() {
     setSelectedGameMode('CLIMB');
     setHasStartedClimb(true);
     climbVisitedScreensRef.current = new Set(['HARBOR']);
+    commonplaceFoundRef.current = {};
+    setCommonplaceFound({});
     climbSavePosRef.current = null;
     climbSaveReadyRef.current = true;
     animTimeRef.current = 0;
@@ -4122,13 +4155,14 @@ export default function App() {
         active: activePlayerPoetId,
         pos: climbSavePosRef.current,
         visited: [...climbVisitedScreensRef.current],
+        found: commonplaceFound,
       };
       localStorage.setItem(CLIMB_SAVE_KEY, JSON.stringify(save));
       setHasSavedClimb(true);
     } catch {
       // ignore: the game still plays, it just will not be remembered
     }
-  }, [hasStartedClimb, selectedGameMode, playerName, playerCustom, capturedPoetIds, playerLineup, activePlayerPoetId, climbSaveTick]);
+  }, [hasStartedClimb, selectedGameMode, playerName, playerCustom, capturedPoetIds, playerLineup, activePlayerPoetId, climbSaveTick, commonplaceFound]);
 
   // Keep the saved position fresh. The save above only notes where the Reader is when a
   // door is walked through, so quitting mid-screen used to bring you back at that door.
@@ -4171,6 +4205,8 @@ export default function App() {
     setIsCinematicHudVisible(true);
     setIsCinematicLocked(false);
     climbVisitedScreensRef.current = new Set(save.visited?.length ? save.visited : ['HARBOR']);
+    commonplaceFoundRef.current = save.found ?? {};
+    setCommonplaceFound(save.found ?? {});
     const pos = save.pos;
     if (pos) {
       climbSavePosRef.current = pos;
@@ -4420,6 +4456,7 @@ export default function App() {
 
   // Overworld Interaction Trigger
   const interactFacingTile = useCallback(() => {
+    if (commonplaceOpenRef.current) return;
     const now = Date.now();
     if (now - lastInteractTimeRef.current < 90) return;
     lastInteractTimeRef.current = now;
@@ -13484,6 +13521,18 @@ export default function App() {
         toggleMusicMute();
         return;
       }
+      if (commonplaceOpenRef.current && (e.key === 'Escape' || e.key === 'b' || e.key === 'B' || e.key === 'x' || e.key === 'X')) {
+        e.preventDefault();
+        e.stopPropagation();
+        setIsCommonplaceOpen(false);
+        return;
+      }
+      if ((e.key === 'b' || e.key === 'B') && currentScreenRef.current === 'OVERWORLD' && !overworldDialogueRef.current?.active) {
+        e.preventDefault();
+        gameAudio.playPageTurn();
+        setIsCommonplaceOpen(true);
+        return;
+      }
       if (currentScreen === 'OVERWORLD') {
         const isConfirmKey =
           e.code === 'Space' ||
@@ -16050,6 +16099,7 @@ export default function App() {
   const attemptOverworldMove = useCallback((targetDir: FacingDirection) => {
     if (isTransitioningScreenRef.current) return;
     if (isCinematicLocked) return;
+    if (commonplaceOpenRef.current) return;
     const p = overworldPlayerRef.current;
     if (overworldDialogueRef.current?.active) return;
 
@@ -17697,6 +17747,24 @@ export default function App() {
               <button
                 type="button"
                 onClick={() => {
+                  gameAudio.playPageTurn();
+                  setIsCommonplaceOpen(true);
+                }}
+                style={{
+                  borderRadius: '0px',
+                  background: '#1B2138',
+                  border: '1px solid #4D5C80',
+                  color: '#FFE89E',
+                  fontFamily: "'VT323', monospace",
+                  boxShadow: '0 2px 0 #06070E',
+                }}
+                className="h-7 px-2.5 py-0 text-sm sm:text-base flex items-center gap-1.5 cursor-pointer hover:bg-[#252E4D] hover:border-[#F4B41B] hover:text-white transition-all"
+                title="Your commonplace book: lines copied from around the mountain [B]">
+                <span>[B] BOOK {Object.keys(commonplaceFound).length}/{COMMONPLACE.length}</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => {
                   gameAudio.playMenuCancel();
                   setCurrentScreen('TITLE');
                 }}
@@ -17715,6 +17783,66 @@ export default function App() {
               </button>
             </div>
           </div>
+
+          {commonplaceToast && (
+            <div
+              className="fixed left-1/2 -translate-x-1/2 z-40 px-3 py-1.5 pointer-events-none text-center"
+              style={{ top: '64px', background: '#12152A', border: '1px solid #F4B41B', color: '#FFE89E', fontFamily: "'VT323', monospace", fontSize: '16px', letterSpacing: '1px', boxShadow: '0 3px 0 #06070E', maxWidth: '92vw' }}>
+              ✦ COPIED INTO YOUR COMMONPLACE BOOK: {commonplaceToast}
+            </div>
+          )}
+          {isCommonplaceOpen && (
+            <div
+              className="fixed inset-0 z-50 flex items-center justify-center p-3"
+              style={{ background: 'rgba(5, 6, 12, 0.82)' }}
+              onClick={() => setIsCommonplaceOpen(false)}>
+              <div
+                className="w-full max-w-2xl max-h-[86vh] overflow-y-auto p-4 sm:p-5"
+                style={{ background: '#F4EFE6', border: '2px solid #1B2138', boxShadow: '0 6px 0 #06070E', color: '#1F2937' }}
+                onClick={(e) => e.stopPropagation()}>
+                <div className="flex items-baseline justify-between gap-3 mb-1">
+                  <h2 className="font-serif font-black text-lg sm:text-xl text-black">Commonplace Book</h2>
+                  <button
+                    type="button"
+                    onClick={() => setIsCommonplaceOpen(false)}
+                    className="cursor-pointer px-2 py-0.5 text-sm"
+                    style={{ fontFamily: "'VT323', monospace", border: '1px solid #1B2138', background: '#1B2138', color: '#FFE89E' }}>
+                    CLOSE [B]
+                  </button>
+                </div>
+                <p className="font-serif italic text-xs sm:text-sm text-[#4B5563] mb-3">
+                  Lines copied out from around the mountain. {Object.keys(commonplaceFound).length} of {COMMONPLACE.length} found. Examine anything that
+                  looks like it belongs in a poem.
+                </p>
+                {CANTOS.map((canto) => {
+                  const entries = COMMONPLACE.filter((e) => e.canto === canto.id);
+                  const got = entries.filter((e) => commonplaceFound[e.key] !== undefined);
+                  return (
+                    <div key={canto.id} className="mb-3">
+                      <div className="flex items-baseline justify-between border-b border-[#1B2138] mb-1">
+                        <span className="font-serif font-black text-sm tracking-wide uppercase text-black">{canto.name}</span>
+                        <span style={{ fontFamily: "'VT323', monospace", fontSize: '15px' }}>
+                          {got.length}/{entries.length}
+                        </span>
+                      </div>
+                      {got.length === 0 && <div className="font-serif italic text-xs text-[#6B7280]">Nothing copied out here yet.</div>}
+                      {got.map((e) => (
+                        <div key={e.key} className="mb-1.5">
+                          <div className="text-[11px] font-black tracking-wide text-black" style={{ fontFamily: "'VT323', monospace", fontSize: '14px' }}>
+                            {e.title}
+                          </div>
+                          <div className="font-serif text-xs sm:text-sm leading-snug text-[#1F2937]">{commonplaceFound[e.key] || '…'}</div>
+                        </div>
+                      ))}
+                      {got.length > 0 && got.length < entries.length && (
+                        <div className="font-serif italic text-xs text-[#6B7280]">{entries.length - got.length} more to find.</div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
 
           {/* Main 2D Overworld Viewport Area */}
           <div
