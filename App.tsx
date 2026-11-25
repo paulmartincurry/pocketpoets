@@ -3289,6 +3289,7 @@ export default function App() {
   // A duel is won once. Without this latch every extra press on the victory screen
   // re-ran the win: the score and the loot were awarded again each time.
   const victoryLatchRef = useRef(false);
+  const climbLossCountRef = useRef(0);
   const initBattle = useCallback(
     (customPlayerId?: string, customEnemyId?: string, customArenaId?: string) => {
       victoryLatchRef.current = false;
@@ -12307,12 +12308,17 @@ export default function App() {
       particlesRef.current = [];
       floatingTextsRef.current = [];
 
-      // Reset summit gauntlet bosses if summit duel loss
+      // Reset the summit gauntlet, but only when the loss was TO one of the four.
+      // (It used to reset on any loss anywhere: lose to a bonus poet in the Harbor
+      // and Sappho walked out of your Anthology.)
       const summitPoetIds = ['SAPPHO', 'SHAKESPEARE', 'KEATS', 'DANTE'];
-      setCapturedPoetIds((prev) => prev.filter((id) => !summitPoetIds.includes(id)));
-      setPlayerLineup((prev) => prev.filter((id) => !summitPoetIds.includes(id)));
-      summitNpcsRef.current = createFreshSummitNpcs();
-      setSummitNpcsState(summitNpcsRef.current);
+      const lostToId = enemyPoetRef.current?.id ?? '';
+      if (summitPoetIds.includes(lostToId)) {
+        setCapturedPoetIds((prev) => prev.filter((id) => !summitPoetIds.includes(id)));
+        setPlayerLineup((prev) => prev.filter((id) => !summitPoetIds.includes(id)));
+        summitNpcsRef.current = createFreshSummitNpcs();
+        setSummitNpcsState(summitNpcsRef.current);
+      }
       rentedRoomNpcsRef.current = createFreshRentedRoomNpcs();
       setRentedRoomNpcsState(rentedRoomNpcsRef.current);
       lyricSanctuaryNpcsRef.current = createFreshLyricSanctuaryNpcs();
@@ -12382,11 +12388,20 @@ export default function App() {
       isTransitioningScreenRef.current = false;
       battleExitGraceUntilRef.current = 0;
 
-      // Set gentle notification: "You awaken at the foot of Mount Parnassus to the sound of gentle waves..."
+      // After a lost duel: say so, and for the first few losses pass on the one thing an
+      // attack-only player never discovers. (This used to repeat the game's opening line,
+      // which read like the game had restarted.) Copy is a draft.
+      climbLossCountRef.current += 1;
+      const lostToName = enemyPoetRef.current?.name ?? 'the poet';
+      const lossLines = [
+        `${lostToName} had the better lines today. Your poets carried you back to the pier, rested. Next time, when a poet is down to a quarter strength, try CAPTURE.`,
+        `${lostToName} again. A thought for the walk back: a poet at a quarter strength can be bound in a blank book. You do not have to finish every duel.`,
+        `Back on the pier. Your poets are rested. An opening verse can be a boost instead of a blow, and a tired poet can be bound.`,
+      ];
       setOverworldDialogue({
         active: true,
         speakerName: 'AWAKENING',
-        text: 'You awaken at the foot of Mount Parnassus to the sound of gentle waves...',
+        text: lossLines[Math.min(climbLossCountRef.current - 1, 2)],
       });
 
       setCurrentScreen('OVERWORLD');
