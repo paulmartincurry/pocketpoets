@@ -31,7 +31,7 @@ const ENTRIES: PropEntry[] = [
   ['CLIFFS', ['33,5', '31,7', '28,9', '33,21', '30,23', '27,24', '24,25', '21,26'], 'AGAVE', [
     'Agave. It flowers once, magnificently, and then it dies. Poets find this relatable.',
   ]],
-  ['CLIFFS', ['15,7', '16,7', '17,7', '18,7', '19,7', '21,7', '22,7', '23,7', '24,7', '18,10', '19,10', '21,10', '22,10', '23,10', '24,10'], 'GRAPE TRELLIS', [
+  ['CLIFFS', ['15,7', '16,7', '17,7', '18,7', '19,7', '21,7', '22,7', '23,7', '24,7', '18,10', '19,10', '21,10', '22,10', '23,10', '24,10'], 'VINEYARD PERGOLA', [
     'Grapes on a trellis, going purple in the salt air.',
     'Every one of these will be wine or a metaphor by autumn.',
   ]],
