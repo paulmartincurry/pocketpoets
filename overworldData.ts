@@ -26722,6 +26722,15 @@ export function buildSummitScreen6(hasLaurel = false): HarborScreenData {
   // 4c. KEATS'S LEDGE: the urn, and a nightingale on the fallen drum
   putSolid(11, 11, HARBOR_TILES.SUMMIT_GRECIAN_URN);
   overlay[9][14] = HARBOR_TILES.SUMMIT_NIGHTINGALE;
+  // A small ledge off the west side of the stair so the Reader can actually reach
+  // the drum and the bird. (Since the map was doubled they floated in the mist,
+  // three tiles from anywhere you could stand.)
+  for (let r = 9; r <= 10; r++) {
+    for (let c = 15; c <= 16; c++) {
+      ground[r][c] = HARBOR_TILES.SUMMIT_ROCK;
+      solid[r][c] = false;
+    }
+  }
   // 4d. THE HIGH PLAZA: Milton's tree with the serpent in it, Dante's dark tree
   //     and the words from over the gate. Laurels in the far corners.
   putSolid(14, 2, HARBOR_TILES.SUMMIT_SERPENT_TREE);
