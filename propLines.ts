@@ -99,9 +99,15 @@ const ENTRIES: PropEntry[] = [
     'One jug. Three cups. One for him, one for the moon, one for his shadow.',
     'Nobody else was invited. It was still a party.',
   ]],
-  ['RUINS', ['20,10'], 'THE MOON IN THE WATER', [
+  // Seen from either bank: the Reader stands on the bank (18,10 or 22,10) and faces the water.
+  ['RUINS', ['20,10', '19,10', '21,10'], 'THE MOON IN THE WATER', [
     'The moon, sitting in the stream. They say he drowned reaching for it.',
     'Probably not true. Worth believing.',
+  ]],
+  // The bluebird sits on the bar's roof; the Reader faces the wall under it (9,8).
+  ['RUINS', ['9,8'], 'BLUEBIRD', [
+    'A bluebird on the roof of a bar. The man inside says he keeps one too, and only lets it out at night.',
+    'It sings a little. Nobody in there is going to mention it.',
   ]],
   ['RUINS', ['24,11'], 'WET BLACK BOUGH', [
     "'The apparition of these faces in the crowd: / Petals on a wet, black bough.'",
@@ -150,7 +156,9 @@ const ENTRIES: PropEntry[] = [
     "'Never send to know for whom the bell tolls; it tolls for thee.'",
     'You did not ask. It told you anyway.',
   ]],
-  ['TREELINE', ['29,7'], 'RAVEN', [
+  // The graveyard yard is fenced and its gate is a door, so the Reader reads these through
+  // the railings: 29,8 is the fence tile in front of the raven.
+  ['TREELINE', ['29,7', '29,8'], 'RAVEN', [
     "A raven on the graveyard fence. Quoth the Raven: 'Nevermore.'",
     'It only knows the one word. It has built a career on it.',
   ]],
@@ -178,7 +186,8 @@ const ENTRIES: PropEntry[] = [
     "'Because I could not stop for Death / He kindly stopped for me.'",
     'It is parked. The driver is patient. He has all the time there is.',
   ]],
-  ['TREELINE', ['7,21'], 'THE THING WITH FEATHERS', [
+  // The bird sits on her eave; the Reader faces the wall under it (7,22).
+  ['TREELINE', ['7,21', '7,22'], 'THE THING WITH FEATHERS', [
     "'Hope is the thing with feathers / That perches in the soul.'",
     'It is perched on the eave, singing the tune without the words. It has not asked you for a crumb.',
   ]],
@@ -299,15 +308,17 @@ export const GRAVES: Record<string, PropLine> = {
     "'Not all that tempts your wand'ring eyes / And heedless hearts, is lawful prize.'",
     "A favourite cat, drowned in a tub of goldfishes. 'Nor all that glisters, gold.'",
   ] },
-  'TREELINE:27,5': { name: 'ONE WHO DIED FOR BEAUTY', lines: [
+  // Read through the railings (the yard itself cannot be walked into): north fence at 27,4
+  // and 30,4, south fence at 30,8. The stones stand at 27,5 / 30,5 / 29,6.
+  'TREELINE:27,4': { name: 'ONE WHO DIED FOR BEAUTY', lines: [
     "'I died for Beauty, but was scarce / Adjusted in the Tomb.'",
     'The moss has reached the lips and is working on the name.',
   ] },
-  'TREELINE:30,5': { name: 'ONE WHO DIED FOR TRUTH', lines: [
+  'TREELINE:30,4': { name: 'ONE WHO DIED FOR TRUTH', lines: [
     "'When One who died for Truth, was lain / In an adjoining Room.'",
     'They talk between the stones at night. Themself are one, he says. They are brethren.',
   ] },
-  'TREELINE:29,6': { name: 'SILAS, THE HIRED MAN', lines: [
+  'TREELINE:30,8': { name: 'SILAS, THE HIRED MAN', lines: [
     "'Home is the place where, when you have to go there, / They have to take you in.'",
     'He came back to ditch the meadow. He did not get to it.',
   ] },
