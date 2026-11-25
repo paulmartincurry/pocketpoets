@@ -388,6 +388,14 @@ export const HARBOR_TILES = {
   TREELINE_FEATHERED_BIRD: 1059, // Dickinson: the thing with feathers
   TREELINE_SNOWMAN: 1060, // Stevens: the snow man
 
+  // Screen 6: The Summit - one platform per poet
+  SUMMIT_APPLE_BOUGH: 1070, // Sappho: the apple on the topmost bough
+  SUMMIT_GRECIAN_URN: 1071, // Keats
+  SUMMIT_NIGHTINGALE: 1072, // Keats
+  SUMMIT_SERPENT_TREE: 1073, // Milton
+  SUMMIT_DARK_TREE: 1074, // Dante: the dark wood
+  SUMMIT_GATE_TABLET: 1075, // Dante: the words over the gate
+
   // Screen 2: Fence
   FENCE_WHITE_H: 89,
   FENCE_WHITE_V: 90,
@@ -6431,7 +6439,7 @@ export function getHarborTilesetCanvas(): HTMLCanvasElement {
 function createHarborTilesetCanvas(): HTMLCanvasElement {
   const canvas = document.createElement('canvas');
   canvas.width = 384;
-  canvas.height = 1504; // 94 rows; row 90 Town east lawn, 91 Cliffs, 92 Ruins, 93 Treeline
+  canvas.height = 1520; // 95 rows; row 90 Town east lawn, 91 Cliffs, 92 Ruins, 93 Treeline, 94 Summit
   const ctx = canvas.getContext('2d');
   if (!ctx) return canvas;
   const renderCtx = ctx;
@@ -19384,6 +19392,100 @@ function createHarborTilesetCanvas(): HTMLCanvasElement {
   px(10, 93, 2, 6, '#5b3a1e', 3, 1); // Stick arms
   px(10, 93, 11, 6, '#5b3a1e', 3, 1);
 
+  // ==========================================================================
+  // ROW 94: SCREEN 6 (THE SUMMIT) - ONE PLATFORM PER POET
+  // ==========================================================================
+
+  // 0. SUMMIT_APPLE_BOUGH - a bare tree, one red apple left on the very top branch
+  rect(0, 94, 0, 0, 16, 16, 'transparent');
+  px(0, 94, 7, 5, '#5b3a1e', 2, 11); // Trunk
+  px(0, 94, 4, 7, '#5b3a1e', 3, 1); // Branches
+  px(0, 94, 3, 5, '#5b3a1e', 1, 2);
+  px(0, 94, 9, 8, '#5b3a1e', 3, 1);
+  px(0, 94, 12, 6, '#5b3a1e', 1, 2);
+  px(0, 94, 8, 2, '#5b3a1e', 1, 3); // The topmost bough
+  px(0, 94, 9, 2, '#5b3a1e', 2, 1);
+  rect(0, 94, 10, 0, 3, 3, '#dc2626'); // The apple
+  px(0, 94, 10, 0, '#fca5a5', 1, 1);
+  px(0, 94, 11, 0, '#166534', 1, 1); // Leaf
+  px(0, 94, 4, 6, '#4d7c0f', 1, 1); // Two leaves, no fruit, lower down
+  px(0, 94, 11, 7, '#4d7c0f', 1, 1);
+  px(0, 94, 5, 15, '#a8a29e', 6, 1);
+
+  // 1. SUMMIT_GRECIAN_URN - a tall marble urn, figures going round it
+  rect(1, 94, 0, 0, 16, 16, 'transparent');
+  rect(1, 94, 5, 13, 6, 2, C_DARK_OUTLINE); // Foot
+  rect(1, 94, 6, 13, 4, 1, '#e7e2d6');
+  rect(1, 94, 3, 4, 10, 9, C_DARK_OUTLINE); // Body
+  rect(1, 94, 4, 5, 8, 7, '#f1ece0');
+  rect(1, 94, 5, 1, 6, 4, C_DARK_OUTLINE); // Neck and lip
+  rect(1, 94, 6, 2, 4, 2, '#e7e2d6');
+  px(1, 94, 1, 4, C_DARK_OUTLINE, 2, 4); // Handles
+  px(1, 94, 13, 4, C_DARK_OUTLINE, 2, 4);
+  px(1, 94, 4, 7, '#9a3412', 8, 1); // Frieze band
+  px(1, 94, 4, 10, '#9a3412', 8, 1);
+  px(1, 94, 5, 8, '#44403c', 1, 2); // Figures, forever mid-step
+  px(1, 94, 7, 8, '#44403c', 1, 2);
+  px(1, 94, 9, 8, '#44403c', 1, 2);
+  px(1, 94, 11, 8, '#44403c', 1, 2);
+
+  // 2. SUMMIT_NIGHTINGALE - a small brown bird, throat full
+  rect(2, 94, 0, 0, 16, 16, 'transparent');
+  rect(2, 94, 5, 8, 6, 4, '#8a5a2b');
+  rect(2, 94, 9, 6, 3, 3, '#a16207'); // Head
+  px(2, 94, 10, 7, '#000000', 1, 1);
+  px(2, 94, 12, 6, '#44403c', 1, 1); // Beak, open
+  px(2, 94, 12, 8, '#44403c', 1, 1);
+  px(2, 94, 8, 10, '#e7d3b0', 3, 2); // Pale throat
+  px(2, 94, 3, 9, '#6b4423', 2, 2); // Tail
+  px(2, 94, 7, 12, '#44403c', 1, 2);
+  px(2, 94, 9, 12, '#44403c', 1, 2);
+  px(2, 94, 14, 4, '#fde68a', 1, 1); // A note or two
+  px(2, 94, 13, 2, '#fde68a', 1, 1);
+
+  // 3. SUMMIT_SERPENT_TREE - a fruit tree with a serpent wound round the trunk
+  rect(3, 94, 0, 0, 16, 16, 'transparent');
+  rect(3, 94, 2, 1, 12, 8, '#14532d'); // Crown
+  rect(3, 94, 3, 0, 10, 10, '#166534');
+  px(3, 94, 4, 2, '#22c55e', 3, 1);
+  px(3, 94, 9, 4, '#22c55e', 3, 1);
+  px(3, 94, 5, 5, '#fbbf24', 2, 2); // Fruit
+  px(3, 94, 10, 2, '#fbbf24', 2, 2);
+  px(3, 94, 7, 10, '#5b3a1e', 2, 6); // Trunk
+  px(3, 94, 6, 10, '#65a30d', 4, 1); // Serpent coils
+  px(3, 94, 6, 12, '#65a30d', 4, 1);
+  px(3, 94, 6, 14, '#65a30d', 4, 1);
+  px(3, 94, 10, 9, '#65a30d', 2, 2); // Head, raised
+  px(3, 94, 11, 9, '#dc2626', 1, 1); // Eye
+  px(3, 94, 12, 10, '#dc2626', 2, 1); // Tongue
+
+  // 4. SUMMIT_DARK_TREE - one tree out of a dark wood: black, leafless, thorned
+  rect(4, 94, 0, 0, 16, 16, 'transparent');
+  px(4, 94, 7, 4, '#0c0a09', 2, 12); // Trunk
+  px(4, 94, 3, 6, '#0c0a09', 4, 1); // Limbs
+  px(4, 94, 2, 3, '#0c0a09', 1, 4);
+  px(4, 94, 9, 7, '#0c0a09', 4, 1);
+  px(4, 94, 13, 4, '#0c0a09', 1, 4);
+  px(4, 94, 8, 1, '#0c0a09', 1, 3);
+  px(4, 94, 5, 2, '#0c0a09', 1, 4);
+  px(4, 94, 11, 2, '#0c0a09', 1, 5);
+  px(4, 94, 1, 4, '#292524', 1, 1); // Thorns
+  px(4, 94, 14, 5, '#292524', 1, 1);
+  px(4, 94, 4, 3, '#292524', 1, 1);
+  px(4, 94, 12, 3, '#292524', 1, 1);
+  px(4, 94, 5, 15, '#44403c', 6, 1);
+
+  // 5. SUMMIT_GATE_TABLET - a dark stone lintel stood on end, words cut into it
+  rect(5, 94, 0, 0, 16, 16, 'transparent');
+  rect(5, 94, 2, 1, 12, 15, C_DARK_OUTLINE);
+  rect(5, 94, 3, 2, 10, 13, '#44403c');
+  px(5, 94, 3, 2, '#57534e', 10, 1);
+  px(5, 94, 5, 4, '#a8a29e', 6, 1); // The inscription
+  px(5, 94, 4, 6, '#a8a29e', 8, 1);
+  px(5, 94, 5, 8, '#a8a29e', 6, 1);
+  px(5, 94, 4, 10, '#a8a29e', 8, 1);
+  px(5, 94, 6, 12, '#a8a29e', 4, 1);
+
   return canvas;
 }
 
@@ -19522,6 +19624,12 @@ export function getHarborTileSourceRect(tileId: number): { sx: number; sy: numbe
     case HARBOR_TILES.TREELINE_CARRIAGE_R: return { sx: 8 * 16, sy: 93 * 16 };
     case HARBOR_TILES.TREELINE_FEATHERED_BIRD: return { sx: 9 * 16, sy: 93 * 16 };
     case HARBOR_TILES.TREELINE_SNOWMAN: return { sx: 10 * 16, sy: 93 * 16 };
+    case HARBOR_TILES.SUMMIT_APPLE_BOUGH: return { sx: 0 * 16, sy: 94 * 16 };
+    case HARBOR_TILES.SUMMIT_GRECIAN_URN: return { sx: 1 * 16, sy: 94 * 16 };
+    case HARBOR_TILES.SUMMIT_NIGHTINGALE: return { sx: 2 * 16, sy: 94 * 16 };
+    case HARBOR_TILES.SUMMIT_SERPENT_TREE: return { sx: 3 * 16, sy: 94 * 16 };
+    case HARBOR_TILES.SUMMIT_DARK_TREE: return { sx: 4 * 16, sy: 94 * 16 };
+    case HARBOR_TILES.SUMMIT_GATE_TABLET: return { sx: 5 * 16, sy: 94 * 16 };
     case HARBOR_TILES.TOWN_SOAPBOX: return { sx: 0 * 16, sy: 90 * 16 };
     case HARBOR_TILES.TOWN_WILDFLOWERS: return { sx: 1 * 16, sy: 90 * 16 };
     case HARBOR_TILES.TOWN_BUSH: return { sx: 2 * 16, sy: 90 * 16 };
@@ -26564,6 +26672,35 @@ export function buildSummitScreen6(hasLaurel = false): HarborScreenData {
     objects[10][c] = HARBOR_TILES.SUMMIT_AMPH_BALUSTRADE;
     solid[10][c] = true;
   }
+
+  // 4. ONE PLATFORM PER POET
+  const putSolid = (c: number, r: number, tile: number) => {
+    objects[r][c] = tile;
+    solid[r][c] = true;
+  };
+  // 4a. SHAKESPEARE'S TERRACE (X: 23..32, Y: 16..22): benches facing his stage,
+  //     posts at the corners, the masks, and Yorick.
+  for (let c = 25; c <= 30; c++) {
+    putSolid(c, 19, HARBOR_TILES.SUMMIT_AMPH_TIER_STRAIGHT);
+    putSolid(c, 21, HARBOR_TILES.SUMMIT_AMPH_ROW1);
+  }
+  putSolid(23, 17, HARBOR_TILES.SUMMIT_AMPH_PILLAR_L);
+  putSolid(32, 17, HARBOR_TILES.SUMMIT_AMPH_PILLAR_R);
+  putSolid(23, 22, HARBOR_TILES.SUMMIT_MASKS_PILLAR);
+  putSolid(32, 22, HARBOR_TILES.SUMMIT_MASKS_PILLAR);
+  putSolid(30, 16, HARBOR_TILES.SUMMIT_YORICK_PLINTH);
+  // 4b. SAPPHO'S LEDGE: the apple the pickers could not reach, beside her lyre
+  putSolid(3, 11, HARBOR_TILES.SUMMIT_APPLE_BOUGH);
+  // 4c. KEATS'S LEDGE: the urn, and a nightingale on the fallen drum
+  putSolid(11, 11, HARBOR_TILES.SUMMIT_GRECIAN_URN);
+  overlay[9][14] = HARBOR_TILES.SUMMIT_NIGHTINGALE;
+  // 4d. THE HIGH PLAZA: Milton's tree with the serpent in it, Dante's dark tree
+  //     and the words from over the gate. Laurels in the far corners.
+  putSolid(14, 2, HARBOR_TILES.SUMMIT_SERPENT_TREE);
+  putSolid(22, 5, HARBOR_TILES.SUMMIT_DARK_TREE);
+  putSolid(21, 2, HARBOR_TILES.SUMMIT_GATE_TABLET);
+  putSolid(13, 1, HARBOR_TILES.SUMMIT_LAUREL);
+  putSolid(22, 1, HARBOR_TILES.SUMMIT_LAUREL);
 
   // South Grand Steps exit at (17..18, 27)
   solid[27][17] = false;
