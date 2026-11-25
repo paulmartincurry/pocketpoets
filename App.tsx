@@ -1711,6 +1711,37 @@ export const GRAND_TOUR_ROSTER: string[] = [
   'DANTE',
 ];
 
+// What is kept of a climb between visits.
+interface ClimbSave {
+  v: 1;
+  name: string;
+  custom: PlayerCustomization | null;
+  captured: string[];
+  lineup: string[];
+  active: string;
+  pos: { screen: string; x: number; y: number } | null;
+  visited: string[];
+}
+const CLIMB_SAVE_KEY = 'poetmon_climb_save';
+function readClimbSave(): ClimbSave | null {
+  try {
+    const raw = localStorage.getItem(CLIMB_SAVE_KEY);
+    if (!raw) return null;
+    const save = JSON.parse(raw) as ClimbSave;
+    if (!save || save.v !== 1 || !Array.isArray(save.captured) || !Array.isArray(save.lineup)) return null;
+    return save;
+  } catch {
+    return null;
+  }
+}
+function clearClimbSave(): void {
+  try {
+    localStorage.removeItem(CLIMB_SAVE_KEY);
+  } catch {
+    // ignore
+  }
+}
+
 export interface TitleMenuItem {
   id: string;
   label: string;
@@ -1732,6 +1763,11 @@ export const TITLE_MENU_ITEMS: TitleMenuItem[] = [
     id: 'ANTHOLOGY',
     label: 'ANTHOLOGY',
     description: 'The Immortal Anthology',
+  },
+  {
+    id: 'NEW_CLIMB',
+    label: 'NEW CLIMB',
+    description: 'Start over from the Harbor',
   },
 ];
 
@@ -1785,10 +1821,34 @@ export default function App() {
   const titleMenuIndexRef = useRef<number>(0);
   titleMenuIndexRef.current = titleMenuIndex;
 
+  // THE SAVED CLIMB. The anthology, lineup and the last door walked through are kept
+  // in the browser, so closing the tab does not lose the climb. CONTINUE on the title
+  // picks it up; NEW CLIMB throws it away and starts again.
+  const [hasSavedClimb, setHasSavedClimb] = useState<boolean>(() => readClimbSave() !== null);
+  const resumeSavedClimbRef = useRef<(save: ClimbSave) => void>(() => {});
+
   const activateTitleOption = useCallback(
     (index: number) => {
       gameAudio.playConfirmSelect();
       triggerHaptics(40);
+      if (index === 3) {
+        // NEW CLIMB: forget the saved climb and play the opening
+        clearClimbSave();
+        setHasSavedClimb(false);
+        setHasStartedClimb(false);
+        setOpeningSceneIndex(0);
+        setIsSlideDissolving(false);
+        setIsInBlackWait(false);
+        setSlideRevealKey((k) => k + 1);
+        soundtrackEngine.setPrologueSlide(0);
+        setCurrentScreen('OPENING_SCENE');
+        return;
+      }
+      const savedClimb = !hasStartedClimb ? readClimbSave() : null;
+      if (index === 0 && savedClimb) {
+        resumeSavedClimbRef.current(savedClimb);
+        return;
+      }
       if (index === 0) {
         if (hasStartedClimb) {
           soundtrackEngine.setDucking(false);
@@ -1858,6 +1918,9 @@ export default function App() {
   // Screens reached during the current climb. Unlike visitedCantos (which is saved
   // forever and only decides when chapter cards show), this starts over with each new game.
   const climbVisitedScreensRef = useRef<Set<string>>(new Set(['HARBOR']));
+  const climbSavePosRef = useRef<{ screen: string; x: number; y: number } | null>(null);
+  const [climbSaveTick, setClimbSaveTick] = useState(0);
+  const climbSaveReadyRef = useRef(false);
 
   const [cantoCardText, setCantoCardText] = useState<string>('CANTO I: THE HARBOR — THE FOOT OF PARNASSUS');
   const [isCantoCardVisible, setIsCantoCardVisible] = useState<boolean>(false);
@@ -3427,6 +3490,8 @@ export default function App() {
     setSelectedGameMode('CLIMB');
     setHasStartedClimb(true);
     climbVisitedScreensRef.current = new Set(['HARBOR']);
+    climbSavePosRef.current = null;
+    climbSaveReadyRef.current = true;
     animTimeRef.current = 0;
     if (customName) setPlayerName(customName);
     if (customStyle) {
@@ -3907,6 +3972,8 @@ export default function App() {
         setLunchNpcsState(lunchNpcsRef.current);
       }
       climbVisitedScreensRef.current.add(targetScreen);
+      climbSavePosRef.current = { screen: targetScreen, x: targetX, y: targetY };
+      setClimbSaveTick((t) => t + 1);
       if (targetScreen === 'TOWN') {
         // Whoever's turn it is takes the soapbox, based on how far the Reader has climbed this game
         townNpcsRef.current = arrangeSoapbox(townNpcsRef.current, climbVisitedScreensRef.current);
@@ -4009,6 +4076,47 @@ export default function App() {
     }, 200);
   }, [hasLaurel, triggerCantoCard]);
 
+  // Write the saved climb whenever the anthology changes or a door is walked through.
+  useEffect(() => {
+    if (!hasStartedClimb || selectedGameMode !== 'CLIMB' || !climbSaveReadyRef.current) return;
+    try {
+      const save: ClimbSave = {
+        v: 1,
+        name: playerName,
+        custom: playerCustom,
+        captured: capturedPoetIds,
+        lineup: playerLineup,
+        active: activePlayerPoetId,
+        pos: climbSavePosRef.current,
+        visited: [...climbVisitedScreensRef.current],
+      };
+      localStorage.setItem(CLIMB_SAVE_KEY, JSON.stringify(save));
+      setHasSavedClimb(true);
+    } catch {
+      // ignore: the game still plays, it just will not be remembered
+    }
+  }, [hasStartedClimb, selectedGameMode, playerName, playerCustom, capturedPoetIds, playerLineup, activePlayerPoetId, climbSaveTick]);
+
+  // Pick a saved climb back up from the title screen.
+  resumeSavedClimbRef.current = (save: ClimbSave) => {
+    startClimbOverworld(save.name || 'READER', save.custom ?? undefined);
+    setCapturedPoetIds(save.captured);
+    setPlayerLineup(save.lineup);
+    setActivePlayerPoetId(save.active || save.lineup[0] || '');
+    setScreenCurtainAlpha(0);
+    setCinematicCurtainAlpha(0);
+    setIsCinematicHudVisible(true);
+    setIsCinematicLocked(false);
+    climbVisitedScreensRef.current = new Set(save.visited?.length ? save.visited : ['HARBOR']);
+    const pos = save.pos;
+    if (pos) {
+      climbSavePosRef.current = pos;
+      window.setTimeout(() => {
+        transitionOverworldScreen(pos.screen as OverworldScreenId, pos.x, pos.y, 'DOWN');
+      }, 300);
+    }
+  };
+
   // STUDIO TOOL: jump straight to a spot for testing. Does nothing unless the address
   // has ?warp= in it, e.g.  ?warp=TOWN,30,25  or  ?warp=TOWN,30,25&seen=CLIFFS,RUINS
   // ("seen" pretends the Reader has already reached those screens this climb).
@@ -4033,6 +4141,7 @@ export default function App() {
       if (warpDoneRef.current) return;
       warpDoneRef.current = true;
       startClimbOverworld('READER');
+      climbSaveReadyRef.current = false; // A test warp never overwrites the real saved climb
       setScreenCurtainAlpha(0);
       setCinematicCurtainAlpha(0);
       setIsCinematicHudVisible(true);
@@ -16654,7 +16763,7 @@ export default function App() {
             <div className="w-full flex flex-col items-center space-y-1 sm:space-y-1.5">
               {TITLE_MENU_ITEMS.map((item, idx) => {
                 const isSelected = titleMenuIndex === idx;
-                const label = idx === 0 ? (hasStartedClimb ? 'CONTINUE' : 'BEGIN') : item.label;
+                const label = idx === 0 ? (hasStartedClimb || hasSavedClimb ? 'CONTINUE' : 'BEGIN') : item.label;
                 return (
                   <button
                     key={item.id}
