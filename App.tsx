@@ -3285,8 +3285,12 @@ export default function App() {
   }, []);
 
   // Start Battle Session
+  // A duel is won once. Without this latch every extra press on the victory screen
+  // re-ran the win: the score and the loot were awarded again each time.
+  const victoryLatchRef = useRef(false);
   const initBattle = useCallback(
     (customPlayerId?: string, customEnemyId?: string, customArenaId?: string) => {
+      victoryLatchRef.current = false;
       setOverworldDialogue(null);
       overworldDialogueRef.current = null;
       setScreenCurtainAlpha(1);
@@ -12408,6 +12412,8 @@ export default function App() {
 
   const processTurnOutcome = useCallback(() => {
     if (enemyHpRef.current <= 0) {
+      if (victoryLatchRef.current) return;
+      victoryLatchRef.current = true;
       setCaptureMethod('DEFEATED');
       const hpBonus = playerHpRef.current * 30;
       const finalScore = 3000 + hpBonus;
@@ -13141,6 +13147,8 @@ export default function App() {
       } else if (turnStageRef.current === 'MOVE_OUTCOME') {
         if (activeMoveRef.current?.id === 'ITEM_CAPTURE') {
           if (bookAnimRef.current.success) {
+            if (victoryLatchRef.current) return;
+            victoryLatchRef.current = true;
             setCaptureMethod('CAPTURED');
             const hpBonus = playerHpRef.current * 45;
             const finalScore = 5000 + hpBonus;
@@ -13163,6 +13171,8 @@ export default function App() {
         }
 
         if (enemyHpRef.current <= 0) {
+          if (victoryLatchRef.current) return;
+          victoryLatchRef.current = true;
           setCaptureMethod('DEFEATED');
           const hpBonus = playerHpRef.current * 30;
           const finalScore = 3000 + hpBonus;
