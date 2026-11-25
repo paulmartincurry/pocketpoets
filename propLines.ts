@@ -137,7 +137,7 @@ const ENTRIES: PropEntry[] = [
     "'A Jug of Wine, a Loaf of Bread, and Thou / Beside me singing in the Wilderness.'",
     'Two out of three are here.',
   ]],
-  ['RUINS', ['4,15', '7,15', '11,15', '14,15', '5,18', '12,18'], 'BROKEN COLUMN', [
+  ['RUINS', ['4,15', '7,15', '11,15', '14,15', '5,18', '12,18', '9,18', '15,18'], 'BROKEN COLUMN', [
     'Half a column. It used to hold up a roof. Now it holds up the idea of one.',
   ]],
   ['RUINS', ['25,18'], 'STONE LANTERN', [
@@ -231,6 +231,13 @@ const ENTRIES: PropEntry[] = [
   ['SUMMIT', ['11,11'], 'GRECIAN URN', [
     "'Thou still unravish'd bride of quietness.'",
     'The lovers on it never touch and never get old. He was twenty-three. He knew which was the better deal.',
+  ]],
+  ['SUMMIT', ['30,16'], 'YORICK', [
+    "'Alas, poor Yorick! I knew him, Horatio: a fellow of infinite jest.'",
+    'A skull on a plinth. The jokes are gone. The grin stayed.',
+  ]],
+  ['SUMMIT', ['23,22', '32,22'], 'THE TWO MASKS', [
+    'Comedy and Tragedy, side by side on a pillar. Same face. One of them has read ahead.',
   ]],
   ['SUMMIT', ['14,9'], 'NIGHTINGALE', [
     "'Thou wast not born for death, immortal Bird!'",

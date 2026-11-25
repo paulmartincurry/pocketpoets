@@ -6730,7 +6730,7 @@ export default function App() {
         propInspectIndexRef.current.BELFAST_SINK = (curIdx + 1) % lines.length;
         setOverworldDialogue({
           active: true,
-          speakerName: 'BELFAST SINK',
+          speakerName: 'WINDOW OVER THE SINK',
           text: lines[curIdx],
         });
         return;
@@ -6751,16 +6751,18 @@ export default function App() {
         return;
       }
 
-      // 7. Kitchen counter with breadbox & fresh crusty bread at X: 13..14, Y: 1..2
-      if ((facingX === 13 || facingX === 14) && (facingY === 1 || facingY === 2)) {
+      // 7. Child's drawing pinned to the wall at X: 14, Y: 1. (This spot used to describe a
+      //    breadbox that was never drawn, using the baking board's text. Copy is a draft.)
+      if (facingX === 14 && facingY === 1) {
         gameAudio.playCrispClick();
         triggerHaptics(30);
-        const lines = ROOM_KITCHEN.props.baking_board;
-        setOverworldDialogue({
-          active: true,
-          speakerName: 'BAKING BOARD',
-          text: lines[0],
-        });
+        const lines = [
+          "A child's crayon drawing pinned to the wall: a house, a sun, three figures. One is much taller than the others.",
+          'Signed in the corner in careful capitals. Somebody small is proud of it.',
+        ];
+        const curIdx = (quietPropIndexRef.current.KITCHEN_DRAWING ?? 0) % lines.length;
+        quietPropIndexRef.current.KITCHEN_DRAWING = curIdx + 1;
+        setOverworldDialogue({ active: true, speakerName: "CHILD'S DRAWING", text: lines[curIdx] });
         return;
       }
 
@@ -8149,7 +8151,7 @@ export default function App() {
     // SCREEN 4: THE RUINS (Canto IV: The Narrow Road • 36x28) INTERACTIONS
     // =========================================================================
     if (currentScreenId === 'RUINS') {
-      // 1. Check The Mermaid Tavern Door: X: 7, Y: 8 -> Transitions inside!
+      // 1. Check The Mountain Goat Door: X: 7, Y: 8 -> Transitions inside!
       const isGoatDoor = (facingX === 7 && facingY === 8) || (p.gridX === 7 && p.gridY === 9 && p.dir === 'UP');
       if (isGoatDoor && (p.dir === 'UP' || facingY === 8)) {
         transitionOverworldScreen('MOUNTAIN_GOAT', 7, 10, 'UP');
@@ -8309,8 +8311,8 @@ export default function App() {
         return;
       }
 
-      // 3.6c. Check Ancient Red Oak Tree: X: 11, Y: 20
-      if (facingX === 11 && facingY === 20) {
+      // 3.6c. Ancient Red Oak: any of the ten oak trunks (was only the one at X: 11, Y: 20)
+      if (buildRuinsScreen4().objects[facingY]?.[facingX] === HARBOR_TILES.BIG_TREE_TRUNK) {
         gameAudio.playHoverMicroTone();
         triggerHaptics(30);
         const lines = ROOM_RUINS.props.ancient_red_oak_tree;
