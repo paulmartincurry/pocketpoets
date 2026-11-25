@@ -375,6 +375,19 @@ export const HARBOR_TILES = {
   RUINS_BOOK_STACK: 1041, // Sor Juana: books by the library door
   RUINS_BANANA_PLANT: 1042, // Basho: the banana plant he took his name from
 
+  // Screen 5: The Treeline - things that answer to poems
+  TREELINE_LITTLE_HORSE: 1050, // Frost: the little horse, stopped by the woods
+  TREELINE_FORK_SIGN: 1051, // Frost: two roads diverge
+  TREELINE_BENT_BIRCH: 1052, // Frost: birches bent left and right
+  TREELINE_BELL_POST: 1053, // Donne: the bell
+  TREELINE_RAVEN: 1054, // Poe: a raven on the graveyard fence
+  TREELINE_BEE_BOX: 1055, // Plath: the bee box
+  TREELINE_BLACK_SHOE: 1056, // Plath: one black shoe
+  TREELINE_CARRIAGE_L: 1057, // Dickinson: the carriage that stopped for her
+  TREELINE_CARRIAGE_R: 1058,
+  TREELINE_FEATHERED_BIRD: 1059, // Dickinson: the thing with feathers
+  TREELINE_SNOWMAN: 1060, // Stevens: the snow man
+
   // Screen 2: Fence
   FENCE_WHITE_H: 89,
   FENCE_WHITE_V: 90,
@@ -6418,7 +6431,7 @@ export function getHarborTilesetCanvas(): HTMLCanvasElement {
 function createHarborTilesetCanvas(): HTMLCanvasElement {
   const canvas = document.createElement('canvas');
   canvas.width = 384;
-  canvas.height = 1488; // 93 rows; row 90 Town east lawn, row 91 Cliffs, row 92 Ruins
+  canvas.height = 1504; // 94 rows; row 90 Town east lawn, 91 Cliffs, 92 Ruins, 93 Treeline
   const ctx = canvas.getContext('2d');
   if (!ctx) return canvas;
   const renderCtx = ctx;
@@ -19228,6 +19241,149 @@ function createHarborTilesetCanvas(): HTMLCanvasElement {
   px(12, 92, 11, 3, '#3f6212', 1, 2);
   px(12, 92, 13, 5, '#3f6212', 1, 2);
 
+  // ==========================================================================
+  // ROW 93: SCREEN 5 (THE TREELINE) - THINGS THAT ANSWER TO POEMS
+  // ==========================================================================
+  const C_SNOWCAP = '#f8fafc';
+  const C_SNOWSHADE = '#cbd5e1';
+
+  // 0. TREELINE_LITTLE_HORSE - small brown horse in harness, bells on the collar, snow on its back
+  rect(0, 93, 0, 0, 16, 16, 'transparent');
+  rect(0, 93, 4, 6, 10, 5, '#7c4a21'); // Body
+  rect(0, 93, 1, 2, 4, 6, '#7c4a21'); // Neck and head
+  rect(0, 93, 0, 3, 3, 3, '#7c4a21');
+  px(0, 93, 3, 1, '#7c4a21', 1, 1); // Ear
+  px(0, 93, 4, 2, '#3b2410', 2, 5); // Mane
+  px(0, 93, 1, 4, '#000000', 1, 1); // Eye
+  px(0, 93, 5, 6, C_SNOWCAP, 8, 1); // Snow along the back
+  px(0, 93, 4, 7, '#1c1917', 1, 3); // Harness collar
+  px(0, 93, 4, 10, '#facc15', 1, 1); // Bells
+  px(0, 93, 5, 9, '#facc15', 1, 1);
+  px(0, 93, 5, 11, '#3b2410', 2, 4); // Legs
+  px(0, 93, 11, 11, '#3b2410', 2, 4);
+  px(0, 93, 8, 11, '#5b3a1e', 1, 3);
+  px(0, 93, 14, 6, '#3b2410', 1, 6); // Tail
+
+  // 1. TREELINE_FORK_SIGN - a post with two arms pointing two ways, both worn blank
+  rect(1, 93, 0, 0, 16, 16, 'transparent');
+  px(1, 93, 7, 2, '#5b3a1e', 2, 14); // Post
+  rect(1, 93, 0, 3, 8, 3, '#8b5a2b'); // Left arm
+  px(1, 93, 0, 4, '#5b3a1e', 1, 1);
+  rect(1, 93, 8, 7, 8, 3, '#8b5a2b'); // Right arm
+  px(1, 93, 15, 8, '#5b3a1e', 1, 1);
+  px(1, 93, 1, 2, C_SNOWCAP, 7, 1); // Snow on both
+  px(1, 93, 8, 6, C_SNOWCAP, 7, 1);
+  px(1, 93, 7, 1, C_SNOWCAP, 2, 1);
+  px(1, 93, 6, 15, C_SNOWSHADE, 4, 1);
+
+  // 2. TREELINE_BENT_BIRCH - a white birch bowed right over by ice, crown almost at the ground
+  rect(2, 93, 0, 0, 16, 16, 'transparent');
+  px(2, 93, 3, 9, '#f1f5f9', 2, 7); // Trunk rising
+  px(2, 93, 4, 6, '#f1f5f9', 2, 4);
+  px(2, 93, 5, 4, '#f1f5f9', 3, 2); // Arching over
+  px(2, 93, 8, 3, '#f1f5f9', 4, 2);
+  px(2, 93, 12, 4, '#f1f5f9', 2, 3);
+  px(2, 93, 13, 7, '#e2e8f0', 2, 4); // Crown hanging
+  px(2, 93, 3, 11, '#1c1917', 2, 1); // Bark marks
+  px(2, 93, 4, 8, '#1c1917', 1, 1);
+  px(2, 93, 7, 4, '#1c1917', 1, 1);
+  px(2, 93, 11, 3, '#1c1917', 1, 1);
+  px(2, 93, 12, 9, '#94a3b8', 1, 3); // Bare twigs
+  px(2, 93, 15, 9, '#94a3b8', 1, 2);
+  px(2, 93, 2, 15, C_SNOWSHADE, 4, 1);
+
+  // 3. TREELINE_BELL_POST - a bronze bell hung in a timber frame
+  rect(3, 93, 0, 0, 16, 16, 'transparent');
+  px(3, 93, 2, 2, '#5b3a1e', 2, 14); // Uprights
+  px(3, 93, 12, 2, '#5b3a1e', 2, 14);
+  rect(3, 93, 1, 1, 14, 2, '#8b5a2b'); // Beam
+  px(3, 93, 1, 0, C_SNOWCAP, 14, 1);
+  px(3, 93, 7, 3, '#44403c', 2, 2); // Hanger
+  rect(3, 93, 5, 5, 6, 5, '#b45309'); // Bell
+  rect(3, 93, 4, 9, 8, 2, '#92400e');
+  px(3, 93, 6, 5, '#f59e0b', 1, 4); // Shine
+  px(3, 93, 7, 11, '#1c1917', 2, 2); // Clapper
+  px(3, 93, 8, 13, '#a8a29e', 1, 3); // Rope
+
+  // 4. TREELINE_RAVEN - a raven, perched
+  rect(4, 93, 0, 0, 16, 16, 'transparent');
+  rect(4, 93, 5, 7, 6, 5, '#0c0a09'); // Body
+  rect(4, 93, 8, 4, 4, 4, '#0c0a09'); // Head
+  px(4, 93, 12, 6, '#44403c', 2, 1); // Beak
+  px(4, 93, 10, 5, '#f5f5f4', 1, 1); // Eye
+  px(4, 93, 3, 9, '#0c0a09', 2, 2); // Tail
+  px(4, 93, 2, 10, '#0c0a09', 1, 2);
+  px(4, 93, 6, 8, '#292524', 3, 2); // Wing sheen
+  px(4, 93, 7, 12, '#44403c', 1, 2); // Feet
+  px(4, 93, 9, 12, '#44403c', 1, 2);
+
+  // 5. TREELINE_BEE_BOX - a white hive box under snow, one dark slot at the front
+  rect(5, 93, 0, 0, 16, 16, 'transparent');
+  rect(5, 93, 2, 5, 12, 10, C_DARK_OUTLINE);
+  rect(5, 93, 3, 6, 10, 8, '#f5f0e6');
+  px(5, 93, 3, 9, '#d6cdb8', 10, 1); // Box joint
+  px(5, 93, 6, 12, '#1c1917', 4, 1); // Entrance slot
+  rect(5, 93, 1, 3, 14, 2, C_SNOWCAP); // Snow on the lid
+  px(5, 93, 2, 2, C_SNOWCAP, 11, 1);
+  px(5, 93, 11, 11, '#facc15', 1, 1); // One bee out in the cold
+
+  // 6. TREELINE_BLACK_SHOE - a single black shoe on the snow
+  rect(6, 93, 0, 0, 16, 16, 'transparent');
+  rect(6, 93, 4, 9, 9, 4, '#0c0a09');
+  rect(6, 93, 4, 6, 4, 4, '#0c0a09'); // Ankle
+  px(6, 93, 5, 6, '#292524', 2, 1); // Opening
+  px(6, 93, 9, 9, '#44403c', 3, 1); // Shine on the toe
+  px(6, 93, 4, 13, '#44403c', 9, 1); // Sole
+  px(6, 93, 8, 8, '#a8a29e', 1, 1); // Lace end
+
+  // 7-8. TREELINE_CARRIAGE_L / R - a closed black carriage, lamps lit, waiting
+  rect(7, 93, 0, 0, 16, 16, 'transparent');
+  rect(7, 93, 3, 3, 13, 9, '#0c0a09'); // Body, left half
+  rect(7, 93, 5, 5, 5, 4, '#fde68a'); // Lit window
+  px(7, 93, 7, 5, '#0c0a09', 1, 4);
+  px(7, 93, 3, 2, C_SNOWCAP, 13, 1); // Snow on the roof
+  px(7, 93, 1, 6, '#f59e0b', 2, 2); // Lamp
+  px(7, 93, 2, 5, '#44403c', 1, 1);
+  rect(7, 93, 4, 10, 6, 6, '#1c1917'); // Wheel
+  rect(7, 93, 5, 11, 4, 4, '#57534e');
+  px(7, 93, 6, 12, '#1c1917', 2, 2);
+  rect(8, 93, 0, 0, 16, 16, 'transparent');
+  rect(8, 93, 0, 3, 11, 9, '#0c0a09'); // Body, right half
+  rect(8, 93, 2, 4, 4, 7, '#1c1917'); // Door, shut
+  px(8, 93, 5, 8, '#facc15', 1, 1); // Handle
+  px(8, 93, 0, 2, C_SNOWCAP, 11, 1);
+  rect(8, 93, 6, 10, 6, 6, '#1c1917'); // Wheel
+  rect(8, 93, 7, 11, 4, 4, '#57534e');
+  px(8, 93, 8, 12, '#1c1917', 2, 2);
+  px(8, 93, 11, 9, '#44403c', 5, 1); // Shaft, no horse in it
+  px(8, 93, 12, 6, '#f59e0b', 2, 2); // Lamp
+
+  // 9. TREELINE_FEATHERED_BIRD - one small yellow bird, singing
+  rect(9, 93, 0, 0, 16, 16, 'transparent');
+  rect(9, 93, 6, 9, 4, 3, '#facc15');
+  rect(9, 93, 8, 7, 3, 3, '#fde047'); // Head
+  px(9, 93, 9, 8, '#000000', 1, 1);
+  px(9, 93, 11, 8, '#f97316', 1, 1); // Beak, open
+  px(9, 93, 11, 9, '#f97316', 1, 1);
+  px(9, 93, 5, 10, '#ca8a04', 1, 2); // Tail
+  px(9, 93, 7, 12, '#44403c', 1, 1);
+  px(9, 93, 9, 12, '#44403c', 1, 1);
+
+  // 10. TREELINE_SNOWMAN - a snow man: three balls, coal eyes, nothing else
+  rect(10, 93, 0, 0, 16, 16, 'transparent');
+  rect(10, 93, 3, 9, 10, 6, C_DARK_OUTLINE);
+  rect(10, 93, 4, 9, 8, 5, C_SNOWCAP); // Base
+  rect(10, 93, 4, 5, 8, 5, C_DARK_OUTLINE);
+  rect(10, 93, 5, 5, 6, 4, C_SNOWCAP); // Middle
+  rect(10, 93, 5, 1, 6, 5, C_DARK_OUTLINE);
+  rect(10, 93, 6, 2, 4, 3, C_SNOWCAP); // Head
+  px(10, 93, 7, 3, '#0c0a09', 1, 1); // Coal eyes
+  px(10, 93, 9, 3, '#0c0a09', 1, 1);
+  px(10, 93, 5, 12, C_SNOWSHADE, 6, 1);
+  px(10, 93, 6, 8, C_SNOWSHADE, 4, 1);
+  px(10, 93, 2, 6, '#5b3a1e', 3, 1); // Stick arms
+  px(10, 93, 11, 6, '#5b3a1e', 3, 1);
+
   return canvas;
 }
 
@@ -19355,6 +19511,17 @@ export function getHarborTileSourceRect(tileId: number): { sx: number; sy: numbe
     case HARBOR_TILES.RUINS_PETAL_BOUGH: return { sx: 10 * 16, sy: 92 * 16 };
     case HARBOR_TILES.RUINS_BOOK_STACK: return { sx: 11 * 16, sy: 92 * 16 };
     case HARBOR_TILES.RUINS_BANANA_PLANT: return { sx: 12 * 16, sy: 92 * 16 };
+    case HARBOR_TILES.TREELINE_LITTLE_HORSE: return { sx: 0 * 16, sy: 93 * 16 };
+    case HARBOR_TILES.TREELINE_FORK_SIGN: return { sx: 1 * 16, sy: 93 * 16 };
+    case HARBOR_TILES.TREELINE_BENT_BIRCH: return { sx: 2 * 16, sy: 93 * 16 };
+    case HARBOR_TILES.TREELINE_BELL_POST: return { sx: 3 * 16, sy: 93 * 16 };
+    case HARBOR_TILES.TREELINE_RAVEN: return { sx: 4 * 16, sy: 93 * 16 };
+    case HARBOR_TILES.TREELINE_BEE_BOX: return { sx: 5 * 16, sy: 93 * 16 };
+    case HARBOR_TILES.TREELINE_BLACK_SHOE: return { sx: 6 * 16, sy: 93 * 16 };
+    case HARBOR_TILES.TREELINE_CARRIAGE_L: return { sx: 7 * 16, sy: 93 * 16 };
+    case HARBOR_TILES.TREELINE_CARRIAGE_R: return { sx: 8 * 16, sy: 93 * 16 };
+    case HARBOR_TILES.TREELINE_FEATHERED_BIRD: return { sx: 9 * 16, sy: 93 * 16 };
+    case HARBOR_TILES.TREELINE_SNOWMAN: return { sx: 10 * 16, sy: 93 * 16 };
     case HARBOR_TILES.TOWN_SOAPBOX: return { sx: 0 * 16, sy: 90 * 16 };
     case HARBOR_TILES.TOWN_WILDFLOWERS: return { sx: 1 * 16, sy: 90 * 16 };
     case HARBOR_TILES.TOWN_BUSH: return { sx: 2 * 16, sy: 90 * 16 };
@@ -19955,6 +20122,10 @@ export function getHarborTileSourceRect(tileId: number): { sx: number; sy: numbe
     case HARBOR_TILES.HERMITAGE_DOOR: return { sx: 6 * 16, sy: 42 * 16 };
     case HARBOR_TILES.HERMITAGE_WINDOW_LIT: return { sx: 7 * 16, sy: 42 * 16 };
     case HARBOR_TILES.TREELINE_TRAIL_MARKER: return { sx: 4 * 16, sy: 60 * 16 };
+    // These three were painted on the tileset but never given an address, so they drew as green squares.
+    case HARBOR_TILES.TREELINE_CHOPPING_BLOCK: return { sx: 0 * 16, sy: 60 * 16 };
+    case HARBOR_TILES.TREELINE_SLED_SNOWSHOES: return { sx: 1 * 16, sy: 60 * 16 };
+    case HARBOR_TILES.TREELINE_LANTERN_POST: return { sx: 2 * 16, sy: 60 * 16 };
 
     // Interior 7: The Kitchen
     case HARBOR_TILES.KITCHEN_INT_FLOOR_LINO_0: return { sx: 0 * 16, sy: 43 * 16 };
@@ -24505,6 +24676,55 @@ export function buildTreelineScreen5(): HarborScreenData {
   // Bottom tree borders
   for (let c = 0; c <= 15; c += 3) placeSnowPine(c, 25);
   for (let c = 20; c <= 33; c += 3) placeSnowPine(c, 25);
+
+  // FILLING THE TREELINE
+  const putSolid = (c: number, r: number, tile: number) => {
+    objects[r][c] = tile;
+    solid[r][c] = true;
+  };
+  const putSoft = (c: number, r: number, tile: number) => {
+    objects[r][c] = tile; // Walk-through
+  };
+
+  // A. WOODS DOWN BOTH EDGES, so the tier is a clearing and not an open sheet
+  for (const r of [3, 6, 9, 15, 18, 21]) placeSnowPine(0, r);
+  for (const r of [4, 7, 16, 19]) placeSnowPine(1, r);
+  for (const r of [4, 7, 10, 13, 16, 19, 22]) placeSnowPine(34, r);
+  for (const r of [5, 8, 11, 14, 17, 20, 23]) placeSnowPine(35, r);
+
+  // B. FROST'S WOODS (X: 2..9, Y: 14..16), lovely, dark and deep, south of his wall.
+  //    The little horse has stopped beside them.
+  for (const c of [3, 6, 9]) placeSnowPine(c, 14);
+  for (const c of [2, 5, 8]) placeSnowPine(c, 15);
+  putSolid(11, 16, HARBOR_TILES.TREELINE_LITTLE_HORSE);
+
+  // C. TWO ROADS. Below the lower lane the trail forks: the main way south is
+  //    trodden, the branch west (Y: 24, X: 7..16) has no footprints on it. It ends
+  //    at two birches bent over by ice.
+  for (let c = 7; c <= 16; c++) ground[24][c] = HARBOR_TILES.SNOW_TRAIL;
+  putSolid(16, 25, HARBOR_TILES.TREELINE_FORK_SIGN);
+  putSolid(5, 24, HARBOR_TILES.TREELINE_BENT_BIRCH);
+  putSolid(3, 24, HARBOR_TILES.TREELINE_BENT_BIRCH);
+
+  // D. OUTSIDE EACH DOOR, something of whoever is inside
+  putSolid(10, 7, HARBOR_TILES.TREELINE_BEE_BOX); // Plath, in the Kitchen: the bee boxes
+  putSolid(11, 7, HARBOR_TILES.TREELINE_BEE_BOX);
+  putSoft(7, 9, HARBOR_TILES.TREELINE_BLACK_SHOE); // Plath: one black shoe by the path
+  overlay[7][29] = HARBOR_TILES.TREELINE_RAVEN; // Poe, in the Graveyard: a raven on the fence
+  putSolid(31, 9, HARBOR_TILES.TREELINE_BELL_POST); // Donne, at the gate: the bell
+  putSolid(1, 23, HARBOR_TILES.TREELINE_CARRIAGE_L); // Dickinson, in her house: the carriage, waiting
+  putSolid(2, 23, HARBOR_TILES.TREELINE_CARRIAGE_R);
+  overlay[21][7] = HARBOR_TILES.TREELINE_FEATHERED_BIRD; // Dickinson: the thing with feathers, on her eave
+  putSolid(33, 19, HARBOR_TILES.TREELINE_CHOPPING_BLOCK); // Thoreau, in the cabin: his axe-work
+  putSolid(32, 21, HARBOR_TILES.TREELINE_SLED_SNOWSHOES);
+
+  // E. THE SNOW MAN, out in the open east of the pond, with a few pines for company
+  putSolid(31, 13, HARBOR_TILES.TREELINE_SNOWMAN); // Stevens
+  placeSnowPine(25, 12);
+  placeSnowPine(29, 11);
+  placeSnowPine(27, 14);
+  placeSnowPine(11, 3);
+  placeSnowPine(13, 2);
 
   // Collision map
   for (let r = 0; r < EXTERIOR_ROWS; r++) {
@@ -34857,6 +35077,7 @@ export function drawHarborOverworldScreen(
             objTile === HARBOR_TILES.GRAVEYARD_GATE ||
             objTile === HARBOR_TILES.TOWN_WILDFLOWERS ||
             objTile === HARBOR_TILES.RUINS_LEAF_DRIFT ||
+            objTile === HARBOR_TILES.TREELINE_BLACK_SHOE ||
             objTile === HARBOR_TILES.RUINS_LOAF_AND_JUG ||
             objTile === HARBOR_TILES.TOWN_MUSHROOMS
           ) {
