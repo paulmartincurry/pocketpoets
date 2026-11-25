@@ -4152,6 +4152,31 @@ export default function App() {
       } catch {
         // ignore
       }
+      // STUDIO HOOK (warp sessions only): lets a test script stand the Reader anywhere,
+      // read what the game is saying, and pick a menu choice. Never present in normal play.
+      (window as any).__pp = {
+        go: (s: string, gx: number, gy: number, dir: FacingDirection = 'DOWN') =>
+          transitionOverworldScreen(s as OverworldScreenId, gx, gy, dir),
+        place: (gx: number, gy: number, dir: FacingDirection) => {
+          Object.assign(overworldPlayerRef.current, {
+            gridX: gx, gridY: gy, pxX: gx * TILE_SIZE, pxY: gy * TILE_SIZE, dir,
+            isMoving: false, moveProgress: 0, fromX: gx, fromY: gy, targetX: gx, targetY: gy,
+            isGliding: false, glideVx: 0, glideVy: 0,
+          });
+        },
+        state: () => {
+          const d = overworldDialogueRef.current;
+          const pl = overworldPlayerRef.current;
+          return {
+            screen: activeOverworldScreenRef.current, x: pl.gridX, y: pl.gridY, dir: pl.dir,
+            dlg: d && d.active
+              ? { speaker: d.speakerName, text: d.text, choices: d.showChoiceMenu ? (d.choiceOptions || []).map((c) => c.label) : null }
+              : null,
+          };
+        },
+        choose: (label: string) => overworldDialogueRef.current?.choiceOptions?.find((c) => c.label === label)?.action(),
+        clear: () => setOverworldDialogue(null),
+      };
       window.setTimeout(() => {
         transitionOverworldScreen(screen as OverworldScreenId, x, y, 'DOWN');
       }, 300);
@@ -4230,6 +4255,20 @@ export default function App() {
                 active: true,
                 speakerName,
                 text: gateLine,
+                showChoiceMenu: true,
+                choiceOptions: prev?.choiceOptions || choiceOptions,
+                onComplete: onAfterTalk,
+              }));
+              return;
+            }
+            if (!activePlayerPoetId && capturedPoetIds.length === 0 && playerLineupRef.current.length === 0) {
+              // The Reader has no poet yet. Whitman is the first, and he is waiting on the pier.
+              gameAudio.playMenuCancel();
+              triggerHaptics(25);
+              setOverworldDialogue((prev) => ({
+                active: true,
+                speakerName,
+                text: 'You have no poet to stand with you yet. There is a man on the Harbor pier who has been waiting to meet you.',
                 showChoiceMenu: true,
                 choiceOptions: prev?.choiceOptions || choiceOptions,
                 onComplete: onAfterTalk,
@@ -5684,55 +5723,31 @@ export default function App() {
           ),
         );
 
-        // 1. SAPPHO fallback (if present on summit)
+        // 1. SAPPHO: first of the four. She introduces herself once, then offers the same
+        //    TALK / DUEL / LEAVE as every other poet, so the soft gate applies to her too.
+        //    (She used to start the duel on the second press, gate or no gate.)
         if (targetNpc.poetId === 'SAPPHO' || targetNpc.id === 'npc_summit_sappho') {
+          const releaseSappho = () =>
+            setSummitNpcs((prev) =>
+              prev.map((n) => (n.id === targetNpc.id ? { ...n, hasSeenIntro: true, isInteracting: false, facing: 'LEFT' } : n)),
+            );
           if (!targetNpc.hasSeenIntro) {
             setOverworldDialogue({
               active: true,
               speakerName: 'SAPPHO',
-              text: "Chaire. Sappho. Most of what I wrote is gone. What's left is enough.",
-              onComplete: () => {
-                setSummitNpcs((prev) =>
-                  prev.map((n) =>
-                    n.id === targetNpc.id ? { ...n, hasSeenIntro: true, isInteracting: false, facing: 'LEFT' } : n,
-                  ),
-                );
-              },
+              text: targetNpc.introLine || "Chaire. Sappho. Most of what I wrote is gone. What's left is enough.",
+              onComplete: releaseSappho,
             });
             return;
           }
-
-          if (targetNpc.hasFoughtBefore) {
-            setOverworldDialogue({
-              active: true,
-              speakerName: 'SAPPHO',
-              text: '"I don\'t know what to do. Two states of mind in me."',
-              onComplete: () => {
-                setSummitNpcs((prev) =>
-                  prev.map((n) => (n.id === targetNpc.id ? { ...n, isInteracting: false, facing: 'LEFT' } : n)),
-                );
-                const heroId = activePlayerPoetId || (capturedPoetIds[0] ?? 'WHITMAN');
-                initBattle(heroId, 'SAPPHO');
-              },
-            });
-            return;
-          }
-
-          // First fight
-          setOverworldDialogue({
-            active: true,
-            speakerName: 'SAPPHO',
-            text: '"Someone will remember us, I say, even in another time."',
-            onComplete: () => {
-              setSummitNpcs((prev) =>
-                prev.map((n) =>
-                  n.id === targetNpc.id ? { ...n, hasFoughtBefore: true, isInteracting: false, facing: 'LEFT' } : n,
-                ),
-              );
-              const heroId = activePlayerPoetId || (capturedPoetIds[0] ?? 'WHITMAN');
-              initBattle(heroId, 'SAPPHO');
-            },
-          });
+          promptPoetChoiceMenu(
+            'SAPPHO',
+            'The apple is still up there. Talk, duel, or walk on?',
+            targetNpc.talkLines || ['“I don\'t know what to do. Two states of mind in me.”'],
+            targetNpc.duelLine || '“Someone will remember us, I say, even in another time.”',
+            'SAPPHO',
+            releaseSappho,
+          );
           return;
         }
 
