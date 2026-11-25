@@ -11913,7 +11913,7 @@ export default function App() {
       const isAttackerDebuffed = isPlayer ? playerDebuffActiveRef.current : enemyDebuffActiveRef.current;
 
       if (move.effectType === 'HEAL') {
-        const healAmt = BATTLE_CONFIG.healAmount;
+        const healAmt = Math.max(BATTLE_CONFIG.healAmount, Math.round(attackerPoet.hp * (BATTLE_CONFIG.healPercent ?? 0.3)));
         if (isPlayer) {
           const maxHp = playerPoetRef.current.hp;
           const newHp = Math.min(maxHp, playerHpRef.current + healAmt);
@@ -12008,11 +12008,15 @@ export default function App() {
         }
       } else {
         const baseDmg = move.effectType === 'HEAVY' ? BATTLE_CONFIG.heavyDamage : BATTLE_CONFIG.lightDamage;
+        // Tier scaling: a poet with a bigger HP pool takes proportionally more,
+        // so a Winter or Summit duel runs close to Spring length (kept a touch longer).
+        const springHp = BATTLE_CONFIG.healthByRegion?.SPRING ?? 100;
+        const tierScale = 1 + Math.max(0, defenderPoet.hp / springHp - 1) * 0.75;
         const totalDmg = calculateDamage(
           baseDmg,
           isAttackerBuffed,
           isAttackerDebuffed,
-          seasonMultiplier,
+          seasonMultiplier * tierScale,
         );
 
         if (isSuperEffective) {
