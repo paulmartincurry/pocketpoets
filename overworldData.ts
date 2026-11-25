@@ -2085,6 +2085,71 @@ export const INITIAL_TOWN_NPCS: HarborNPC[] = [
   //      two stand in the grass. Who has the box changes as the Reader climbs.
   //      Everything about them is written in SOAPBOX_CAST above.
   ...buildSoapboxNpcs(0),
+  // 9-10. TOWN LOCALS. Non-Duelists who simply stand where they would stand.
+  //       Any NPC whose id starts with 'npc_town_local_' talks using the greeting and
+  //       talkLines written here; nothing else needs touching to add another.
+  // 9. Rabindranath Tagore: under a tree on the west lawn (X: 7, Y: 22). He taught under trees.
+  {
+    id: 'npc_town_local_tagore',
+    name: 'RABINDRANATH TAGORE',
+    poetId: 'TAGORE',
+    x: 7,
+    y: 22,
+    pxX: 7 * TILE_SIZE,
+    pxY: 22 * TILE_SIZE,
+    facing: 'DOWN',
+    introLine: 'Nomoshkar. Rabindranath Tagore. I was told there was a school here. There is a lawn. A lawn will do.',
+    greeting: 'Nomoshkar. Rabindranath Tagore. I was told there was a school here. There is a lawn. A lawn will do.',
+    talkLines: [
+      'I ran a school under trees. The children learned more from the trees.',
+      'They gave me a prize in Stockholm. I was in Bengal. Somebody sent a telegram.',
+      'Sit. The afternoon is in no hurry, and neither is the poem.',
+    ],
+    normalLines: [],
+    dialogueLines: [],
+    currentDialogueIndex: 0,
+    hasSeenIntro: false,
+    greeted: false,
+    talkIndex: 0,
+    isFightable: false,
+    isDuelist: false,
+    spriteKey: 'TAGORE',
+    isActive: true,
+    isMoving: false,
+    walkStep: 0,
+    isInteracting: false,
+  },
+  // 10. Li Qingzhao: on the riverbank north-east of the shops (X: 31, Y: 3). She wrote about boats.
+  {
+    id: 'npc_town_local_li_qingzhao',
+    name: 'LI QINGZHAO',
+    poetId: 'LI_QINGZHAO',
+    x: 31,
+    y: 3,
+    pxX: 31 * TILE_SIZE,
+    pxY: 3 * TILE_SIZE,
+    facing: 'DOWN',
+    introLine: "Qǐng zuò. Li Qingzhao. Sit. There's wine, and I'm not drinking it alone.",
+    greeting: "Qǐng zuò. Li Qingzhao. Sit. There's wine, and I'm not drinking it alone.",
+    talkLines: [
+      'I rowed home late once and got lost in the lotus. Scared every heron on the lake. Best night of that year.',
+      'My husband and I collected books and bronzes. Then there was a war. I kept what I could carry.',
+      "They said a woman shouldn't judge the great poets. So I ranked them. In writing.",
+    ],
+    normalLines: [],
+    dialogueLines: [],
+    currentDialogueIndex: 0,
+    hasSeenIntro: false,
+    greeted: false,
+    talkIndex: 0,
+    isFightable: false,
+    isDuelist: false,
+    spriteKey: 'LI_QINGZHAO',
+    isActive: true,
+    isMoving: false,
+    walkStep: 0,
+    isInteracting: false,
+  },
 ];
 
 // Initial NPCs for Interior 1: The Nightingale
@@ -4048,7 +4113,7 @@ export const ROOM_CAFE_DE_FLORE = {
     barista: {
       id: 'barista',
       npcId: 'npc_cafe_barista',
-      name: 'BARISTA',
+      name: 'JACQUES PRÉVERT',
       greeting:
         '“Bienvenue to the Café de Flore! A warm espresso of clear meter restores your weary spirit (+15 Inspiration Points).”',
     },
@@ -6161,33 +6226,34 @@ export function createFreshRentedRoomNpcs(): HarborNPC[] {
 
 // Initial NPCs for Interior: Café de Flore
 export const INITIAL_CAFE_NPCS: HarborNPC[] = [
-  // 1. Café Barista / Host behind the mahogany counter at X: 5, Y: 2
+  // 1. Jacques Prévert behind the mahogany counter at X: 5, Y: 2. He was a regular
+  //    at the Flore. (This used to be a nameless Barista; the id is unchanged so the
+  //    coffee still works.)
   {
     id: 'npc_cafe_barista',
-    name: 'BARISTA',
+    name: 'JACQUES PRÉVERT',
+    poetId: 'PREVERT',
     x: 5,
     y: 2,
     pxX: 5 * TILE_SIZE,
     pxY: 2 * TILE_SIZE,
     facing: 'DOWN',
-    introLine:
-      '“Bienvenue to the Café de Flore! A warm espresso of clear meter restores your weary spirit (+15 Inspiration Points).”',
-    greeting:
-      '“Bienvenue to the Café de Flore! A warm espresso of clear meter restores your weary spirit (+15 Inspiration Points).”',
+    introLine: "Bonjour. Jacques Prévert. I don't work here. Nobody else was making the coffee.",
+    greeting: "Bonjour. Jacques Prévert. I don't work here. Nobody else was making the coffee.",
     talkLines: [
-      '“A fresh demitasse of dark roast restores your spirit (+15 Inspiration Points)!”',
-      '“Apollinaire sits in the corner working on his calligrammes. He writes faster than the steam rises.”',
-      '“Jean-Paul Sartre and Simone de Beauvoir usually take the table near the heater by ten.”',
+      'Drink this. It fixes most things. (+15 Inspiration Points)',
+      "Apollinaire's in the corner drawing his poems again. Nobody tell him the words go in lines.",
+      'Sartre and de Beauvoir take the table by the heater at ten. I leave before that.',
     ],
     normalLines: [
-      '“A fresh demitasse of dark roast restores your spirit (+15 Inspiration Points)!”',
-      '“Apollinaire sits in the corner working on his calligrammes. He writes faster than the steam rises.”',
+      'Drink this. It fixes most things. (+15 Inspiration Points)',
+      "Apollinaire's in the corner drawing his poems again. Nobody tell him the words go in lines.",
     ],
     dialogueLines: [],
     currentDialogueIndex: 0,
     hasSeenIntro: false,
     isFightable: false,
-    spriteKey: 'BARISTA',
+    spriteKey: 'PREVERT',
     isActive: true,
     isMoving: false,
     walkStep: 0,
@@ -20046,6 +20112,9 @@ export const CHAR_KEYS: string[] = [
   // Interior 8 The Hermitage People
   'COLERIDGE',
   'LORDE',
+  'TAGORE',
+  'LI_QINGZHAO',
+  'PREVERT',
   'THOREAU',
   'BERRY',
   // Interior 8 The Library Modernist People
@@ -22313,6 +22382,97 @@ function drawHarborChibiChar(
     p(13, 2 + bobY, '#1c1917', 2, 4);
     if (dir === 'UP') {
       p(2, 1 + bobY, '#09090b', 12, 6); // Full rounded back of afro
+    }
+  }
+
+  // 49.01. RABINDRANATH TAGORE (long white hair and beard, deep brown full-length robe)
+  else if (k === 'TAGORE') {
+    drawRobeBottom('#4a2c17', '#5c3a21', '#33200f', '#1c1917');
+    p(2, 10 + bobY, OUT, 12, 8);
+    p(3, 11 + bobY, '#4a2c17', 10, 6); // Robe
+    p(4, 11 + bobY, '#5c3a21', 8, 1);
+    if (dir === 'DOWN') {
+      p(7, 11 + bobY, '#33200f', 2, 6); // Front fold
+    } else if (dir === 'UP') {
+      p(4, 11 + bobY, '#4a2c17', 8, 6);
+    }
+    drawFace('#c68642', '#8d5524');
+    // Long white hair, parted, falling to the shoulders
+    p(2, 0 + bobY, OUT, 12, 5);
+    p(3, 1 + bobY, '#f5f5f4', 10, 3);
+    p(2, 3 + bobY, '#e7e5e4', 2, 7);
+    p(12, 3 + bobY, '#e7e5e4', 2, 7);
+    if (dir === 'UP') {
+      p(3, 2 + bobY, '#f5f5f4', 10, 8); // Hair down the back
+    } else if (dir === 'DOWN') {
+      p(5, 7 + bobY, '#f5f5f4', 6, 5); // Full white beard
+      p(6, 12 + bobY, '#e7e5e4', 4, 2);
+    } else {
+      p(dir === 'RIGHT' ? 8 : 4, 7 + bobY, '#f5f5f4', 4, 5);
+    }
+  }
+
+  // 49.02. LI QINGZHAO (Song dynasty: black hair in a high knot with a jade pin, pale celadon robe, plum sash)
+  else if (k === 'LI_QINGZHAO') {
+    drawRobeBottom('#a7c4b5', '#c5ddd0', '#7fa392', '#3f2a14');
+    p(2, 10 + bobY, OUT, 12, 8);
+    p(3, 11 + bobY, '#a7c4b5', 10, 6); // Celadon robe
+    p(4, 11 + bobY, '#c5ddd0', 8, 1);
+    if (dir === 'DOWN') {
+      p(6, 11 + bobY, '#f5f5f4', 4, 2); // Crossed white collar
+      p(7, 12 + bobY, '#a7c4b5', 2, 1);
+      p(3, 15 + bobY, '#7e2f5a', 10, 1); // Plum sash
+    } else if (dir === 'UP') {
+      p(4, 11 + bobY, '#a7c4b5', 8, 6);
+      p(3, 15 + bobY, '#7e2f5a', 10, 1);
+    } else {
+      p(3, 15 + bobY, '#7e2f5a', 10, 1);
+    }
+    drawFace('#f1d3b3', '#d9a877', true);
+    // Black hair drawn up into a high knot, jade hairpin through it
+    p(2, 1 + bobY, OUT, 12, 4);
+    p(3, 1 + bobY, '#0c0a09', 10, 3);
+    p(5, 0 + bobY, OUT, 6, 2);
+    p(6, 0 + bobY, '#0c0a09', 4, 2);
+    p(3, 1 + bobY, '#34d399', 2, 1); // Jade pin, showing either side of the knot
+    p(11, 1 + bobY, '#34d399', 2, 1);
+    if (dir === 'UP') {
+      p(3, 2 + bobY, '#0c0a09', 10, 6);
+    } else {
+      p(2, 3 + bobY, '#0c0a09', 1, 4); // Side locks
+      p(13, 3 + bobY, '#0c0a09', 1, 4);
+    }
+  }
+
+  // 49.03. JACQUES PREVERT (flat cap pulled low, dark jacket over a white shirt, cigarette)
+  else if (k === 'PREVERT') {
+    drawLegs('#292524', '#1c1917', '#0c0a09', '#000000');
+    p(2, 10 + bobY, OUT, 12, 8);
+    p(3, 11 + bobY, '#3f3f46', 10, 6); // Dark jacket
+    p(4, 11 + bobY, '#52525b', 8, 1);
+    if (dir === 'DOWN') {
+      p(6, 11 + bobY, '#ffffff', 4, 4); // White shirt front
+      p(7, 11 + bobY, '#1c1917', 2, 4); // Thin dark tie
+    } else if (dir === 'UP') {
+      p(4, 11 + bobY, '#3f3f46', 8, 6);
+    }
+    drawFace('#fed7aa', '#d97706');
+    // Flat cap
+    p(1, 0 + bobY, OUT, 14, 4);
+    p(2, 0 + bobY, '#57534e', 12, 3);
+    p(3, 0 + bobY, '#78716c', 10, 1);
+    if (dir === 'DOWN') {
+      p(2, 3 + bobY, '#44403c', 12, 1); // Brim
+      p(10, 8 + bobY, '#ffffff', 3, 1); // Cigarette
+      p(13, 8 + bobY, '#f97316', 1, 1);
+    } else if (dir === 'LEFT') {
+      p(0, 3 + bobY, '#44403c', 6, 1);
+      p(1, 8 + bobY, '#ffffff', 3, 1);
+      p(0, 8 + bobY, '#f97316', 1, 1);
+    } else if (dir === 'RIGHT') {
+      p(10, 3 + bobY, '#44403c', 6, 1);
+      p(12, 8 + bobY, '#ffffff', 3, 1);
+      p(15, 8 + bobY, '#f97316', 1, 1);
     }
   }
 

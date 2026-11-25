@@ -4038,6 +4038,11 @@ export default function App() {
       setIsCinematicHudVisible(true);
       setIsCinematicLocked(false);
       if (seen) seen.split(',').forEach((id) => climbVisitedScreensRef.current.add(id.trim()));
+      try {
+        if (new URLSearchParams(window.location.search).get('ungated')) duelGateOffRef.current = true;
+      } catch {
+        // ignore
+      }
       window.setTimeout(() => {
         transitionOverworldScreen(screen as OverworldScreenId, x, y, 'DOWN');
       }, 300);
@@ -4047,6 +4052,25 @@ export default function App() {
 
   // Present Pokemon-style TALK / DUEL / LEAVE choice prompt for overworld poets
   // Supports cycling lines in-place, seamless DUEL transition, and LEAVE dismissal.
+  // SOFT GATE. The mountain is open to walk, but a chapter poet will not duel you
+  // until every chapter below theirs is finished. Returns the line they say instead,
+  // or null when the duel can go ahead. Poets outside the chapters (the bonus duels:
+  // Darwish, Baudelaire, Thoreau) are never gated. Adding &ungated=1 to a ?warp=
+  // address switches the gate off for testing.
+  const duelGateOffRef = useRef(false);
+  const duelGateRef = useRef<(poetId: string) => string | null>(() => null);
+  duelGateRef.current = (poetId: string) => {
+    if (duelGateOffRef.current) return null;
+    const chapterIndex = CHAPTER_GATES.findIndex((gate) => gate.poetIds.includes(poetId));
+    if (chapterIndex <= 0) return null;
+    const unfinished = CHAPTER_GATES.slice(0, chapterIndex).find((gate) =>
+      gate.poetIds.some((id) => !capturedPoetIds.includes(id)),
+    );
+    if (!unfinished) return null;
+    const season = unfinished.season.charAt(0) + unfinished.season.slice(1).toLowerCase();
+    return `Not yet, Reader. You haven't finished ${season}.`;
+  };
+
   const promptPoetChoiceMenu = useCallback(
     (
       speakerName: string,
@@ -4086,6 +4110,21 @@ export default function App() {
         choiceOptions.push({
           label: 'DUEL',
           action: () => {
+            const gateLine = duelGateRef.current(enemyPoetId);
+            if (gateLine) {
+              // Not their turn yet: they say so, and the menu stays open
+              gameAudio.playMenuCancel();
+              triggerHaptics(25);
+              setOverworldDialogue((prev) => ({
+                active: true,
+                speakerName,
+                text: gateLine,
+                showChoiceMenu: true,
+                choiceOptions: prev?.choiceOptions || choiceOptions,
+                onComplete: onAfterTalk,
+              }));
+              return;
+            }
             gameAudio.playArcadeLaser();
             triggerHaptics([40, 60]);
             setOverworldDialogue({
@@ -4629,10 +4668,11 @@ export default function App() {
         setGameState((prev) => ({ ...prev, score: prev.score + 150 }));
         addFloatingText(p.pxX + 8, p.pxY - 10, '+15 INSPIRATION!', '#fbbf24', 16);
 
+        // Jacques Prévert, who used to be a nameless Barista
         const baristaLines = [
-          '“Bienvenue to the Café de Flore! A warm espresso of clear meter restores your weary spirit (+15 Inspiration Points / +15 HP).”',
-          '“Apollinaire sits in the corner working on his calligrammes. He writes faster than the steam rises.”',
-          '“Jean-Paul Sartre and Simone de Beauvoir usually take the table near the heater by ten.”',
+          "Bonjour. Jacques Prévert. I don't work here. Nobody else was making the coffee. Drink this. (+15 Inspiration Points / +15 HP)",
+          "Apollinaire's in the corner drawing his poems again. Nobody tell him the words go in lines. (+15 Inspiration Points / +15 HP)",
+          'Sartre and de Beauvoir take the table by the heater at ten. I leave before that. (+15 Inspiration Points / +15 HP)',
         ];
         const count = (interactionCountsRef.current.cafe_barista || 0) + 1;
         interactionCountsRef.current.cafe_barista = count;
@@ -4641,7 +4681,7 @@ export default function App() {
 
         setOverworldDialogue({
           active: true,
-          speakerName: 'BARISTA',
+          speakerName: 'JACQUES PRÉVERT',
           text: baristaLines[curIdx],
         });
         return;
@@ -5026,6 +5066,11 @@ export default function App() {
 
         // 1. SAPPHO: Inside the Lyric Sanctuary by the glowing hearth/brazier. FIGHTABLE (1st in Summit Gauntlet).
         if (targetNpc.poetId === 'SAPPHO' || targetNpc.id === 'npc_sanctuary_sappho' || targetNpc.id === 'npc_summit_sappho') {
+          const sapphoGateLine = duelGateRef.current('SAPPHO');
+          if (sapphoGateLine) {
+            setOverworldDialogue({ active: true, speakerName: 'SAPPHO', text: sapphoGateLine });
+            return;
+          }
           if (!targetNpc.hasSeenIntro) {
             setOverworldDialogue({
               active: true,
@@ -10238,7 +10283,7 @@ export default function App() {
 
         // SOAPBOX CORNER (east lawn): whoever is on or around the crate. Non-Duelists.
         // Their greeting and lines live with them in INITIAL_TOWN_NPCS.
-        if (targetNpc.id.startsWith('npc_town_soapbox_')) {
+        if (targetNpc.id.startsWith('npc_town_soapbox_') || targetNpc.id.startsWith('npc_town_local_')) {
           const restFacing: FacingDirection = targetNpc.facing;
           promptPoetChoiceMenu(
             targetNpc.name,
@@ -10871,9 +10916,6 @@ export default function App() {
           "“Listen to the meter of the waves, Camerado! Every poet you meet on Mount Parnassus can be befriended in verse or tested in a duel.”",
           "“Keep your satchel ready and your ear tuned to the rhythm. Whenever you're ready, take my hand and let's begin the climb!”",
         ];
-        const whitmanDuelLine =
-          "“I sound my barbaric yawp over the roofs of the world! Let us test our stanzas on the pier!”";
-
         const choiceOptions: Array<{ label: 'TALK' | 'DUEL' | 'LEAVE' | 'JOIN'; action: () => void }> = [
           {
             label: 'TALK',
@@ -10890,21 +10932,7 @@ export default function App() {
               });
             },
           },
-          {
-            label: 'DUEL',
-            action: () => {
-              gameAudio.playArcadeLaser();
-              triggerHaptics([40, 60]);
-              setOverworldDialogue({
-                active: true,
-                speakerName: targetNpc.name,
-                text: whitmanDuelLine,
-                onComplete: () => {
-                  initBattle('WHITMAN', 'WHITMAN');
-                },
-              });
-            },
-          },
+          // Whitman is not fought. He joins the Reader on the pier.
           {
             label: 'JOIN',
             action: () => {
@@ -18086,7 +18114,7 @@ export default function App() {
               <div className="bg-[#F4F5F9] border-3 border-[#000000] rounded-xl p-3 flex flex-col justify-between">
                 <div>
                   <div className="text-xs font-black text-[#EE1515] uppercase mb-2 flex items-center justify-between">
-                    <span>OPPONENT POET (ALL 20 AVAILABLE)</span>
+                    <span>OPPONENT POET (ALL {ALL_POETS.length} AVAILABLE)</span>
                     <span className="text-[10px] text-[#000000]">CPU</span>
                   </div>
 
