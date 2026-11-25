@@ -2034,19 +2034,23 @@ export default function App() {
     return false;
   });
 
+  // One mute for the whole game. The mute button and the M key silence the music
+  // AND every sound effect; sound effects follow the same switch as the music.
   useEffect(() => {
-    gameAudio.setMuted(isSfxMuted);
-  }, [isSfxMuted]);
+    gameAudio.setMuted(isMusicMuted);
+  }, [isMusicMuted]);
 
   const toggleMusicMute = useCallback(() => {
     setIsMusicMuted((prev) => {
       const next = !prev;
       try {
         localStorage.setItem('poetmon_music_muted', String(next));
+        localStorage.setItem('poetmon_sfx_muted', String(next));
       } catch {
         // ignore
       }
       soundtrackEngine.setMuted(next);
+      gameAudio.setMuted(next);
       return next;
     });
   }, []);
@@ -16685,7 +16689,7 @@ export default function App() {
               onClick={toggleMusicMute}
               className="hover:text-[#F4B41B] transition-colors cursor-pointer flex items-center gap-1 font-bold">
               <span className="text-[#F4B41B]">[M]</span>
-              <span>BGM: {isMusicMuted ? 'OFF' : 'ON'}</span>
+              <span>SOUND: {isMusicMuted ? 'OFF' : 'ON'}</span>
             </button>
           </div>
         </div>
@@ -17286,9 +17290,9 @@ export default function App() {
                   boxShadow: '0 2px 0 #06070E',
                 }}
                 className="h-7 px-2.5 py-0 text-sm sm:text-base flex items-center gap-1.5 cursor-pointer hover:bg-[#252E4D] hover:border-[#F4B41B] hover:text-[#FFFFFF] active:translate-y-[1px] active:shadow-none transition-all flex-shrink-0"
-                title="Toggle Background Music [M]">
+                title="Mute or unmute all sound [M]">
                 {isMusicMuted ? <VolumeX size={13} /> : <Volume2 size={13} />}
-                <span>[M] {isMusicMuted ? 'MUTE' : 'BGM'}</span>
+                <span>[M] {isMusicMuted ? 'MUTED' : 'SOUND'}</span>
               </button>
               <button
                 type="button"
