@@ -80,6 +80,14 @@ const ENTRIES: PropEntry[] = [
     "'Glory be to God for dappled things / For skies of couple-colour as a brinded cow.'",
     'The cow accepts the glory and goes on chewing.',
   ]],
+  ['CLIFFS', ['7,20'], 'BLACK PONY', [
+    'A small black pony, saddled, olives in the saddlebag. Its rider knows every road and knows he will never reach Cordoba.',
+    'The pony has heard. It is being a good sport about it.',
+  ]],
+  ['CLIFFS', ['30,15', '8,17', '11,17', '14,17', '2,20', '6,20', '12,20', '16,20'], 'OLIVE TREE', [
+    'An olive tree, pruned by forty generations and in no hurry.',
+    'He wrote that a field of these opens and closes like a fan. Stand still long enough and it does.',
+  ]],
   ['CLIFFS', ['10,25'], 'THE WINDHOVER', [
     "'I caught this morning morning's minion.' A kestrel, hanging on the wind like it is nailed there.",
   ]],

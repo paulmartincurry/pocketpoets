@@ -2413,20 +2413,20 @@ export default function App() {
     preenProgress: 0,
   });
   const coastalDogRef = useRef<CoastalDogState>({
-    x: 5.5,
-    y: 5.5,
-    pxX: 5.5 * TILE_SIZE,
-    pxY: 5.5 * TILE_SIZE,
+    x: 16,
+    y: 14,
+    pxX: 16 * TILE_SIZE,
+    pxY: 14 * TILE_SIZE,
     facing: 'RIGHT',
     state: 'IDLE',
     isMoving: false,
     trotProgress: 0,
     sniffProgress: 0,
     stateTimer: 2.0,
-    targetX: 5.5,
-    targetY: 5.5,
-    startX: 5.5,
-    startY: 5.5,
+    targetX: 16,
+    targetY: 14,
+    startX: 16,
+    startY: 14,
     targetSpotIndex: 0,
     pauseTimer: 2.0,
     isInteracting: false,
@@ -3542,20 +3542,20 @@ export default function App() {
       preenProgress: 0,
     };
     coastalDogRef.current = {
-      x: 5.5,
-      y: 5.5,
-      pxX: 5.5 * TILE_SIZE,
-      pxY: 5.5 * TILE_SIZE,
+      x: 16,
+      y: 14,
+      pxX: 16 * TILE_SIZE,
+      pxY: 14 * TILE_SIZE,
       facing: 'RIGHT',
       state: 'IDLE',
       isMoving: false,
       trotProgress: 0,
       sniffProgress: 0,
       stateTimer: 2.0,
-      targetX: 5.5,
-      targetY: 5.5,
-      startX: 5.5,
-      startY: 5.5,
+      targetX: 16,
+      targetY: 14,
+      startX: 16,
+      startY: 14,
       targetSpotIndex: 0,
       pauseTimer: 2.0,
       isInteracting: false,
@@ -9311,20 +9311,9 @@ export default function App() {
         return;
       }
 
-      // 3.6 Coastal Cypress Grove: X: 2..18, Y: 19..20
-      if ((facingX >= 2 && facingX <= 18) && (facingY === 19 || facingY === 20)) {
-        gameAudio.playHoverMicroTone();
-        triggerHaptics(30);
-        const lines = ROOM_CLIFFS.props.cypress_1;
-        const curIdx = (propInspectIndexRef.current.CYPRESS_GROVE ?? 0) % lines.length;
-        propInspectIndexRef.current.CYPRESS_GROVE = (curIdx + 1) % lines.length;
-        setOverworldDialogue({
-          active: true,
-          speakerName: 'COASTAL CYPRESS',
-          text: lines[curIdx],
-        });
-        return;
-      }
+      // (3.6 was a 'Coastal Cypress Grove' covering X: 2..18, Y: 19..20. No cypress grows
+      // there: it answered for the olive trees, a stone wall and Lorca's pony. The olives and
+      // the pony now have their own lines in propLines.ts.)
 
       // 4. Mounted Brass Telescopes: X: 2, Y: 14 & X: 30, Y: 22
       if ((facingX === 2 && facingY === 14) || (facingX === 30 && facingY === 22)) {
