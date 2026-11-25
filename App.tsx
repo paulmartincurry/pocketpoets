@@ -1,4 +1,5 @@
 // Pocket Poets: 2D Literary Verse-Battler & RPG Exploration
+import { PROP_LINES, GRAVES, GATE_LINES } from './propLines';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {
   Volume2,
@@ -1371,7 +1372,6 @@ const ASSETS_MANIFEST: Record<string, string> = {
   poet_charles_bukowski: 'assets/images/poet_charles_bukowski.png',
   poet_federico_garcia_lorca: 'assets/images/poet_federico_garcia_lorca.png',
   poet_john_keats: 'assets/images/poet_john_keats.png',
-  muse_calliope: 'assets/images/muse_calliope.png',
   battle_background: 'assets/images/battle_background.png',
   battle_platform_player: 'assets/images/battle_platform_player.png',
   battle_platform_enemy: 'assets/images/battle_platform_enemy.png',
@@ -4167,6 +4167,7 @@ export default function App() {
   // Darwish, Baudelaire, Thoreau) are never gated. Adding &ungated=1 to a ?warp=
   // address switches the gate off for testing.
   const duelGateOffRef = useRef(false);
+  const quietPropIndexRef = useRef<Record<string, number>>({});
   const duelGateRef = useRef<(poetId: string) => string | null>(() => null);
   duelGateRef.current = (poetId: string) => {
     if (duelGateOffRef.current) return null;
@@ -4177,7 +4178,8 @@ export default function App() {
     );
     if (!unfinished) return null;
     const season = unfinished.season.charAt(0) + unfinished.season.slice(1).toLowerCase();
-    return `Not yet, Reader. You haven't finished ${season}.`;
+    const inVoice = GATE_LINES[poetId];
+    return inVoice ? inVoice.replace('{season}', season) : `Not yet, Reader. You haven't finished ${season}.`;
   };
 
   const promptPoetChoiceMenu = useCallback(
@@ -4736,6 +4738,20 @@ export default function App() {
     const currentScreenId = activeOverworldScreenRef.current;
     const leadPoetId = (activePlayerPoetId || playerLineupRef.current[0] || 'WHITMAN').toUpperCase();
 
+    // PROPS THAT USED TO SAY NOTHING (and the eleven headstones). Copy lives in propLines.ts.
+    {
+      const propKey = `${currentScreenId}:${facingX},${facingY}`;
+      const quietProp = PROP_LINES[propKey] ?? GRAVES[propKey];
+      if (quietProp) {
+        gameAudio.playHoverMicroTone();
+        triggerHaptics(30);
+        const idx = (quietPropIndexRef.current[propKey] ?? 0) % quietProp.lines.length;
+        quietPropIndexRef.current[propKey] = idx + 1;
+        setOverworldDialogue({ active: true, speakerName: quietProp.name, text: quietProp.lines[idx] });
+        return;
+      }
+    }
+
     // =========================================================================
     // INTERIOR 14: CAFÉ DE FLORE INTERACTIONS
     // =========================================================================
@@ -4952,7 +4968,7 @@ export default function App() {
 
       // 5. Floor-to-Ceiling Oak Bookshelves
       const isFacingShelves =
-        ((facingX === 1 || facingX === 2) && (facingY === 3 || facingY === 4 || facingY === 7 || facingY === 8)) ||
+        ((facingX === 1 || facingX === 2) && (facingY === 2 || facingY === 3 || facingY === 4 || facingY === 7 || facingY === 8)) ||
         ((facingX === 13 || facingX === 14) && (facingY === 3 || facingY === 4)) ||
         (facingY === 1 && facingX >= 1 && facingX <= 14);
 
@@ -6624,7 +6640,7 @@ export default function App() {
 
       // 2. FURNITURE & PROPS INSPECTABLES
       // 1. Table & Typewriter / Manuscripts: Sylvia's central table at X: 7..8, Y: 5
-      if ((facingX === 7 || facingX === 8) && facingY === 5) {
+      if (facingX === 7 && facingY === 5) {
         gameAudio.playPageTurn();
         triggerHaptics(30);
         const lines = ROOM_KITCHEN.props.typewriter_manuscript;
@@ -6638,8 +6654,8 @@ export default function App() {
         return;
       }
 
-      // 2. Vase of Red Tulips on table corner or dresser/window
-      if (facingX === 9 && facingY === 5) {
+      // 2. Pitcher of Red Tulips on the right end of the table (X: 8, Y: 5)
+      if (facingX === 8 && facingY === 5) {
         gameAudio.playHoverMicroTone();
         triggerHaptics(30);
         const lines = ROOM_KITCHEN.props.red_tulips;
@@ -7419,7 +7435,7 @@ export default function App() {
         return;
       }
 
-      // 3.5 Check Snowshoe Hare on verge (X: 12..13, Y: 20..21)
+      // 3.5 Check Snowshoe Hare on verge (hare stands at X: 12, Y: 20)
       if ((facingX === 12 || facingX === 13) && (facingY === 20 || facingY === 21)) {
         gameAudio.playHoverMicroTone();
         triggerHaptics(30);
@@ -10730,8 +10746,8 @@ export default function App() {
         return;
       }
 
-      // Check Sleeping Alley Cat at (21, 11)
-      if (facingX === 21 && facingY === 11) {
+      // Check Jeoffry the sleeping cat where he actually lies: (31, 15)
+      if (facingX === 31 && facingY === 15) {
         gameAudio.playCatMeow();
         triggerHaptics(30);
         const catLines = [

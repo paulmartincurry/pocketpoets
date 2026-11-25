@@ -387,6 +387,7 @@ export const HARBOR_TILES = {
   TREELINE_CARRIAGE_R: 1058,
   TREELINE_FEATHERED_BIRD: 1059, // Dickinson: the thing with feathers
   TREELINE_SNOWMAN: 1060, // Stevens: the snow man
+  TREELINE_HARE: 1061, // Keats, The Eve of St. Agnes: the hare in the frozen grass
 
   // Screen 6: The Summit - one platform per poet
   SUMMIT_APPLE_BOUGH: 1070, // Sappho: the apple on the topmost bough
@@ -19392,6 +19393,21 @@ function createHarborTilesetCanvas(): HTMLCanvasElement {
   px(10, 93, 2, 6, '#5b3a1e', 3, 1); // Stick arms
   px(10, 93, 11, 6, '#5b3a1e', 3, 1);
 
+  // 11. TREELINE_HARE - white snowshoe hare sitting up in the frozen grass
+  rect(11, 93, 0, 0, 16, 16, 'transparent');
+  rect(11, 93, 4, 9, 8, 5, C_DARK_OUTLINE); // Body outline
+  rect(11, 93, 5, 10, 6, 3, '#f8fafc'); // Body
+  rect(11, 93, 9, 6, 5, 5, C_DARK_OUTLINE); // Head outline
+  rect(11, 93, 10, 7, 3, 3, '#f8fafc'); // Head
+  px(11, 93, 10, 2, C_DARK_OUTLINE, 1, 5); // Ears
+  px(11, 93, 12, 2, C_DARK_OUTLINE, 1, 5);
+  px(11, 93, 11, 3, '#f8fafc', 1, 4);
+  px(11, 93, 12, 8, '#0c0a09', 1, 1); // Eye
+  px(11, 93, 4, 11, '#f8fafc', 1, 1); // Tail
+  px(11, 93, 6, 13, '#e2e8f0', 2, 1); // Feet
+  px(11, 93, 9, 13, '#e2e8f0', 2, 1);
+  px(11, 93, 4, 14, C_SNOWSHADE, 8, 1); // Shadow on the snow
+
   // ==========================================================================
   // ROW 94: SCREEN 6 (THE SUMMIT) - ONE PLATFORM PER POET
   // ==========================================================================
@@ -19624,6 +19640,7 @@ export function getHarborTileSourceRect(tileId: number): { sx: number; sy: numbe
     case HARBOR_TILES.TREELINE_CARRIAGE_R: return { sx: 8 * 16, sy: 93 * 16 };
     case HARBOR_TILES.TREELINE_FEATHERED_BIRD: return { sx: 9 * 16, sy: 93 * 16 };
     case HARBOR_TILES.TREELINE_SNOWMAN: return { sx: 10 * 16, sy: 93 * 16 };
+    case HARBOR_TILES.TREELINE_HARE: return { sx: 11 * 16, sy: 93 * 16 };
     case HARBOR_TILES.SUMMIT_APPLE_BOUGH: return { sx: 0 * 16, sy: 94 * 16 };
     case HARBOR_TILES.SUMMIT_GRECIAN_URN: return { sx: 1 * 16, sy: 94 * 16 };
     case HARBOR_TILES.SUMMIT_NIGHTINGALE: return { sx: 2 * 16, sy: 94 * 16 };
@@ -24828,6 +24845,7 @@ export function buildTreelineScreen5(): HarborScreenData {
 
   // E. THE SNOW MAN, out in the open east of the pond, with a few pines for company
   putSolid(31, 13, HARBOR_TILES.TREELINE_SNOWMAN); // Stevens
+  putSolid(12, 20, HARBOR_TILES.TREELINE_HARE); // Keats: the hare the examine spot always described
   placeSnowPine(25, 12);
   placeSnowPine(29, 11);
   placeSnowPine(27, 14);
@@ -25921,6 +25939,9 @@ export function buildMountainGoatScreen(): HarborScreenData {
   // Low table at X: 3, Y: 7 with earthenware ruby wine flagon, crusty flatbread loaf & open verses scroll!
   objects[7][3] = HARBOR_TILES.GOAT_INT_RELIC_KHAYYAM;
   solid[7][3] = true;
+  // Bashō's sedge hat, staff and sandals beside the hearth at X: 4, Y: 2 (art and examine text existed; never placed)
+  objects[2][4] = HARBOR_TILES.GOAT_INT_RELIC_BASHO;
+  solid[2][4] = true;
   // Omar Khayyám is seated at (3, 8) facing North
   solid[8][3] = false;
 
@@ -26059,6 +26080,13 @@ export function buildKitchenScreen(): HarborScreenData {
   // Rustic woodbox beside it at X: 1, Y: 3 (blocks)
   objects[3][1] = HARBOR_TILES.KITCHEN_INT_WOODBOX;
   solid[3][1] = true;
+  // Second box stacked in the nook behind it (was a sealed-off floor tile)
+  objects[2][1] = HARBOR_TILES.KITCHEN_INT_WOODBOX;
+  solid[2][1] = true;
+
+  // Baking board with sliced apples on a counter at X: 4, Y: 2 (the art existed, the prop was never placed)
+  objects[2][4] = HARBOR_TILES.KITCHEN_INT_COUNTER_BAKE;
+  solid[2][4] = true;
 
   // 4. THE TABLE & CHAIR (Center)
   // Plain wooden kitchen table (2x1, blocks) at X: 7..8, Y: 5
@@ -27017,6 +27045,11 @@ export function buildShakespeareCoScreen(): HarborScreenData {
   // Rolling brass ladder against wall at X: 3, Y: 2
   objects[2][3] = HARBOR_TILES.LIBRARY_INT_LADDER;
   solid[2][3] = true;
+  // Shelves fill the corner the ladder leans on (was two sealed-off floor tiles)
+  objects[2][1] = HARBOR_TILES.LIBRARY_INT_STACK_SHELF;
+  objects[2][2] = HARBOR_TILES.LIBRARY_INT_STACK_END;
+  solid[2][1] = true;
+  solid[2][2] = true;
 
   // Sylvia Beach's Oak Reading Desk at X: 7..8, Y: 3
   objects[3][7] = HARBOR_TILES.LIBRARY_INT_READING_DESK_L;
