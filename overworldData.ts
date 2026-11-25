@@ -360,6 +360,21 @@ export const HARBOR_TILES = {
   CLIFFS_LAMB: 1020, // Blake
   CLIFFS_BLACK_PONY: 1021, // Lorca
 
+  // Screen 4: The Ruins - things that answer to poems
+  RUINS_COLUMN_STUMP: 1030, // Broken column still standing on the old road
+  RUINS_EMPTY_PLINTH_L: 1031, // Akhmatova: the monument nobody built (replaces the Calliope statue)
+  RUINS_EMPTY_PLINTH_R: 1032,
+  RUINS_OZYMANDIAS: 1033, // Shelley: two legs of stone on a pedestal
+  RUINS_WINE_TABLE: 1034, // Li Bai: a jug and three cups
+  RUINS_MOON_WATER: 1035, // Li Bai: the moon in the stream
+  RUINS_LOAF_AND_JUG: 1036, // Khayyam: bread and wine beneath the bough
+  RUINS_BLUEBIRD: 1037, // Bukowski: a bluebird on the bar's roof
+  RUINS_SUNFLOWER: 1038, // Ginsberg: a dusty sunflower
+  RUINS_LILAC: 1039, // Eliot: lilacs out of the dead land
+  RUINS_PETAL_BOUGH: 1040, // Pound: petals on a wet, black bough
+  RUINS_BOOK_STACK: 1041, // Sor Juana: books by the library door
+  RUINS_BANANA_PLANT: 1042, // Basho: the banana plant he took his name from
+
   // Screen 2: Fence
   FENCE_WHITE_H: 89,
   FENCE_WHITE_V: 90,
@@ -3349,7 +3364,7 @@ export const ROOM_RUINS = {
       poetId: 'ANNA_AKHMATOVA',
       greeting: "Zdravstvuyte. Akhmatova. The marble holds the autumn cold longer than we do.",
       talkLines: [
-        "“Even before Calliope, the ancient voice of epic song... if ever they think of building a monument to me, let it stand where the autumn wind remembers.”",
+        "If they ever build me a monument, I have told them where. Not by the sea. Not in the garden. Here will do.",
         "“Can you describe this? And I said: I can.”",
         "We didn't write things down in Leningrad. We memorized them, then burned the match.",
       ],
@@ -3388,13 +3403,18 @@ export const ROOM_RUINS = {
       "A green frog perches motionless on a mossy stone at the pond's edge, eyeing the water.",
       "PLOP. (Bashō nods approvingly from the pavilion.)",
     ],
+    // (Key kept from when a statue of Calliope stood here.)
     monumental_statue_of_calliope: [
-      "A weathered marble statue of Calliope, Muse of Epic Poetry, cradling a stone lyre.",
-      "Crimson maple leaves have drifted into the crook of her carved arm.",
+      "A wide marble plinth with nothing on it. The top has been swept.",
+      "There is a blank where the name would go.",
     ],
     calliope_statue: [
-      "A weathered marble statue of Calliope, Muse of Epic Poetry, cradling a stone lyre.",
-      "Crimson maple leaves have drifted into the crook of her carved arm.",
+      "A wide marble plinth with nothing on it. The top has been swept.",
+      "There is a blank where the name would go.",
+    ],
+    ozymandias: [
+      "Two enormous legs of stone on a pedestal. Nothing above the knee.",
+      "The inscription tells the mighty to look on his works and despair. There are no works. There is sand.",
     ],
     weathered_marble_muse_statue: [
       "An archaic headless marble torso draped in crimson autumn ivy, still suffused with inner light.",
@@ -5158,12 +5178,12 @@ export const INITIAL_RUINS_NPCS: HarborNPC[] = [
     introLine: "Zdravstvuyte. Akhmatova. The marble holds the autumn cold longer than we do.",
     greeting: "Zdravstvuyte. Akhmatova. The marble holds the autumn cold longer than we do.",
     talkLines: [
-      "“Even before Calliope, the ancient voice of epic song... if ever they think of building a monument to me, let it stand where the autumn wind remembers.”",
+      "If they ever build me a monument, I have told them where. Not by the sea. Not in the garden. Here will do.",
       "“Can you describe this? And I said: I can.”",
       "We didn't write things down in Leningrad. We memorized them, then burned the match.",
     ],
     normalLines: [
-      "“Even before Calliope, the ancient voice of epic song... if ever they think of building a monument to me, let it stand where the autumn wind remembers.”",
+      "If they ever build me a monument, I have told them where. Not by the sea. Not in the garden. Here will do.",
       "“Can you describe this? And I said: I can.”",
       "We didn't write things down in Leningrad. We memorized them, then burned the match.",
     ],
@@ -6398,7 +6418,7 @@ export function getHarborTilesetCanvas(): HTMLCanvasElement {
 function createHarborTilesetCanvas(): HTMLCanvasElement {
   const canvas = document.createElement('canvas');
   canvas.width = 384;
-  canvas.height = 1472; // 92 rows; row 90 is the Town east lawn, row 91 the Cliffs sea
+  canvas.height = 1488; // 93 rows; row 90 Town east lawn, row 91 Cliffs, row 92 Ruins
   const ctx = canvas.getContext('2d');
   if (!ctx) return canvas;
   const renderCtx = ctx;
@@ -19032,6 +19052,182 @@ function createHarborTilesetCanvas(): HTMLCanvasElement {
   px(21, 91, 14, 6, '#44403c', 1, 6); // Tail
   px(21, 91, 5, 7, '#44403c', 2, 1); // Sheen
 
+  // ==========================================================================
+  // ROW 92: SCREEN 4 (THE RUINS) - THINGS THAT ANSWER TO POEMS
+  // ==========================================================================
+  const C_MARBLE = '#e7e2d6';
+  const C_MARBLE_LT = '#f7f4ec';
+  const C_MARBLE_SH = '#b8b09c';
+  const C_MARBLE_DK = '#857c68';
+
+  // 0. RUINS_COLUMN_STUMP - fluted column broken off at chest height, ivy at the foot
+  rect(0, 92, 0, 0, 16, 16, 'transparent');
+  rect(0, 92, 3, 13, 10, 3, C_DARK_OUTLINE);
+  rect(0, 92, 4, 13, 8, 2, C_MARBLE_SH); // Base
+  rect(0, 92, 4, 4, 8, 9, C_DARK_OUTLINE);
+  rect(0, 92, 5, 5, 6, 8, C_MARBLE); // Shaft
+  px(0, 92, 6, 5, C_MARBLE_SH, 1, 8); // Flutes
+  px(0, 92, 8, 5, C_MARBLE_SH, 1, 8);
+  px(0, 92, 5, 5, C_MARBLE_LT, 1, 8);
+  px(0, 92, 5, 3, C_DARK_OUTLINE, 3, 1); // Jagged break
+  px(0, 92, 9, 3, C_DARK_OUTLINE, 2, 1);
+  px(0, 92, 5, 4, C_MARBLE, 3, 1);
+  px(0, 92, 9, 4, C_MARBLE, 2, 1);
+  px(0, 92, 4, 12, '#7f1d1d', 2, 2); // Autumn ivy
+  px(0, 92, 10, 11, '#b45309', 2, 2);
+
+  // 1-2. RUINS_EMPTY_PLINTH_L / R - a wide swept pedestal with nothing on it
+  for (const [tx, left] of [[1, true], [2, false]] as Array<[number, boolean]>) {
+    rect(tx, 92, 0, 0, 16, 16, 'transparent');
+    rect(tx, 92, 0, 6, 16, 10, C_DARK_OUTLINE);
+    rect(tx, 92, left ? 1 : 0, 7, 15, 2, C_MARBLE_LT); // Top slab
+    rect(tx, 92, left ? 2 : 0, 9, 14, 5, C_MARBLE); // Body
+    rect(tx, 92, left ? 1 : 0, 14, 15, 1, C_MARBLE_SH); // Footing
+    px(tx, 92, left ? 2 : 13, 9, C_MARBLE_SH, 1, 5);
+    px(tx, 92, left ? 6 : 3, 11, C_MARBLE_DK, 6, 1); // Blank where an inscription would go
+    px(tx, 92, left ? 12 : 1, 6, '#b91c1c', 2, 1); // One leaf nobody swept
+  }
+
+  // 3. RUINS_OZYMANDIAS - two vast legs of stone on a pedestal, nothing above the knee
+  rect(3, 92, 0, 0, 16, 16, 'transparent');
+  rect(3, 92, 1, 11, 14, 5, C_DARK_OUTLINE);
+  rect(3, 92, 2, 12, 12, 3, '#d6c7a1'); // Sandstone pedestal
+  px(3, 92, 4, 13, '#8a7a55', 8, 1); // Inscription
+  rect(3, 92, 3, 2, 4, 10, C_DARK_OUTLINE); // Left leg
+  rect(3, 92, 4, 3, 2, 9, '#c9b98f');
+  rect(3, 92, 9, 4, 4, 8, C_DARK_OUTLINE); // Right leg, broken lower
+  rect(3, 92, 10, 5, 2, 7, '#c9b98f');
+  px(3, 92, 4, 2, '#c9b98f', 2, 1); // Jagged tops
+  px(3, 92, 10, 4, '#c9b98f', 1, 1);
+  px(3, 92, 4, 6, '#a8976c', 1, 4); // Shading
+  px(3, 92, 10, 7, '#a8976c', 1, 4);
+  px(3, 92, 0, 15, '#e0c98a', 3, 1); // Sand drifting up
+  px(3, 92, 13, 15, '#e0c98a', 3, 1);
+
+  // 4. RUINS_WINE_TABLE - low stone table: a wine jug and three cups (himself, the moon, his shadow)
+  rect(4, 92, 0, 0, 16, 16, 'transparent');
+  rect(4, 92, 1, 9, 14, 3, C_DARK_OUTLINE);
+  rect(4, 92, 2, 9, 12, 2, '#a8a29e'); // Slab
+  px(4, 92, 3, 12, C_DARK_OUTLINE, 2, 3); // Legs
+  px(4, 92, 11, 12, C_DARK_OUTLINE, 2, 3);
+  rect(4, 92, 3, 3, 4, 6, C_DARK_OUTLINE); // Jug
+  rect(4, 92, 4, 4, 2, 5, '#7f1d1d');
+  px(4, 92, 4, 2, C_DARK_OUTLINE, 2, 1);
+  px(4, 92, 4, 5, '#b91c1c', 1, 2);
+  px(4, 92, 8, 7, '#f5f5f4', 2, 2); // Three cups
+  px(4, 92, 10, 6, '#f5f5f4', 2, 2);
+  px(4, 92, 12, 7, '#f5f5f4', 2, 2);
+  px(4, 92, 8, 7, '#fde68a', 1, 1);
+
+  // 5. RUINS_MOON_WATER - the stream with a full moon lying in it
+  rect(5, 92, 0, 0, 16, 16, '#1d8fd8');
+  px(5, 92, 1, 3, '#7cc7f5', 4, 1);
+  px(5, 92, 11, 12, '#7cc7f5', 4, 1);
+  rect(5, 92, 5, 4, 6, 8, '#fef9c3');
+  rect(5, 92, 4, 5, 8, 6, '#fef9c3');
+  px(5, 92, 6, 6, '#fde68a', 2, 2); // Craters
+  px(5, 92, 9, 9, '#fde68a', 1, 1);
+  px(5, 92, 3, 8, '#bfe3fa', 1, 1); // Ripples breaking the rim
+  px(5, 92, 12, 7, '#bfe3fa', 1, 1);
+  px(5, 92, 6, 12, '#bfe3fa', 4, 1);
+
+  // 6. RUINS_LOAF_AND_JUG - a cloth on the grass: a loaf of bread, a jug of wine, a book of verse
+  rect(6, 92, 0, 0, 16, 16, 'transparent');
+  rect(6, 92, 1, 8, 14, 7, '#7c2d12'); // Woven cloth
+  rect(6, 92, 2, 9, 12, 5, '#b45309');
+  px(6, 92, 2, 9, '#fde68a', 12, 1);
+  px(6, 92, 2, 13, '#fde68a', 12, 1);
+  rect(6, 92, 3, 10, 5, 3, '#d9a066'); // Loaf
+  px(6, 92, 4, 10, '#8a5a2b', 1, 1);
+  px(6, 92, 6, 10, '#8a5a2b', 1, 1);
+  rect(6, 92, 10, 5, 3, 6, C_DARK_OUTLINE); // Jug
+  rect(6, 92, 11, 6, 1, 4, '#7f1d1d');
+  px(6, 92, 11, 4, C_DARK_OUTLINE, 1, 1);
+  rect(6, 92, 8, 11, 3, 2, '#1e3a8a'); // Book of verse
+  px(6, 92, 8, 11, '#fde68a', 3, 1);
+
+  // 7. RUINS_BLUEBIRD - a small bluebird perched on a roof edge
+  rect(7, 92, 0, 0, 16, 16, 'transparent');
+  rect(7, 92, 6, 8, 5, 4, '#2563eb');
+  px(7, 92, 5, 9, '#1d4ed8', 1, 2); // Tail
+  px(7, 92, 4, 10, '#1d4ed8', 1, 1);
+  rect(7, 92, 9, 6, 3, 3, '#3b82f6'); // Head
+  px(7, 92, 10, 7, '#000000', 1, 1); // Eye
+  px(7, 92, 12, 7, '#f59e0b', 1, 1); // Beak
+  px(7, 92, 8, 10, '#fb923c', 3, 2); // Rust breast
+  px(7, 92, 8, 12, '#44403c', 1, 2); // Feet
+  px(7, 92, 10, 12, '#44403c', 1, 2);
+
+  // 8. RUINS_SUNFLOWER - one battered sunflower, head hanging, grey with dust
+  rect(8, 92, 0, 0, 16, 16, 'transparent');
+  px(8, 92, 8, 6, '#57534e', 1, 10); // Dry stalk
+  px(8, 92, 6, 10, '#78716c', 2, 1); // Leaves
+  px(8, 92, 9, 12, '#78716c', 3, 1);
+  rect(8, 92, 3, 2, 6, 6, '#a8a29e'); // Dusty petals
+  rect(8, 92, 4, 1, 4, 8, '#a8a29e');
+  px(8, 92, 3, 3, '#ca8a04', 1, 2); // A little yellow left
+  px(8, 92, 8, 5, '#ca8a04', 1, 2);
+  px(8, 92, 5, 1, '#eab308', 2, 1);
+  rect(8, 92, 4, 3, 4, 4, '#292524'); // Seed head
+  px(8, 92, 5, 4, '#44403c', 2, 2);
+
+  // 9. RUINS_LILAC - lilacs pushing up through broken stone
+  rect(9, 92, 0, 0, 16, 16, 'transparent');
+  rect(9, 92, 1, 12, 14, 4, C_DARK_OUTLINE); // Rubble
+  rect(9, 92, 2, 13, 5, 2, C_MARBLE_SH);
+  rect(9, 92, 8, 13, 6, 2, C_MARBLE);
+  px(9, 92, 6, 7, '#3f6212', 1, 6); // Stems
+  px(9, 92, 9, 6, '#3f6212', 1, 7);
+  px(9, 92, 4, 9, '#4d7c0f', 2, 2); // Leaves
+  px(9, 92, 10, 10, '#4d7c0f', 2, 2);
+  rect(9, 92, 4, 3, 4, 5, '#a78bfa'); // Blossom
+  rect(9, 92, 5, 2, 2, 7, '#c4b5fd');
+  rect(9, 92, 8, 2, 4, 5, '#8b5cf6');
+  rect(9, 92, 9, 1, 2, 7, '#a78bfa');
+  px(9, 92, 5, 4, '#ede9fe', 1, 1);
+  px(9, 92, 10, 3, '#ede9fe', 1, 1);
+
+  // 10. RUINS_PETAL_BOUGH - a wet, black bough, pale petals stuck to it
+  rect(10, 92, 0, 0, 16, 16, 'transparent');
+  px(10, 92, 7, 8, '#0c0a09', 2, 8); // Trunk
+  px(10, 92, 2, 6, '#0c0a09', 12, 2); // Bough
+  px(10, 92, 1, 5, '#0c0a09', 3, 1);
+  px(10, 92, 12, 4, '#0c0a09', 3, 2);
+  px(10, 92, 4, 8, '#0c0a09', 1, 2);
+  px(10, 92, 3, 6, '#334155', 5, 1); // Wet shine
+  px(10, 92, 2, 4, '#fbcfe8', 2, 2); // Petals
+  px(10, 92, 6, 5, '#fce7f3', 2, 1);
+  px(10, 92, 10, 5, '#fbcfe8', 2, 2);
+  px(10, 92, 13, 3, '#fce7f3', 2, 1);
+  px(10, 92, 5, 8, '#fbcfe8', 1, 1);
+  px(10, 92, 11, 9, '#fce7f3', 1, 1); // One falling
+
+  // 11. RUINS_BOOK_STACK - a leaning stack of leather books, a quill laid across the top
+  rect(11, 92, 0, 0, 16, 16, 'transparent');
+  rect(11, 92, 3, 12, 10, 3, '#7f1d1d');
+  rect(11, 92, 4, 9, 9, 3, '#1e3a8a');
+  rect(11, 92, 3, 6, 9, 3, '#14532d');
+  rect(11, 92, 5, 3, 7, 3, '#78350f');
+  px(11, 92, 3, 13, '#fde68a', 10, 1); // Page edges
+  px(11, 92, 4, 10, '#fde68a', 9, 1);
+  px(11, 92, 3, 7, '#fde68a', 9, 1);
+  px(11, 92, 5, 4, '#fde68a', 7, 1);
+  px(11, 92, 6, 2, '#f5f5f4', 6, 1); // Quill
+  px(11, 92, 11, 1, '#f5f5f4', 2, 1);
+
+  // 12. RUINS_BANANA_PLANT - broad torn leaves, the plant Basho named himself after
+  rect(12, 92, 0, 0, 16, 16, 'transparent');
+  px(12, 92, 7, 7, '#4d7c0f', 2, 9); // Stem
+  rect(12, 92, 1, 3, 6, 3, '#65a30d'); // Leaves
+  rect(12, 92, 0, 5, 4, 2, '#4d7c0f');
+  rect(12, 92, 9, 2, 6, 3, '#84cc16');
+  rect(12, 92, 12, 4, 4, 3, '#65a30d');
+  rect(12, 92, 6, 0, 4, 7, '#84cc16');
+  px(12, 92, 7, 1, '#bef264', 1, 5); // Midrib
+  px(12, 92, 3, 4, '#3f6212', 1, 2); // Wind tears
+  px(12, 92, 11, 3, '#3f6212', 1, 2);
+  px(12, 92, 13, 5, '#3f6212', 1, 2);
+
   return canvas;
 }
 
@@ -19146,6 +19342,19 @@ export function getHarborTileSourceRect(tileId: number): { sx: number; sy: numbe
     case HARBOR_TILES.CLIFFS_PIED_COW: return { sx: 19 * 16, sy: 91 * 16 };
     case HARBOR_TILES.CLIFFS_LAMB: return { sx: 20 * 16, sy: 91 * 16 };
     case HARBOR_TILES.CLIFFS_BLACK_PONY: return { sx: 21 * 16, sy: 91 * 16 };
+    case HARBOR_TILES.RUINS_COLUMN_STUMP: return { sx: 0 * 16, sy: 92 * 16 };
+    case HARBOR_TILES.RUINS_EMPTY_PLINTH_L: return { sx: 1 * 16, sy: 92 * 16 };
+    case HARBOR_TILES.RUINS_EMPTY_PLINTH_R: return { sx: 2 * 16, sy: 92 * 16 };
+    case HARBOR_TILES.RUINS_OZYMANDIAS: return { sx: 3 * 16, sy: 92 * 16 };
+    case HARBOR_TILES.RUINS_WINE_TABLE: return { sx: 4 * 16, sy: 92 * 16 };
+    case HARBOR_TILES.RUINS_MOON_WATER: return { sx: 5 * 16, sy: 92 * 16 };
+    case HARBOR_TILES.RUINS_LOAF_AND_JUG: return { sx: 6 * 16, sy: 92 * 16 };
+    case HARBOR_TILES.RUINS_BLUEBIRD: return { sx: 7 * 16, sy: 92 * 16 };
+    case HARBOR_TILES.RUINS_SUNFLOWER: return { sx: 8 * 16, sy: 92 * 16 };
+    case HARBOR_TILES.RUINS_LILAC: return { sx: 9 * 16, sy: 92 * 16 };
+    case HARBOR_TILES.RUINS_PETAL_BOUGH: return { sx: 10 * 16, sy: 92 * 16 };
+    case HARBOR_TILES.RUINS_BOOK_STACK: return { sx: 11 * 16, sy: 92 * 16 };
+    case HARBOR_TILES.RUINS_BANANA_PLANT: return { sx: 12 * 16, sy: 92 * 16 };
     case HARBOR_TILES.TOWN_SOAPBOX: return { sx: 0 * 16, sy: 90 * 16 };
     case HARBOR_TILES.TOWN_WILDFLOWERS: return { sx: 1 * 16, sy: 90 * 16 };
     case HARBOR_TILES.TOWN_BUSH: return { sx: 2 * 16, sy: 90 * 16 };
@@ -23841,7 +24050,12 @@ export function buildRuinsScreen4(): HarborScreenData {
       const p = pseudoRand(c, r);
       const isStream = c >= 19 && c <= 21;
       const isWestPath = (c >= 16 && c <= 18) && (r >= 0 && r <= 27);
-      const isWestClearing = (c >= 4 && c <= 16) && (r >= 9 && r <= 22);
+      // The west bank used to be one slab of bare trail (X: 4..16, Y: 9..22). It is now
+      // grass with three lanes off the main path, and the paving of an old road.
+      const isGoatLane = (c >= 6 && c <= 15) && (r === 9 || r === 10); // To the Mountain Goat's door
+      const isBridgeLane = (c >= 12 && c <= 15) && (r === 12 || r === 13); // Li Bai, and on to the stone bridge
+      const isPlinthLane = (c >= 7 && c <= 15) && (r === 21 || r === 22); // Down to Akhmatova
+      const isOldRoad = (c >= 2 && c <= 15) && (r === 16 || r === 17); // Broken marble paving
       const isBridge1 = (c >= 18 && c <= 22) && (r === 12 || r === 13);
       const isBridge2 = (c >= 18 && c <= 22) && (r === 20);
       const isForecourt = (c >= 22 && c <= 33) && (r >= 10 && r <= 23);
@@ -23858,7 +24072,9 @@ export function buildRuinsScreen4(): HarborScreenData {
         if (p < 25) ground[r][c] = HARBOR_TILES.FORECOURT_MARBLE_MOSS;
         else if (p < 55) ground[r][c] = HARBOR_TILES.FORECOURT_MARBLE_LEAVES;
         else ground[r][c] = HARBOR_TILES.FORECOURT_MARBLE_CLEAN;
-      } else if (isWestPath || isWestClearing || isSouthEntrance || isNorthExit) {
+      } else if (isOldRoad) {
+        ground[r][c] = p < 45 ? HARBOR_TILES.FORECOURT_MARBLE_MOSS : HARBOR_TILES.FORECOURT_MARBLE_LEAVES;
+      } else if (isWestPath || isGoatLane || isBridgeLane || isPlinthLane || isSouthEntrance || isNorthExit) {
         ground[r][c] = HARBOR_TILES.RUINS_TRAIL;
       } else {
         ground[r][c] = p < 30 ? HARBOR_TILES.RUINS_GRASS_LEAVES : HARBOR_TILES.RUINS_GRASS_OCHRE;
@@ -23932,13 +24148,10 @@ export function buildRuinsScreen4(): HarborScreenData {
   solid[9][28] = false;
 
   // 3. PROPS
-  // Calliope Statue: X: 4..5, Y: 21..22
-  objects[21][4] = HARBOR_TILES.RUINS_STATUE_TL;
-  objects[21][5] = HARBOR_TILES.RUINS_STATUE_TR;
-  objects[22][4] = HARBOR_TILES.RUINS_STATUE_BL;
-  objects[22][5] = HARBOR_TILES.RUINS_STATUE_BR;
-  solid[21][4] = true;
-  solid[21][5] = true;
+  // The Empty Plinth: X: 4..5, Y: 22. Akhmatova stands beside it. (A statue of Calliope
+  // stood here until the gods were cut from the story.)
+  objects[22][4] = HARBOR_TILES.RUINS_EMPTY_PLINTH_L;
+  objects[22][5] = HARBOR_TILES.RUINS_EMPTY_PLINTH_R;
   solid[22][4] = true;
   solid[22][5] = true;
 
@@ -23996,6 +24209,92 @@ export function buildRuinsScreen4(): HarborScreenData {
   // Bashō's Frog: X: 25, Y: 23..24
   objects[23][25] = HARBOR_TILES.SHRINE_FROG_STONE;
   solid[23][25] = true;
+
+  // 4. FILLING THE RUINS
+  const putSolid = (c: number, r: number, tile: number) => {
+    objects[r][c] = tile;
+    solid[r][c] = true;
+  };
+  const putSoft = (c: number, r: number, tile: number) => {
+    objects[r][c] = tile; // Walk-through
+  };
+  // A red oak like the old one: 2x2 canopy with the trunk under its right half
+  const placeOak = (c: number, r: number) => {
+    overlay[r][c] = HARBOR_TILES.BIG_TREE_CANOPY_TL;
+    overlay[r][c + 1] = HARBOR_TILES.BIG_TREE_CANOPY_TR;
+    overlay[r + 1][c] = HARBOR_TILES.BIG_TREE_CANOPY_BL;
+    overlay[r + 1][c + 1] = HARBOR_TILES.BIG_TREE_CANOPY_BR;
+    putSolid(c + 1, r + 2, HARBOR_TILES.BIG_TREE_TRUNK);
+  };
+
+  // 4a. THE MOUNTAIN ON THREE SIDES: rock along the west and east edges and across
+  //     the top, leaving the way up open at X: 16..23.
+  for (let r = 0; r < EXTERIOR_ROWS; r++) {
+    for (const c of [0, 1, 34, 35]) {
+      ground[r][c] = HARBOR_TILES.RUINS_CLIFF_ROCK;
+      solid[r][c] = true;
+    }
+  }
+  for (let r = 0; r <= 1; r++) {
+    for (let c = 2; c <= 33; c++) {
+      if (c >= 16 && c <= 23) continue;
+      ground[r][c] = HARBOR_TILES.RUINS_CLIFF_ROCK;
+      solid[r][c] = true;
+    }
+  }
+
+  // 4b. THE OLD ROAD (X: 2..15, Y: 16..17): broken columns down both sides of the
+  //     marble paving, and at its western end what is left of a king.
+  for (const c of [4, 7, 11, 14]) putSolid(c, 15, HARBOR_TILES.RUINS_COLUMN_STUMP);
+  for (const c of [5, 12]) putSolid(c, 18, HARBOR_TILES.RUINS_COLUMN_STUMP);
+  putSolid(9, 18, HARBOR_TILES.FACADE_FALLEN_DRUM_L);
+  putSolid(15, 18, HARBOR_TILES.FACADE_FALLEN_DRUM_R);
+  putSolid(2, 16, HARBOR_TILES.RUINS_OZYMANDIAS); // Shelley
+
+  // 4c. THE DRINKERS' BANK. Li Bai, Khayyam, and Bukowski's bar all sit on this side.
+  putSolid(14, 11, HARBOR_TILES.RUINS_WINE_TABLE); // Li Bai: a jug and three cups
+  ground[10][20] = HARBOR_TILES.RUINS_MOON_WATER; // Li Bai: the moon in the stream
+  solid[10][20] = true;
+  placeOak(10, 11); // Khayyam: the bough (trunk at X: 11, Y: 13)
+  putSoft(9, 14, HARBOR_TILES.RUINS_LOAF_AND_JUG); // Khayyam: bread, wine, a book of verse
+  putSolid(8, 13, HARBOR_TILES.RUINS_SUNDIAL); // Khayyam the astronomer
+  overlay[6][9] = HARBOR_TILES.RUINS_BLUEBIRD; // Bukowski: a bluebird on the Mountain Goat's eave
+  putSoft(11, 7, HARBOR_TILES.RUINS_SUNFLOWER); // Ginsberg: a dusty sunflower by the bar wall
+
+  // 4d. THE LIBRARY STEPS. Sor Juana, Eliot and Pound are inside.
+  putSolid(29, 10, HARBOR_TILES.RUINS_BOOK_STACK); // Sor Juana: books by the door
+  putSolid(32, 11, HARBOR_TILES.RUINS_LILAC); // Eliot: lilacs out of the dead land
+  putSolid(24, 11, HARBOR_TILES.RUINS_PETAL_BOUGH); // Pound: petals on a wet, black bough
+
+  // 4e. BASHO'S CORNER: the banana plant, a stone lantern, a water basin
+  putSolid(32, 19, HARBOR_TILES.RUINS_BANANA_PLANT);
+  putSolid(25, 18, HARBOR_TILES.RUINS_STONE_LANTERN);
+  putSolid(33, 22, HARBOR_TILES.RUINS_STONE_BASIN);
+
+  // 4f. A THIRD CROSSING: stepping stones over the stream at Y: 4, from the bar to the library
+  for (let c = 19; c <= 21; c++) {
+    ground[4][c] = HARBOR_TILES.RUINS_STEPPING_STONE;
+    solid[4][c] = false;
+  }
+  objects[4][18] = HARBOR_TILES.EMPTY;
+  objects[4][22] = HARBOR_TILES.EMPTY;
+
+  // 4g. OAKS, turning. Enough to break up the open ground and close the corners.
+  placeOak(2, 9);
+  placeOak(13, 2);
+  placeOak(3, 23);
+  placeOak(13, 23);
+  placeOak(24, 13);
+  placeOak(31, 14);
+  placeOak(23, 24);
+  placeOak(31, 24);
+
+  // 4h. LEAVES, blown into drifts against things
+  const leafDrifts: Array<[number, number]> = [
+    [3, 14], [6, 19], [12, 19], [8, 23], [15, 25], [5, 12], [13, 7], [3, 3],
+    [24, 16], [29, 15], [33, 17], [26, 26], [30, 3], [23, 21], [16, 6], [9, 25],
+  ];
+  for (const [lc, lr] of leafDrifts) putSoft(lc, lr, HARBOR_TILES.RUINS_LEAF_DRIFT);
 
   // Collision map
   for (let r = 0; r < EXTERIOR_ROWS; r++) {
@@ -34557,6 +34856,8 @@ export function drawHarborOverworldScreen(
             objTile === HARBOR_TILES.GRAVEYARD_FENCE_CORNER ||
             objTile === HARBOR_TILES.GRAVEYARD_GATE ||
             objTile === HARBOR_TILES.TOWN_WILDFLOWERS ||
+            objTile === HARBOR_TILES.RUINS_LEAF_DRIFT ||
+            objTile === HARBOR_TILES.RUINS_LOAF_AND_JUG ||
             objTile === HARBOR_TILES.TOWN_MUSHROOMS
           ) {
             continue;

@@ -8026,13 +8026,28 @@ export default function App() {
         propInspectIndexRef.current.MUSE_STATUE = (curIdx + 1) % lines.length;
         setOverworldDialogue({
           active: true,
-          speakerName: 'WEATHERED MARBLE MUSE STATUE',
+          speakerName: 'ARCHAIC TORSO',
           text: lines[curIdx],
         });
         return;
       }
 
-      // 3.0. Check Monumental Statue of Calliope: X: 4..5, Y: 21..22
+      // 3.00. Check Ozymandias on the old road: X: 2, Y: 16
+      if (facingX === 2 && facingY === 16) {
+        gameAudio.playHoverMicroTone();
+        triggerHaptics(30);
+        const lines = ROOM_RUINS.props.ozymandias;
+        const curIdx = (propInspectIndexRef.current.OZYMANDIAS ?? 0) % lines.length;
+        propInspectIndexRef.current.OZYMANDIAS = (curIdx + 1) % lines.length;
+        setOverworldDialogue({
+          active: true,
+          speakerName: 'TWO LEGS OF STONE',
+          text: lines[curIdx],
+        });
+        return;
+      }
+
+      // 3.0. Check The Empty Plinth (was the Statue of Calliope): X: 4..5, Y: 21..22
       if ((facingX === 4 || facingX === 5) && (facingY === 21 || facingY === 22)) {
         gameAudio.playHoverMicroTone();
         triggerHaptics(35);
@@ -8041,7 +8056,7 @@ export default function App() {
         propInspectIndexRef.current.CALLIOPE_STATUE = (curIdx + 1) % lines.length;
         setOverworldDialogue({
           active: true,
-          speakerName: 'MONUMENTAL STATUE OF CALLIOPE',
+          speakerName: 'EMPTY PLINTH',
           text: lines[curIdx],
         });
         return;
