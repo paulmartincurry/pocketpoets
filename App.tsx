@@ -10140,7 +10140,7 @@ export default function App() {
 
           promptPoetChoiceMenu(
             'LANGSTON HUGHES',
-            "The spotlight's warm. Would you talk at the booth, duel on the mic, or step out?",
+            "Hey now. I'm on in a minute, stick around.",
             [
               '“Hold fast to dreams, for if dreams die, life is a broken-winged bird that cannot fly.”',
               '“I’ve known rivers: I’ve known rivers ancient as the world. My soul has grown deep like the rivers.”',
@@ -10533,7 +10533,7 @@ export default function App() {
             'Listen to the reed. It has been crying since they cut it from the reed bed.',
             'I was a scholar with a great many books. Then a man named Shams asked me one question.',
             'My friend has been gone these many years. I have not stopped speaking to him.',
-            'The tea here is good, though I usually spin after the second cup.',
+            'The tea here is good. Sit and have some.',
           ];
           const rumiDuelLine = 'Come, then. Let us turn a little.';
 
@@ -11198,7 +11198,7 @@ export default function App() {
         }
 
         const whitmanGreeting =
-          "Good day to you, Camerado! I'm Walt Whitman, from Brooklyn, and then everywhere. I've been waiting on this pier a good while.";
+          "Walt Whitman, of Manhattan and Brooklyn, a carpenter's son. I have been waiting on this pier a good while.";
         const whitmanTalkLines = [
           "“I celebrate myself, and sing myself, and what I assume you shall assume!”",
           "“Listen to the meter of the waves, Camerado! Every poet you meet on Mount Parnassus can be befriended in verse or tested in a duel.”",
@@ -11282,9 +11282,9 @@ export default function App() {
 
         promptPoetChoiceMenu(
           targetNpc.name,
-          "Shall we share words together, test our stanzas in a duel, or will you walk along?",
+          "Morning. I've been out since first light. The geese are on the water.",
           [
-            "You looked hard at things. That's most of it.",
+            "I walk every morning with a notebook. If I stay in, nothing happens.",
             "I had a dog named Percy. He taught me more than most people have.",
             "The geese know what they're doing. I just take notes.",
           ],
@@ -19199,7 +19199,7 @@ export default function App() {
                   color: '#C5D1E0',
                   letterSpacing: '1px',
                 }}>
-                <span>{isEnemyInCaptureWindow ? 'READY TO BIND' : 'WILD POET'}</span>
+                <span>{isEnemyInCaptureWindow ? ((bagInventory.find((it) => it.id === 'BLANK_BOOK')?.count ?? 0) > 0 ? 'READY TO BIND' : 'NO BLANK BOOKS LEFT') : 'WILD POET'}</span>
                 <span style={{ color: '#FFE89E' }}>{Math.ceil(Math.max(0, enemyHp))}/{enemyMaxHp}</span>
               </div>
               {POET_TRAITS[enemyPoet.id] && (

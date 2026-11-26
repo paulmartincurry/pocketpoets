@@ -3060,7 +3060,7 @@ export const ROOM_FORGE = {
       talkLines: [
         "“To see a World in a Grain of Sand and a Heaven in a Wild Flower.”",
         "I must create a system, or be enslaved by another man's.",
-        "I etch the words backwards in mirror-script so they print right-way-round. Gives most folks a headache.",
+        "I etch the words backwards on the copper so they print the right way round.",
       ],
       isFightable: true,
       isDuelist: true,
@@ -3119,7 +3119,7 @@ export const ROOM_FORGE = {
       talkLines: [
         "“To see a World in a Grain of Sand and a Heaven in a Wild Flower.”",
         "I must create a system, or be enslaved by another man's.",
-        "I etch the words backwards in mirror-script so they print right-way-round. Gives most folks a headache.",
+        "I etch the words backwards on the copper so they print the right way round.",
       ],
       isFightable: true,
       isDuelist: true,
@@ -4770,12 +4770,12 @@ export const INITIAL_FORGE_NPCS: HarborNPC[] = [
     talkLines: [
       "“To see a World in a Grain of Sand and a Heaven in a Wild Flower.”",
       "I must create a system, or be enslaved by another man's.",
-      "I etch the words backwards in mirror-script so they print right-way-round. Gives most folks a headache.",
+      "I etch the words backwards on the copper so they print the right way round.",
     ],
     normalLines: [
       "“To see a World in a Grain of Sand and a Heaven in a Wild Flower.”",
       "I must create a system, or be enslaved by another man's.",
-      "I etch the words backwards in mirror-script so they print right-way-round. Gives most folks a headache.",
+      "I etch the words backwards on the copper so they print the right way round.",
     ],
     dialogueLines: [],
     currentDialogueIndex: 0,
