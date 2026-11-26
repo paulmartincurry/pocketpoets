@@ -2017,21 +2017,21 @@ export const INITIAL_TOWN_NPCS: HarborNPC[] = [
     pxX: 21 * TILE_SIZE,
     pxY: 20 * TILE_SIZE,
     facing: 'DOWN',
-    introLine: "“Hypocrite lecteur, — mon semblable, — mon frère!” Welcome to the quayside of Parnassus. The city has its spleen, but here among the books, one finds the ideal.",
-    greeting: "“Hypocrite lecteur, — mon semblable, — mon frère!” Welcome to the quayside of Parnassus. The city has its spleen, but here among the books, one finds the ideal.",
+    introLine: "“Hypocrite lecteur, — mon semblable, — mon frère!” You have found the bookstalls. Look as long as you like.",
+    greeting: "“Hypocrite lecteur, — mon semblable, — mon frère!” You have found the bookstalls. Look as long as you like.",
     rematchGreeting: "You have extracted beauty from the dark. I am with you.",
     duelLine: "“Hypocrite lecteur, — mon semblable, — mon frère!”",
     talkLines: [
-      "“One should always be drunk. That's the great thing; the only question. On wine, on poetry, or on virtue, as you wish. But be drunk.”",
+      "One must always be drunk. On wine, on poetry, on virtue, as you please.",
       "“Hypocrite lecteur, — mon semblable, — mon frère!”",
-      "“There are in every man, at every hour, two simultaneous postulations: one towards God, the other towards Satan.”",
-      "These dark forest-green wooden boxes are forged from French pine and river water. Look closely: stanza cards from every age of Paris.",
+      "In every man, at every hour, there are two pulls. One toward God, one toward Satan.",
+      "The green boxes belong to the booksellers of the quay. Look closely: stanza cards from every age of Paris.",
     ],
     normalLines: [
-      "“One should always be drunk. That's the great thing; the only question. On wine, on poetry, or on virtue, as you wish. But be drunk.”",
+      "One must always be drunk. On wine, on poetry, on virtue, as you please.",
       "“Hypocrite lecteur, — mon semblable, — mon frère!”",
-      "“There are in every man, at every hour, two simultaneous postulations: one towards God, the other towards Satan.”",
-      "These dark forest-green wooden boxes are forged from French pine and river water. Look closely: stanza cards from every age of Paris.",
+      "In every man, at every hour, there are two pulls. One toward God, one toward Satan.",
+      "The green boxes belong to the booksellers of the quay. Look closely: stanza cards from every age of Paris.",
     ],
     dialogueLines: [],
     currentDialogueIndex: 0,
@@ -2675,7 +2675,7 @@ export const ROOM_CLIFFS = {
       greeting: "Hola, compañero. Neruda. Sit. The sea does the talking out here.",
       talkLines: [
         "I grew up in Temuco, where it rains for months. I learned to write to the sound of it on a zinc roof.",
-        "I need the sea because it teaches me.",
+        "I built my house where I could hear the sea from the bed.",
         "If you're looking for Maya, she's inside at the big desk with a deck of cards.",
       ],
       duelLine: "“Tonight I can write the saddest lines.”",
@@ -2721,23 +2721,23 @@ export const ROOM_CLIFFS = {
     ],
     cypress_1: [
       "Twisted coastal cypresses standing guard above the glittering water.",
-      "'This quiet roof, where dove-sails saunter by, / Quivers between the pines, between the tombs.'",
+      "'Ce toit tranquille, où marchent des colombes, / Entre les pins palpite, entre les tombes.'",
     ],
     cypress_2: [
       "Twisted coastal cypresses standing guard above the glittering water.",
-      "'This quiet roof, where dove-sails saunter by, / Quivers between the pines, between the tombs.'",
+      "'Ce toit tranquille, où marchent des colombes, / Entre les pins palpite, entre les tombes.'",
     ],
     cypress_3: [
       "Twisted coastal cypresses standing guard above the glittering water.",
-      "'This quiet roof, where dove-sails saunter by, / Quivers between the pines, between the tombs.'",
+      "'Ce toit tranquille, où marchent des colombes, / Entre les pins palpite, entre les tombes.'",
     ],
     cypress_4: [
       "Twisted coastal cypresses standing guard above the glittering water.",
-      "'This quiet roof, where dove-sails saunter by, / Quivers between the pines, between the tombs.'",
+      "'Ce toit tranquille, où marchent des colombes, / Entre les pins palpite, entre les tombes.'",
     ],
     cypress_5: [
       "Twisted coastal cypresses standing guard above the glittering water.",
-      "'This quiet roof, where dove-sails saunter by, / Quivers between the pines, between the tombs.'",
+      "'Ce toit tranquille, où marchent des colombes, / Entre les pins palpite, entre les tombes.'",
     ],
     lemon_tree: [
       "A sheltered lemon tree heavy with bright yellow fruit.",
@@ -2745,7 +2745,7 @@ export const ROOM_CLIFFS = {
     ],
     vineyard_pergola: [
       "Dark Mediterranean grapes hanging from sun-bleached timber.",
-      "A round bronze shield leans in the brush: 'Some Saian mountaineer struts today with my shield.'",
+      "A round bronze shield leans in the brush. Its owner dropped it and ran, and wrote a poem saying so.",
     ],
     neruda_table: [
       "A heavy driftwood plank table set out on the deck, holding a bottle of bright green ink and thick foolscap sheets.",
@@ -2853,12 +2853,12 @@ export const INITIAL_CLIFFS_NPCS: HarborNPC[] = [
     greeting: "Hola, compañero. Neruda. Sit. The sea does the talking out here.",
     talkLines: [
       "I grew up in Temuco, where it rains for months. I learned to write to the sound of it on a zinc roof.",
-      "I need the sea because it teaches me.",
+      "I built my house where I could hear the sea from the bed.",
       "The wind off the cliff carries the rhythm of the waves.",
     ],
     normalLines: [
       "I grew up in Temuco, where it rains for months. I learned to write to the sound of it on a zinc roof.",
-      "I need the sea because it teaches me.",
+      "I built my house where I could hear the sea from the bed.",
       "The wind off the cliff carries the rhythm of the waves.",
     ],
     duelLine: "“Tonight I can write the saddest lines.”",
@@ -3194,7 +3194,7 @@ export const ROOM_FORGE = {
     ],
     quenching_trough: [
       "A hollowed stone trough of dark iron-tinted water, rising with faint steam.",
-      "'All I know is a door into the dark.'",
+      "A stone trough of black water. The iron hisses when it goes in.",
     ],
     forge_hearth: [
       "A hooded stone hearth glowing cherry-red with banked coal embers and leather bellows.",
@@ -3292,7 +3292,7 @@ export const ROOM_BLUE_HOUSE = {
   props: {
     sea_chest: [
       "A weathered cedar sea-chest laden with iridescent conch shells, smooth sea glass, and green maritime bottles gathered from the Pacific tide.",
-      "The lid is carved with Chilean waves and the Latin motto: 'I need the sea because it teaches me.'",
+      "The lid is carved with Chilean waves.",
     ],
     lorca_guitar_tribute: [
       "A Spanish classical guitar resting against the bookcase in quiet tribute to Federico.",
@@ -3304,7 +3304,7 @@ export const ROOM_BLUE_HOUSE = {
     ],
     reading_armchair: [
       "Draped neatly over the armchair is a pair of wildly incandescent woolen socks knitted by Maru Mori.",
-      "'Two woolen fish, / two long sharks / of lapis blue / shot through with a golden thread.'",
+      "A pair of thick wool socks, deep blue, left to dry on the arm of the chair.",
     ],
     maya_desk: [
       "A yellow legal pad and a deck of cards—the tools of an early morning writer.",
@@ -3312,11 +3312,11 @@ export const ROOM_BLUE_HOUSE = {
     ],
     potted_lemon: [
       "A terracotta pot holding a sun-drunk Aegean citrus and pomegranate tree.",
-      "'Tell me, is it the mad pomegranate tree / that leaps in the light?'",
+      "A pomegranate tree in full fruit, tossing in the wind.",
     ],
     casement_windows: [
       "Blue shutters thrown open to the surf breaking against the black cliff rocks.",
-      "'Where are your monuments, your battles, martyrs? / Where is your tribal memory? Sirs, / in that grey vault. The sea.'",
+      "The window looks straight out to sea. Nothing else is in it.",
     ],
     kilim_rug: [
       "A faded crimson rug worn thinner every year against the floorboards.",
@@ -3362,7 +3362,7 @@ export const ROOM_RUINS = {
       postEncounterGreeting: "A thousand cups are too few when the verse is good. Pour another.",
       talkLines: [
         "“Hard is the road. Hard is the road. But the wind will carry our sails across the rolling waves.”",
-        "The birds have vanished into the sky, and now the last cloud drains away.",
+        "The birds are gone and the last cloud is going. The mountain and I are still here.",
         "The Emperor sent for me once. I was drunk when the summons came. They threw water on me.",
       ],
       duelLine: "“Raising my cup, I invite the moon; with my shadow, we are three.”",
@@ -3417,11 +3417,11 @@ export const ROOM_RUINS = {
   props: {
     white_mountain_goat: [
       "MAAA. A bearded mountain goat chewing willow shoots along the rock.",
-      "'No more, my goats, shall I, stretched in a green cave, watch you hang far off from a bushy crag.'",
+      "'Ite meae, felix quondam pecus, ite capellae.'",
     ],
     ruins_goat: [
       "MAAA. A bearded mountain goat chewing willow shoots along the rock.",
-      "'No more, my goats, shall I, stretched in a green cave, watch you hang far off from a bushy crag.'",
+      "'Ite meae, felix quondam pecus, ite capellae.'",
     ],
     ancient_pond_frog: [
       "A green frog perches motionless on a mossy stone at the pond's edge, eyeing the water.",
@@ -3446,11 +3446,11 @@ export const ROOM_RUINS = {
     ],
     weathered_marble_muse_statue: [
       "An archaic headless marble torso draped in crimson autumn ivy, still suffused with inner light.",
-      "'For here there is no place / that does not see you. You must change your life.'",
+      "'denn da ist keine Stelle, / die dich nicht sieht. Du mußt dein Leben ändern.'",
     ],
     muse_statue: [
       "An archaic headless marble torso draped in crimson autumn ivy, still suffused with inner light.",
-      "'For here there is no place / that does not see you. You must change your life.'",
+      "'denn da ist keine Stelle, / die dich nicht sieht. Du mußt dein Leben ändern.'",
     ],
     fallen_travertine_column_drums: [
       "Shattered travertine column drums beside a half-sunk stone visage in the moss.",
@@ -3482,11 +3482,11 @@ export const ROOM_RUINS = {
     ],
     arched_roman_limestone_bridge: [
       "A keystone arch of fitted limestone spanning the cold mountain stream.",
-      "'The days go by, I remain.'",
+      "'Les jours s'en vont je demeure.'",
     ],
     ruins_bridge: [
       "A keystone arch of fitted limestone spanning the cold mountain stream.",
-      "'The days go by, I remain.'",
+      "'Les jours s'en vont je demeure.'",
     ],
     lotus_and_koi_pond: [
       "An ancient stone-rimmed basin where orange and platinum koi glide beneath dried lotus pods.",
@@ -3506,11 +3506,11 @@ export const ROOM_RUINS = {
     ],
     tea_pavilion_pillars_and_deck: [
       "Cinnabar-lacquered pillars rising from a swept dark cypress deck.",
-      "'Empty mountain: no one is seen, / Yet echoes of human voices are heard.'",
+      "Brushed on the pillar, four lines by Wang Wei. An empty mountain, and voices from somewhere.",
     ],
     tea_pavilion: [
       "Cinnabar-lacquered pillars rising from a swept dark cypress deck.",
-      "'Empty mountain: no one is seen, / Yet echoes of human voices are heard.'",
+      "Brushed on the pillar, four lines by Wang Wei. An empty mountain, and voices from somewhere.",
     ],
   },
 };
@@ -3650,7 +3650,7 @@ export const ROOM_MOUNTAIN_GOAT = {
     ],
     open_archway: [
       "An open stone archway framing misty peaks and drifting autumn clouds.",
-      "'The birds have vanished into the sky, / and now the last cloud drains away.'",
+      "Through the arch: no birds, one cloud, and the mountain.",
     ],
     timber_table: [
       "A scarred cedar corner table holding a crumpled Hollywood Park Racing Form and two empty bottles.",
@@ -3790,7 +3790,7 @@ export const ROOM_LIBRARY = {
     ],
     clerestory_window: [
       "A high stone clerestory arch framing the deep blue autumn sky.",
-      "'And immediately / Rather than words comes the thought of high windows: / The sun-comprehending glass.'",
+      "The windows are set too high to see out of. Sun comes through all afternoon.",
     ],
     autumn_leaves: [
       "Dry russet and golden autumn leaves drifted across the stone floor.",
@@ -3911,7 +3911,7 @@ export const ROOM_KITCHEN = {
     ],
     aga_stove: [
       "A cream-enameled cast-iron Aga range radiating steady warmth at four in the morning.",
-      "'Stasis in darkness. / Then the substanceless blue / Pour of tor and distances.'",
+      "A cream-colored Aga, still warm. She wrote before dawn, while the children slept.",
     ],
     belfast_sink: [
       "A deep white porcelain sink looking out into the rain-slicked orchard yard.",
@@ -3923,7 +3923,7 @@ export const ROOM_KITCHEN = {
     ],
     baking_board: [
       "A floured wooden board with two loaves cooling beside three cocktail olives and a Ritz bar receipt.",
-      "'All by myself I am a cozy baker.'",
+      "A floured board and a rolling pin. Tomato soup cake was her specialty.",
     ],
     timber_rafters: [
       "Blackened oak rafters hung with dried Devon lavender, copper pans, and a single rook feather.",
@@ -4078,7 +4078,7 @@ export const ROOM_GRAVEYARD = {
     ],
     celtic_cross: [
       "A leaning limestone Celtic cross cut deep against the mountain wind.",
-      "'Cast a cold eye / On life, on death. / Horseman, pass by!'",
+      "W. B. YEATS, 1865–1939. Three short lines are cut below the name. The last tells the horseman to pass by.",
     ],
     stone_urns: [
       "Twin stone funerary urns flanking the iron crypt gate.",
@@ -4171,12 +4171,12 @@ export const ROOM_CAFE_DE_FLORE = {
       name: 'GUILLAUME APOLLINAIRE',
       poetId: 'APOLLINAIRE',
       greeting:
-        '“Sous le pont Mirabeau coule la Seine et nos amours. Sit, friend, the coffee here has perfect rhythm.”',
+        '“Sous le pont Mirabeau coule la Seine.” Sit down. The coffee is good here.',
       talkLines: [
-        '“Under the Mirabeau bridge flows the Seine and our loves. Must I remember? Joy always came after sorrow.”',
-        '“I shape my poems like fountains, neckties, and falling rain. Words have geometries of their own.”',
-        '“Joyce was across the boulevard this morning arguing with Sylvia Beach about font sizes. A marvelous dispute.”',
-        '“Picasso sketched three doves on a paper napkin and traded it for two croissants and a café crème.”',
+        '“Sous le pont Mirabeau coule la Seine, et nos amours.” I wrote that after Marie left.',
+        'I set one poem down in the shape of rain. The printer was not pleased.',
+        'I was wounded in the head at the front, in 1916. I still wear the bandage some days.',
+        'Picasso was here last night, drawing on the tablecloth. He never has paper.',
       ],
     },
   },
@@ -4213,12 +4213,12 @@ export const ROOM_SHAKESPEARE_CO = {
       npcId: 'npc_sylvia_beach',
       name: 'SYLVIA BEACH',
       greeting:
-        '“Welcome to Shakespeare and Company, traveler. A haven for wandering wordsmiths and curious readers.”',
+        'Welcome to Shakespeare and Company. Books to lend, books to buy. Take your time.',
       talkLines: [
-        '“Be not inhospitable to strangers, lest they be angels in disguise.”',
-        '“I published James Joyce’s Ulysses when nobody else dared. Every blue paper cover was folded right on that desk.”',
-        '“Hemingway used to borrow bundles of Turgenev and read them by the stove when his garret was too cold.”',
-        '“Feel free to inspect your Anthology, browse the lending library shelves, or take a seat by the floor lamp.”',
+        'Most of my customers borrow more than they buy. I do not mind.',
+        'I published Mr. Joyce’s Ulysses in 1922. No one else would touch it.',
+        'Hemingway borrows Turgenev by the armful. He does bring them back.',
+        'Your Anthology is on the desk. The lending shelves are along the wall.',
       ],
     },
     bookstore_cat: {
@@ -4264,7 +4264,7 @@ export const ROOM_BOATHOUSE = {
   props: {
     hook_jawed_fish: [
       "A tremendous old hook-jawed fish resting in the dark water slip. Battered and venerable, with five old pieces of fish-line hung with their four- or five-day hooks grown firmly into his lip.",
-      "“Like medals with their ribbons frayed and wavering, a five-haired beard of wisdom trailing from his aching jaw.” It grunts softly in the cool shadow of the pier.",
+      "An old fish with five broken hooks in its jaw, the lines still trailing. It grunts softly in the cool shadow of the pier.",
     ],
     crimson_crab: [
       "A sideways crimson shore crab clicking its claws against the cedar floorboards. 'I should have been a pair of ragged claws / Scuttling across the floors of silent seas.'",
@@ -4288,7 +4288,7 @@ export const ROOM_BOATHOUSE = {
       title: "Bookbinder's Bench",
       lines: [
         "A screw press clamping wet folio sheets.",
-        "'The sea is as near to various colors as the stone is to grays.'",
+        "Glass fishing floats, cobalt and emerald, hung over the bench.",
       ],
     },
   },
@@ -4302,7 +4302,7 @@ export const ROOM_BOATHOUSE = {
       title: "Bookbinder's Bench",
       lines: [
         "A screw press clamping wet folio sheets.",
-        "'The sea is as near to various colors as the stone is to grays.'",
+        "Glass fishing floats, cobalt and emerald, hung over the bench.",
       ],
     },
   ],
@@ -4327,7 +4327,7 @@ export const ROOM_RENTED_ROOM = {
       talkLines: [
         "Let us descend into the spleen and the ideal.",
         "“Hypocrite lecteur, — mon semblable, — mon frère!”",
-        "There are in every man, at every hour, two simultaneous postulations: one towards God, the other towards Satan.",
+        "In every man, at every hour, there are two pulls. One toward God, one toward Satan.",
       ],
       duelLine: "Let us descend into the spleen and the ideal.",
       isFightable: true,
@@ -4345,7 +4345,7 @@ export const ROOM_RENTED_ROOM = {
       talkLines: [
         "Let us descend into the spleen and the ideal.",
         "“Hypocrite lecteur, — mon semblable, — mon frère!”",
-        "There are in every man, at every hour, two simultaneous postulations: one towards God, the other towards Satan.",
+        "In every man, at every hour, there are two pulls. One toward God, one toward Satan.",
       ],
       duelLine: "Let us descend into the spleen and the ideal.",
       isFightable: true,
@@ -4371,11 +4371,11 @@ export const ROOM_RENTED_ROOM = {
     ],
     rented_mantel: [
       "A glass vial of laudanum and a laurel branch beside a stopped brass mantel clock.",
-      "The clock whispers: 'Remember! The metal throat speaks every language.'",
+      "The clock on the mantel ticks loudly. Someone has scratched 'Souviens-toi!' under the dial.",
     ],
     rented_window: [
       "Below in the square, Bernini's boat-shaped fountain splashes at the foot of the Spanish Steps.",
-      "'There is nothing more profound, more mysterious, more pregnant, more insidious, more dazzling than a window lighted by a single candle.'",
+      "A tall window. Across the street, one other window is lit by a candle.",
     ],
     rented_table: [
       "A stack of letters tied in faded ribbon beside a flower vase.",
@@ -5068,12 +5068,12 @@ export const INITIAL_RUINS_NPCS: HarborNPC[] = [
     greeting: "You there. Come up. There's wine and there's the moon.",
     talkLines: [
       "“Hard is the road. Hard is the road. But the wind will carry our sails across the rolling waves.”",
-      "The birds have vanished into the sky, and now the last cloud drains away.",
+      "The birds are gone and the last cloud is going. The mountain and I are still here.",
       "The Emperor sent for me once. I was drunk when the summons came. They threw water on me.",
     ],
     normalLines: [
       "“Hard is the road. Hard is the road. But the wind will carry our sails across the rolling waves.”",
-      "The birds have vanished into the sky, and now the last cloud drains away.",
+      "The birds are gone and the last cloud is going. The mountain and I are still here.",
       "The Emperor sent for me once. I was drunk when the summons came. They threw water on me.",
     ],
     duelLine: "“Raising my cup, I invite the moon; with my shadow, we are three.”",
@@ -6240,12 +6240,12 @@ export const INITIAL_RENTED_ROOM_NPCS: HarborNPC[] = [
     talkLines: [
       "Let us descend into the spleen and the ideal.",
       "“Hypocrite lecteur, — mon semblable, — mon frère!”",
-      "There are in every man, at every hour, two simultaneous postulations: one towards God, the other towards Satan.",
+      "In every man, at every hour, there are two pulls. One toward God, one toward Satan.",
     ],
     normalLines: [
       "Let us descend into the spleen and the ideal.",
       "“Hypocrite lecteur, — mon semblable, — mon frère!”",
-      "There are in every man, at every hour, two simultaneous postulations: one towards God, the other towards Satan.",
+      "In every man, at every hour, there are two pulls. One toward God, one toward Satan.",
     ],
     dialogueLines: [],
     currentDialogueIndex: 0,
@@ -6318,20 +6318,20 @@ export const INITIAL_CAFE_NPCS: HarborNPC[] = [
     pxY: 4 * TILE_SIZE,
     facing: 'LEFT',
     introLine:
-      '“Sous le pont Mirabeau coule la Seine et nos amours. Sit, friend, the coffee here has perfect rhythm.”',
+      '“Sous le pont Mirabeau coule la Seine.” Sit down. The coffee is good here.',
     greeting:
-      '“Sous le pont Mirabeau coule la Seine et nos amours. Sit, friend, the coffee here has perfect rhythm.”',
+      '“Sous le pont Mirabeau coule la Seine.” Sit down. The coffee is good here.',
     talkLines: [
-      '“Under the Mirabeau bridge flows the Seine and our loves. Must I remember? Joy always came after sorrow.”',
-      '“I shape my poems like fountains, neckties, and falling rain. Words have geometries of their own.”',
-      '“Joyce was across the boulevard this morning arguing with Sylvia Beach about font sizes. A marvelous dispute.”',
-      '“Picasso sketched three doves on a paper napkin and traded it for two croissants and a café crème.”',
+      '“Sous le pont Mirabeau coule la Seine, et nos amours.” I wrote that after Marie left.',
+      'I set one poem down in the shape of rain. The printer was not pleased.',
+      'I was wounded in the head at the front, in 1916. I still wear the bandage some days.',
+      'Picasso was here last night, drawing on the tablecloth. He never has paper.',
     ],
     normalLines: [
-      '“Under the Mirabeau bridge flows the Seine and our loves. Must I remember? Joy always came after sorrow.”',
-      '“I shape my poems like fountains, neckties, and falling rain. Words have geometries of their own.”',
-      '“Joyce was across the boulevard this morning arguing with Sylvia Beach about font sizes. A marvelous dispute.”',
-      '“Picasso sketched three doves on a paper napkin and traded it for two croissants and a café crème.”',
+      '“Sous le pont Mirabeau coule la Seine, et nos amours.” I wrote that after Marie left.',
+      'I set one poem down in the shape of rain. The printer was not pleased.',
+      'I was wounded in the head at the front, in 1916. I still wear the bandage some days.',
+      'Picasso was here last night, drawing on the tablecloth. He never has paper.',
     ],
     dialogueLines: [],
     currentDialogueIndex: 0,
@@ -6366,20 +6366,20 @@ export const INITIAL_SHAKESPEARE_CO_NPCS: HarborNPC[] = [
     pxY: 2 * TILE_SIZE,
     facing: 'DOWN',
     introLine:
-      '“Welcome to Shakespeare and Company, traveler. A haven for wandering wordsmiths and curious readers.”',
+      'Welcome to Shakespeare and Company. Books to lend, books to buy. Take your time.',
     greeting:
-      '“Welcome to Shakespeare and Company, traveler. A haven for wandering wordsmiths and curious readers.”',
+      'Welcome to Shakespeare and Company. Books to lend, books to buy. Take your time.',
     talkLines: [
-      '“Be not inhospitable to strangers, lest they be angels in disguise.”',
-      '“I published James Joyce’s Ulysses when nobody else dared. Every blue paper cover was folded right on that desk.”',
-      '“Hemingway used to borrow bundles of Turgenev and read them by the stove when his garret was too cold.”',
-      '“Feel free to inspect your Anthology, browse the lending library shelves, or take a seat by the floor lamp.”',
+      'Most of my customers borrow more than they buy. I do not mind.',
+      'I published Mr. Joyce’s Ulysses in 1922. No one else would touch it.',
+      'Hemingway borrows Turgenev by the armful. He does bring them back.',
+      'Your Anthology is on the desk. The lending shelves are along the wall.',
     ],
     normalLines: [
-      '“Be not inhospitable to strangers, lest they be angels in disguise.”',
-      '“I published James Joyce’s Ulysses when nobody else dared. Every blue paper cover was folded right on that desk.”',
-      '“Hemingway used to borrow bundles of Turgenev and read them by the stove when his garret was too cold.”',
-      '“Feel free to inspect your Anthology, browse the lending library shelves, or take a seat by the floor lamp.”',
+      'Most of my customers borrow more than they buy. I do not mind.',
+      'I published Mr. Joyce’s Ulysses in 1922. No one else would touch it.',
+      'Hemingway borrows Turgenev by the armful. He does bring them back.',
+      'Your Anthology is on the desk. The lending shelves are along the wall.',
     ],
     dialogueLines: [],
     currentDialogueIndex: 0,
@@ -20635,6 +20635,9 @@ export const CHAR_KEYS: string[] = [
   'BARISTA',
   'SYLVIA_BEACH',
   'BOOKSTORE_CAT',
+  // Tenants of the two rooms whose first residents live elsewhere now
+  'SEVERN',
+  'ALCAEUS',
 ];
 
 function createHarborCharSpritesheetCanvas(): HTMLCanvasElement {
@@ -23101,6 +23104,38 @@ function drawHarborChibiChar(
     if (dir === 'DOWN' || dir === 'RIGHT' || dir === 'LEFT') {
       p(dir === 'RIGHT' ? 9 : 4, 5 + bobY, '#1e293b', 3, 2);
     }
+  }
+  // JOSEPH SEVERN (painter: ochre smock over a white shirt, paint on the cuff, dark curls)
+  else if (k === 'SEVERN') {
+    drawLegs('#44403c', '#292524', '#1c1917', '#000000');
+    p(2, 10 + bobY, OUT, 12, 8);
+    p(3, 11 + bobY, '#b45309', 10, 6); // Ochre smock
+    p(3, 15 + bobY, '#92400e', 10, 2);
+    if (dir === 'DOWN') {
+      p(6, 10 + bobY, '#ffffff', 4, 2); // Shirt collar
+      p(4, 14 + bobY, '#2563eb', 1, 1); // Paint
+      p(10, 13 + bobY, '#dc2626', 1, 1);
+    }
+    drawFace('#fed7aa', '#d97706');
+    p(2, 0 + bobY, OUT, 12, 5);
+    p(3, 1 + bobY, '#292524', 10, 4); // Dark curls
+    p(2, 3 + bobY, '#292524', 1, 2);
+    p(13, 3 + bobY, '#292524', 1, 2);
+  }
+  // ALCAEUS (dark red himation over a pale chiton, black hair and beard, ivy wreath)
+  else if (k === 'ALCAEUS') {
+    drawRobeBottom('#f5f5f4', '#e7e5e4', '#7f1d1d', '#78350f');
+    p(2, 10 + bobY, OUT, 12, 8);
+    p(3, 11 + bobY, '#f5f5f4', 10, 6);
+    p(3, 11 + bobY, '#7f1d1d', 5, 6); // Himation over one shoulder
+    p(8, 15 + bobY, '#7f1d1d', 5, 2);
+    drawFace('#e8b98a', '#b45309');
+    if (dir === 'DOWN') p(5, 8 + bobY, '#1c1917', 6, 2); // Beard
+    if (dir === 'LEFT') p(4, 8 + bobY, '#1c1917', 4, 2);
+    if (dir === 'RIGHT') p(8, 8 + bobY, '#1c1917', 4, 2);
+    p(2, 0 + bobY, OUT, 12, 5);
+    p(3, 1 + bobY, '#1c1917', 10, 4);
+    p(3, 2 + bobY, '#166534', 10, 1); // Ivy
   }
   // Fallback for any other character
   else {
@@ -38224,6 +38259,32 @@ function retireFrom(list: HarborNPC[]): void {
   INITIAL_BLUEHOUSE_NPCS,
   INITIAL_RENTED_ROOM_NPCS,
 ].forEach(retireFrom);
+// TENANTS. The two rooms above lost their residents when the duplicates were retired
+// (Baudelaire keeps the bookstalls, Sappho the Summit). Neither newcomer duels.
+const tenant = (id: string, name: string, spriteKey: string, x: number, y: number, facing: FacingDirection, greeting: string, talkLines: string[]): HarborNPC => ({
+  id, name, x, y, pxX: x * TILE_SIZE, pxY: y * TILE_SIZE, facing,
+  introLine: greeting, greeting, talkLines, normalLines: talkLines,
+  dialogueLines: [], currentDialogueIndex: 0, hasSeenIntro: false, hasFoughtBefore: false,
+  greeted: false, talkIndex: 0, isFightable: false, isDuelist: false, spriteKey,
+  isActive: true, isMoving: false, walkStep: 0, isInteracting: false,
+} as HarborNPC);
+export const SEVERN_GREETING = 'Come in. Mind the easel, the paint is wet.';
+export const SEVERN_TALK = [
+  'I am a painter, not a poet. I came to Rome with Keats, to look after him.',
+  'He has gone on up the mountain. I keep the room as he left it.',
+  'I drew him at three in the morning once, to keep myself awake.',
+  'He wrote his best in the autumn of 1819. It was always his season.',
+];
+export const ALCAEUS_GREETING = 'Come in out of the snow. The coals are good.';
+export const ALCAEUS_TALK = [
+  'I am Alcaeus, of Mytilene. Sappho and I are from the same island.',
+  'I wrote of wine, and of a ship in a storm. She wrote of everything else.',
+  'I was exiled twice. A man gets used to other people’s fires.',
+  'She is outside, near the top. She does not raise her voice. Do not mistake that.',
+];
+INITIAL_RENTED_ROOM_NPCS.push(tenant('npc_rented_severn', 'JOSEPH SEVERN', 'SEVERN', 9, 4, 'LEFT', SEVERN_GREETING, SEVERN_TALK));
+INITIAL_LYRIC_SANCTUARY_NPCS.push(tenant('npc_sanctuary_alcaeus', 'ALCAEUS', 'ALCAEUS', 5, 3, 'LEFT', ALCAEUS_GREETING, ALCAEUS_TALK));
+
 
 // RUMI COMES DOWN TO THE TOWN. He is a Spring poet and Chapter I needs him beaten,
 // but he was standing in the Ruins, three tiers up. He goes back to the cafe table

@@ -109,6 +109,10 @@ import {
   INITIAL_HERMITAGE_NPCS,
   INITIAL_SUMMIT_NPCS,
   INITIAL_RENTED_ROOM_NPCS,
+  SEVERN_GREETING,
+  SEVERN_TALK,
+  ALCAEUS_GREETING,
+  ALCAEUS_TALK,
   createFreshHarborNpcs,
   createFreshTownNpcs,
   arrangeSoapbox,
@@ -1831,6 +1835,8 @@ export default function App() {
   const currentScreenRef = useRef<AppScreen>('TITLE');
   currentScreenRef.current = currentScreen;
   const [selectedGameMode, setSelectedGameMode] = useState<GameMode>('GRAND_TOUR');
+  const selectedGameModeRef = useRef<GameMode>(selectedGameMode);
+  selectedGameModeRef.current = selectedGameMode;
   const [playerName, setPlayerName] = useState<string>('');
   const trimmedReaderName = playerName?.trim() ?? '';
   const displayReaderName =
@@ -1871,6 +1877,10 @@ export default function App() {
         setCurrentScreen('OPENING_SCENE');
         return;
       }
+      if (index === 0 && climbActiveBeforeFreeDuelRef.current !== null) {
+        setActivePlayerPoetId(climbActiveBeforeFreeDuelRef.current);
+        climbActiveBeforeFreeDuelRef.current = null;
+      }
       const savedClimb = !hasStartedClimb ? readClimbSave() : null;
       if (index === 0 && savedClimb) {
         resumeSavedClimbRef.current(savedClimb);
@@ -1890,6 +1900,7 @@ export default function App() {
           setCurrentScreen('OPENING_SCENE');
         }
       } else if (index === 1) {
+        if (climbActiveBeforeFreeDuelRef.current === null) climbActiveBeforeFreeDuelRef.current = climbActiveNowRef.current;
         setSelectedGameMode('FREE_DUEL');
         setCurrentScreen('FREE_DUEL_SELECT');
       } else if (index === 2) {
@@ -2091,6 +2102,10 @@ export default function App() {
 
   // Free Duel Setup State
   const [freeDuelPlayerId, setFreeDuelPlayerId] = useState<string>('MARY_OLIVER');
+  // The climb's own lead, kept safe while an exhibition borrows the duel screen.
+  const climbActiveBeforeFreeDuelRef = useRef<string | null>(null);
+  const climbActiveNowRef = useRef<string>(activePlayerPoetId);
+  climbActiveNowRef.current = activePlayerPoetId;
   const [freeDuelEnemyId, setFreeDuelEnemyId] = useState<string>('HUGHES');
   const [freeDuelDifficulty, setFreeDuelDifficulty] = useState<'NOVICE' | 'SCHOLAR' | 'MASTER'>('SCHOLAR');
   const [freeDuelArenaId, setFreeDuelArenaId] = useState<string>('GLOBE_THEATRE_STAGE');
@@ -2196,6 +2211,10 @@ export default function App() {
 
   // Bag Inventory
   const [bagInventory, setBagInventory] = useState<BagItem[]>(INITIAL_BAG_INVENTORY);
+  // An exhibition match has nothing to recruit, so the Blank Book stays out of the bag there.
+  const battleBag = selectedGameMode === 'FREE_DUEL' ? bagInventory.filter((it) => it.category !== 'CAPTURE') : bagInventory;
+  const battleBagRef = useRef(battleBag);
+  battleBagRef.current = battleBag;
   const [activeMove, setActiveMove] = useState<PoemMove | null>(null);
   const activeMoveRef = useRef<PoemMove | null>(null);
   activeMoveRef.current = activeMove;
@@ -5324,7 +5343,7 @@ export default function App() {
           ? propData
           : propData?.lines || [
               "A screw press clamping wet folio sheets.",
-              "'The sea is as near to various colors as the stone is to grays.' Glass fishing floats in cobalt and emerald reflect the quiet water slip.",
+              "Glass fishing floats in cobalt and emerald reflect the quiet water slip.",
             ];
         const count = (interactionCountsRef.current.boathouse_press || 0) + 1;
         interactionCountsRef.current.boathouse_press = count;
@@ -5381,6 +5400,15 @@ export default function App() {
               : n,
           ),
         );
+
+        if (targetNpc.id === 'npc_sanctuary_alcaeus') {
+          promptPoetChoiceMenu('ALCAEUS', ALCAEUS_GREETING, ALCAEUS_TALK, '', undefined, () => {
+            setLyricSanctuaryNpcs((prev) =>
+              prev.map((n) => (n.id === targetNpc.id ? { ...n, isInteracting: false, facing: 'LEFT' } : n)),
+            );
+          });
+          return;
+        }
 
         // 1. SAPPHO: Inside the Lyric Sanctuary by the glowing hearth/brazier. FIGHTABLE (1st in Summit Gauntlet).
         if (targetNpc.poetId === 'SAPPHO' || targetNpc.id === 'npc_sanctuary_sappho' || targetNpc.id === 'npc_summit_sappho') {
@@ -5572,6 +5600,15 @@ export default function App() {
           ),
         );
 
+        if (targetNpc.id === 'npc_rented_severn') {
+          promptPoetChoiceMenu('JOSEPH SEVERN', SEVERN_GREETING, SEVERN_TALK, '', undefined, () => {
+            setRentedRoomNpcs((prev) =>
+              prev.map((n) => (n.id === targetNpc.id ? { ...n, isInteracting: false, facing: 'LEFT' } : n)),
+            );
+          });
+          return;
+        }
+
         // CHARLES BAUDELAIRE: Sole occupant & duelist in The Rented Room on chair at X: 11, Y: 6, facing East. FIGHTABLE!
         if (targetNpc.poetId === 'BAUDELAIRE' || targetNpc.poetId === 'baudelaire' || targetNpc.id === 'baudelaire' || targetNpc.id === 'npc_rented_baudelaire') {
           const isPostEncounter = targetNpc.hasFoughtBefore || capturedPoetIds.includes('BAUDELAIRE') || capturedPoetIds.includes('baudelaire');
@@ -5581,7 +5618,7 @@ export default function App() {
           const baudelaireTalkLines = [
             "Let us descend into the spleen and the ideal.",
             "“Hypocrite lecteur, — mon semblable, — mon frère!”",
-            "There are in every man, at every hour, two simultaneous postulations: one towards God, the other towards Satan.",
+            "In every man, at every hour, there are two pulls. One toward God, one toward Satan.",
           ];
           const baudelaireDuelLine =
             "Let us descend into the spleen and the ideal.";
@@ -5681,7 +5718,7 @@ export default function App() {
         triggerHaptics(30);
         const mantelLines = [
           "A glass vial of laudanum and a laurel branch beside a stopped brass mantel clock.",
-          "The clock whispers: 'Remember! The metal throat speaks every language.'",
+          "The clock on the mantel ticks loudly. Someone has scratched 'Souviens-toi!' under the dial.",
         ];
         const curIdx = (propInspectIndexRef.current.RENTED_MANTEL ?? 0) % mantelLines.length;
         propInspectIndexRef.current.RENTED_MANTEL = (curIdx + 1) % mantelLines.length;
@@ -5699,7 +5736,7 @@ export default function App() {
         triggerHaptics(30);
         const windowLines = [
           "Below in the square, Bernini's boat-shaped fountain splashes at the foot of the Spanish Steps.",
-          "'There is nothing more profound, more mysterious, more pregnant, more insidious, more dazzling than a window lighted by a single candle.'",
+          "A tall window. Across the street, one other window is lit by a candle.",
         ];
         const curIdx = (propInspectIndexRef.current.RENTED_WINDOW ?? 0) % windowLines.length;
         propInspectIndexRef.current.RENTED_WINDOW = (curIdx + 1) % windowLines.length;
@@ -6137,7 +6174,7 @@ export default function App() {
         triggerHaptics(30);
         const drumLines = [
           "Leaning against the worn marble drum is an unstrung palintonon horn bow beside twelve iron axe-helves.",
-          "'So effortlessly Odysseus strung the great bow, and plucked the string to test its pitch—it sang like a swallow's note.'",
+          "Carved on the drum: a man stringing a great bow as easily as a singer strings a lyre.",
         ];
         const curIdx = (propInspectIndexRef.current.SUMMIT_COLUMN_DRUM ?? 0) % drumLines.length;
         propInspectIndexRef.current.SUMMIT_COLUMN_DRUM = (curIdx + 1) % drumLines.length;
@@ -6648,7 +6685,7 @@ export default function App() {
         triggerHaptics(30);
         const crossLines = [
           "A leaning limestone Celtic cross cut deep against the mountain wind.",
-          "'Cast a cold eye / On life, on death. / Horseman, pass by!'",
+          "W. B. YEATS, 1865–1939. Three short lines are cut below the name. The last tells the horseman to pass by.",
         ];
         const curIdx = (propInspectIndexRef.current.GRAVEYARD_CROSS ?? 0) % crossLines.length;
         propInspectIndexRef.current.GRAVEYARD_CROSS = (curIdx + 1) % crossLines.length;
@@ -7970,7 +8007,7 @@ export default function App() {
         triggerHaptics(30);
         const winLines = [
           "A high stone clerestory arch framing the deep blue autumn sky.",
-          "'And immediately / Rather than words comes the thought of high windows: / The sun-comprehending glass.'",
+          "The windows are set too high to see out of. Sun comes through all afternoon.",
         ];
         const curIdx = (propInspectIndexRef.current.LIBRARY_CLERESTORY ?? 0) % winLines.length;
         propInspectIndexRef.current.LIBRARY_CLERESTORY = (curIdx + 1) % winLines.length;
@@ -8262,7 +8299,7 @@ export default function App() {
         triggerHaptics(30);
         const archLines = [
           "An open stone archway framing misty peaks and drifting autumn clouds.",
-          "'The birds have vanished into the sky, / and now the last cloud drains away.'",
+          "Through the arch: no birds, one cloud, and the mountain.",
         ];
         const curIdx = (propInspectIndexRef.current.GOAT_ARCHWAY ?? 0) % archLines.length;
         propInspectIndexRef.current.GOAT_ARCHWAY = (curIdx + 1) % archLines.length;
@@ -8423,7 +8460,7 @@ export default function App() {
         setOverworldDialogue({
           active: true,
           speakerName: 'CALLIGRAPHY DESK',
-          text: "A low wooden writing desk with a bamboo brush and sumi ink stone. 'An ancient pond / A frog jumps in / The sound of water.'",
+          text: "A low wooden writing desk with a bamboo brush and sumi ink stone. 'Old pond — frogs jumped in — sound of water.'",
         });
         return;
       }
@@ -9866,7 +9903,7 @@ export default function App() {
         const photoLines = [
           "A framed photograph of the Golden Shovel poolroom and jazz hall on Chicago's South Side.",
           "Seven pool players lean against green felt tables under a low hanging lamp.",
-          "Gwendolyn Brooks's handwritten dedication on the mat: 'To the street corners that taught us rhythm.'",
+          "A framed photograph of a quartet playing on a Chicago street corner. Bronzeville, by the storefronts.",
         ];
         const curIdx = (propInspectIndexRef.current.LUNCH_PHOTO ?? 0) % photoLines.length;
         propInspectIndexRef.current.LUNCH_PHOTO = (curIdx + 1) % photoLines.length;
@@ -9921,7 +9958,7 @@ export default function App() {
         triggerHaptics(30);
         const pieLines = [
           "Fresh baked cherry pie slices and day-old crumb cake under a gleaming glass dome.",
-          "'At six o'clock we were waiting for coffee, / waiting for coffee and the charitable crumb.'",
+          "A pie under glass, uncut. Someone down the counter is still waiting on coffee.",
         ];
         const curIdx = (propInspectIndexRef.current.LUNCH_PIE ?? 0) % pieLines.length;
         propInspectIndexRef.current.LUNCH_PIE = (curIdx + 1) % pieLines.length;
@@ -9939,7 +9976,7 @@ export default function App() {
         triggerHaptics(30);
         const coffeeLines = [
           "Twin glass carafes of black coffee kept hot on the burner for the lunchtime regulars.",
-          "Scribbled on a cardboard coaster beside the burner: 'Is there no one who cares about fresh air?'",
+          "Scribbled on a cardboard coaster beside the burner: a phone number and half a line of verse, crossed out.",
         ];
         const curIdx = (propInspectIndexRef.current.LUNCH_COFFEE ?? 0) % coffeeLines.length;
         propInspectIndexRef.current.LUNCH_COFFEE = (curIdx + 1) % coffeeLines.length;
@@ -10302,7 +10339,7 @@ export default function App() {
         const step = ((count - 1) % 3) + 1;
         let text = "";
         if (step === 1) {
-          text = "HOUSE ALE • PORT • MARTINI. 'One martini is just right; two is the absolute limit.'";
+          text = "HOUSE ALE • PORT • MARTINI. Chalked underneath: 'TWO MARTINIS PER POET.'";
         } else if (step === 2) {
           text = "After three, the chalkboard lettering begins to sway gently toward the floorboards.";
         } else {
@@ -10320,7 +10357,7 @@ export default function App() {
       if (facingX >= 11 && facingX <= 14 && facingY === 1) {
         gameAudio.playCrispClick();
         triggerHaptics(30);
-        let text = "Tiered bottles of ruby shiraz, dusty port, and amber spirits gleaming in the mirror. Etched into the back-bar glass: 'Not the wine gets drunk on us—we get drunk on the wine.'";
+        let text = "Tiered bottles of ruby shiraz, dusty port, and amber spirits gleaming in the mirror.";
         if (leadPoetId === 'BUKOWSKI') {
           text += "\n\nBukowski settles his elbow straight into the worn dent in the bar varnish like he never left.";
         }
@@ -10556,13 +10593,13 @@ export default function App() {
         if (targetNpc.poetId === 'BAUDELAIRE' || targetNpc.id === 'npc_town_baudelaire') {
           const isPostEncounter = targetNpc.hasFoughtBefore || capturedPoetIds.includes('BAUDELAIRE') || capturedPoetIds.includes('baudelaire');
           const baudelaireGreeting = isPostEncounter
-            ? "“Hypocrite lecteur, — mon semblable, — mon frère!” You carry the true rhythm. Browse the folios anytime."
-            : "“Hypocrite lecteur, — mon semblable, — mon frère!” Welcome to the quayside of Parnassus. The city has its spleen, but here among the books, one finds the ideal.";
+            ? "“Hypocrite lecteur, — mon semblable, — mon frère!” The boxes are open. Look as long as you like."
+            : "“Hypocrite lecteur, — mon semblable, — mon frère!” You have found the bookstalls. Look as long as you like.";
           const baudelaireTalkLines = [
-            "“One should always be drunk. That's the great thing; the only question. On wine, on poetry, or on virtue, as you wish. But be drunk.”",
+            "One must always be drunk. On wine, on poetry, on virtue, as you please.",
             "“Hypocrite lecteur, — mon semblable, — mon frère!”",
-            "“There are in every man, at every hour, two simultaneous postulations: one towards God, the other towards Satan.”",
-            "These dark forest-green wooden boxes are forged from French pine and river water. Look closely: stanza cards from every age of Paris.",
+            "In every man, at every hour, there are two pulls. One toward God, one toward Satan.",
+            "The green boxes belong to the booksellers of the quay. Look closely: stanza cards from every age of Paris.",
           ];
           const baudelaireDuelLine = "“Hypocrite lecteur, — mon semblable, — mon frère!”";
 
@@ -11793,7 +11830,7 @@ export default function App() {
       triggerHaptics(30);
       const milestoneLines = [
         "PARNASSUS: MILE 0. Chiseled into salt-pitted coastal granite.",
-        "Carved below the numeral: 'As you set out for Ithaka, hope your road is a long one.'",
+        "Carved below the numeral, one word: ITHAKA.",
         "A single spear of summer grass grows from a crevice beside the Roman zero.",
       ];
       const curMileIdx = propInspectIndexRef.current.MILESTONE % milestoneLines.length;
@@ -12286,7 +12323,7 @@ export default function App() {
             setDialogueLines([`“${defenderPoet.dialogue.midFight}”`]);
             setOutcomeNarration(`${defenderPoet.name} responds with mid-fight determination!`);
           } else if (newHp <= 0) {
-            setDialogueLines([`“${defenderPoet.dialogue.lose}”`]);
+            setDialogueLines([selectedGameModeRef.current === 'FREE_DUEL' ? `${defenderPoet.name} closes the book and nods.` : `“${defenderPoet.dialogue.lose}”`]);
             setOutcomeNarration(`${defenderPoet.name} was defeated!`);
             soundtrackEngine.playVictoryFanfare();
           } else {
@@ -12485,7 +12522,9 @@ export default function App() {
   };
 
   const awardVictoryLoot = (isCaptured: boolean) => {
-    if (isCaptured && !capturedPoetIds.includes(activeEnemyPoetId)) {
+    // Free Duel is an exhibition: anyone against anyone, and nothing that happens there
+    // touches the climb's Anthology, lineup or save.
+    if (selectedGameModeRef.current !== 'FREE_DUEL' && isCaptured && !capturedPoetIds.includes(activeEnemyPoetId)) {
       setCapturedPoetIds((prev) => [...prev, activeEnemyPoetId]);
       // A Summit poet does not step into the lineup on their own: they wait up there until
       // the fourth is beaten (difficulty.ts).
@@ -12679,9 +12718,12 @@ export default function App() {
       awardVictoryLoot(true);
       const recruitBark = DUELIST_BATTLE_BARKS[enemyPoetRef.current.id]?.recruited || enemyPoetRef.current.dialogue.captured || enemyPoetRef.current.dialogue.lose;
       const formattedRecruit = (recruitBark.startsWith('"') || recruitBark.startsWith('“')) ? recruitBark : `“${recruitBark}”`;
-      setDialogueLines([formattedRecruit]);
+      // The losing lines all talk about joining the climb, which an exhibition does not do.
+      setDialogueLines([selectedGameModeRef.current === 'FREE_DUEL' ? `${enemyPoetRef.current.name} closes the book and nods.` : formattedRecruit]);
       setOutcomeNarration(
-        `${enemyPoetRef.current.name} was defeated and joined your Anthology!${playerLineupRef.current.length >= LINEUP_SIZE ? ' Two poets stand in a duel. Name a new lead or second there.' : ''}`,
+        selectedGameModeRef.current === 'FREE_DUEL'
+          ? `${enemyPoetRef.current.name} was defeated.`
+          : `${enemyPoetRef.current.name} was defeated and joined your Anthology!${playerLineupRef.current.length >= LINEUP_SIZE ? ' Two poets stand in a duel. Name a new lead or second there.' : ''}`,
       );
       setGameState((prev) => ({...prev, status: 'VICTORY', score: prev.score + finalScore}));
       return;
@@ -12857,7 +12899,7 @@ export default function App() {
     triggerHaptics(50);
 
     setBagInventory((prev) =>
-      prev.map((i) => (i.id === item.id ? { ...i, count: Math.max(0, i.count - 1) } : i))
+      prev.map((i) => (i.id === item.id && selectedGameMode !== 'FREE_DUEL' ? { ...i, count: Math.max(0, i.count - 1) } : i))
     );
 
     // Capture Window Bonus:
@@ -12941,6 +12983,7 @@ export default function App() {
     }
 
     if (item.category === 'CAPTURE') {
+      if (selectedGameModeRef.current === 'FREE_DUEL') return;
       startItemCapture(item);
       return;
     }
@@ -12953,7 +12996,7 @@ export default function App() {
         return;
       }
       setBagInventory((prev) =>
-        prev.map((i) => (i.id === item.id ? { ...i, count: Math.max(0, i.count - 1) } : i))
+        prev.map((i) => (i.id === item.id && selectedGameMode !== 'FREE_DUEL' ? { ...i, count: Math.max(0, i.count - 1) } : i))
       );
       const maxHp = playerPoetRef.current.hp;
       const nextHp = Math.min(maxHp, playerHpRef.current + 40);
@@ -12977,7 +13020,7 @@ export default function App() {
 
     if (item.id === 'INSPIRATION_TEA') {
       setBagInventory((prev) =>
-        prev.map((i) => (i.id === item.id ? { ...i, count: Math.max(0, i.count - 1) } : i))
+        prev.map((i) => (i.id === item.id && selectedGameMode !== 'FREE_DUEL' ? { ...i, count: Math.max(0, i.count - 1) } : i))
       );
       const curPoetId = activePlayerPoetId;
       setPoetReadingsMap((prev) => {
@@ -13463,9 +13506,11 @@ export default function App() {
           awardVictoryLoot(true);
           const recruitBark = DUELIST_BATTLE_BARKS[enemyPoetRef.current.id]?.recruited || enemyPoetRef.current.dialogue.captured || enemyPoetRef.current.dialogue.lose;
           const formattedRecruit = (recruitBark.startsWith('"') || recruitBark.startsWith('“')) ? recruitBark : `“${recruitBark}”`;
-          setDialogueLines([formattedRecruit]);
+          setDialogueLines([selectedGameModeRef.current === 'FREE_DUEL' ? `${enemyPoetRef.current.name} closes the book and nods.` : formattedRecruit]);
           setOutcomeNarration(
-        `${enemyPoetRef.current.name} was defeated and joined your Anthology!${playerLineupRef.current.length >= LINEUP_SIZE ? ' Two poets stand in a duel. Name a new lead or second there.' : ''}`,
+        selectedGameModeRef.current === 'FREE_DUEL'
+          ? `${enemyPoetRef.current.name} was defeated.`
+          : `${enemyPoetRef.current.name} was defeated and joined your Anthology!${playerLineupRef.current.length >= LINEUP_SIZE ? ' Two poets stand in a duel. Name a new lead or second there.' : ''}`,
       );
           setGameState((prev) => ({
             ...prev,
@@ -16737,12 +16782,12 @@ export default function App() {
               setSelectedBagIndex((prev) => Math.max(0, prev - 1));
               gameAudio.playHoverMicroTone();
             } else if (downPressed && !lastDownRef.current) {
-              setSelectedBagIndex((prev) => Math.min(bagInventory.length - 1, prev + 1));
+              setSelectedBagIndex((prev) => Math.min(battleBagRef.current.length - 1, prev + 1));
               gameAudio.playHoverMicroTone();
             }
 
             if (confirmPressed && !lastConfirmRef.current) {
-              const chosenItem = bagInventory[selectedBagIndexRef.current];
+              const chosenItem = battleBagRef.current[selectedBagIndexRef.current];
               if (chosenItem) applyBagItemRef.current(chosenItem);
             }
 
@@ -18639,12 +18684,12 @@ export default function App() {
               <div className="bg-[#F4F5F9] border-3 border-[#000000] rounded-xl p-3 flex flex-col justify-between">
                 <div>
                   <div className="text-xs font-black text-[#3B4CCA] uppercase mb-2 flex items-center justify-between">
-                    <span>YOUR CHAMPION ({Math.max(capturedPoetIds.length, 1)} UNLOCKED)</span>
+                    <span>YOUR CHAMPION (ALL {ALL_POETS.length} AVAILABLE)</span>
                     <span className="text-[10px] text-[#000000]">PLAYER 1</span>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-2 mb-3">
-                    {(capturedPoetIds.length > 0 ? capturedPoetIds : ['MARY_OLIVER', 'WHITMAN']).map((cId) => {
+                  <div className="grid grid-cols-2 gap-2 mb-3 max-h-[160px] overflow-y-auto pr-1">
+                    {ALL_POETS.map((p) => p.id).map((cId) => {
                       const pObj = getPoetById(cId);
                       const isSelected = freeDuelPlayerId === cId;
                       return (
@@ -19139,7 +19184,7 @@ export default function App() {
                     DEBUFF (0.70x)
                   </span>
                 )}
-                {isEnemyInCaptureWindow && (
+                {isEnemyInCaptureWindow && selectedGameMode !== 'FREE_DUEL' && (
                   <span
                     className="font-black px-1 py-0.2 animate-pulse"
                     style={{
@@ -19199,7 +19244,7 @@ export default function App() {
                   color: '#C5D1E0',
                   letterSpacing: '1px',
                 }}>
-                <span>{isEnemyInCaptureWindow ? ((bagInventory.find((it) => it.id === 'BLANK_BOOK')?.count ?? 0) > 0 ? 'READY TO BIND' : 'NO BLANK BOOKS LEFT') : 'WILD POET'}</span>
+                <span>{selectedGameMode === 'FREE_DUEL' ? 'OPPONENT' : isEnemyInCaptureWindow ? ((bagInventory.find((it) => it.id === 'BLANK_BOOK')?.count ?? 0) > 0 ? 'READY TO BIND' : 'NO BLANK BOOKS LEFT') : 'WILD POET'}</span>
                 <span style={{ color: '#FFE89E' }}>{Math.ceil(Math.max(0, enemyHp))}/{enemyMaxHp}</span>
               </div>
               {POET_TRAITS[enemyPoet.id] && (
@@ -19649,12 +19694,12 @@ export default function App() {
                   <div
                     className="font-bold uppercase mb-1"
                     style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '10px', color: '#FFE89E' }}>
-                    {bagInventory[selectedBagIndex]?.name}
+                    {battleBag[selectedBagIndex]?.name}
                   </div>
                   <div
                     className="leading-relaxed"
                     style={{ fontFamily: 'Georgia, Garamond, serif', fontStyle: 'italic', fontSize: '14px', color: '#C5D1E0' }}>
-                    {bagInventory[selectedBagIndex]?.desc}
+                    {battleBag[selectedBagIndex]?.desc}
                   </div>
                 </div>
 
@@ -19665,7 +19710,7 @@ export default function App() {
                     borderLeft: '2px solid #333C57',
                   }}>
                   <div className="space-y-1 overflow-y-auto touch-auto flex-1 pr-0.5">
-                    {bagInventory.map((item, idx) => (
+                    {battleBag.map((item, idx) => (
                       <button
                         type="button"
                         key={item.id}
@@ -19915,7 +19960,7 @@ export default function App() {
                         fontSize: '10px',
                       }}
                       className="p-1.5 font-bold hover:bg-[#252D4A] flex items-center justify-center cursor-pointer min-h-[44px] min-w-[44px] active:scale-95">
-                      CAPTURE
+                      {selectedGameMode === 'FREE_DUEL' ? 'BAG' : 'CAPTURE'}
                     </button>
                     <button
                       type="button"
@@ -19986,7 +20031,7 @@ export default function App() {
             className="w-full max-w-md bg-[#FFFFFF] border-4 border-[#000000] rounded-2xl p-5 sm:p-6 shadow-[10px_10px_0_0_#000000] text-center text-[#000000] font-mono relative animate-in fade-in zoom-in-95 duration-200">
             
             <h1 className="text-2xl sm:text-3xl font-black text-[#059669] uppercase tracking-wider mb-2">
-              {`${enemyPoet.name.split(' ').pop()?.toUpperCase()} RECRUITED!`}
+              {`${enemyPoet.name.split(' ').pop()?.toUpperCase()} ${selectedGameMode === 'FREE_DUEL' ? 'BEATEN!' : 'RECRUITED!'}`}
             </h1>
 
             <div className="bg-[#FFFDE7] p-3 rounded-xl border-3 border-[#000000] mb-3 flex flex-col items-center">
@@ -19998,6 +20043,7 @@ export default function App() {
               />
               <div className="font-serif italic text-xs text-[#1e293b] font-bold px-2">
                 {(() => {
+                  if (selectedGameMode === 'FREE_DUEL') return `${enemyPoet.name} closes the book and nods.`;
                   const txt = DUELIST_BATTLE_BARKS[enemyPoet.id]?.recruited || enemyPoet.dialogue.captured || enemyPoet.dialogue.lose;
                   return txt.startsWith('"') || txt.startsWith('“') ? txt : `“${txt}”`;
                 })()}
