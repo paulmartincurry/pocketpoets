@@ -26,203 +26,201 @@ const ENTRIES: PropEntry[] = [
   // ---------------------------------------------------------------- THE CLIFFS
   ['CLIFFS', ['32,3'], "SHIP'S FIGUREHEAD", [
     'A wooden woman off the bow of a wrecked schooner. Somebody carried her up a cliff rather than leave her.',
-    'She has seen more ocean than you have. She is not impressed by the view.',
+    'The paint has gone from her face on the windward side.',
   ]],
   ['CLIFFS', ['33,5', '31,7', '28,9', '33,21', '30,23', '27,24', '24,25', '21,26'], 'AGAVE', [
-    'Agave. It flowers once, magnificently, and then it dies. Poets find this relatable.',
+    'Agave. It flowers once, after many years, and then it dies.',
   ]],
   ['CLIFFS', ['15,7', '16,7', '17,7', '18,7', '19,7', '21,7', '22,7', '23,7', '24,7', '18,10', '19,10', '21,10', '22,10', '23,10', '24,10'], 'VINEYARD PERGOLA', [
     'Grapes on a trellis, going purple in the salt air.',
-    'Every one of these will be wine or a metaphor by autumn.',
+    'They will be picked in autumn.',
   ]],
   ['CLIFFS', ['6,12'], 'THE LAMB', [
     "'Little Lamb, who made thee? / Dost thou know who made thee?'",
-    'The lamb does not know. The lamb is eating.',
+    'A lamb in the grass by the forge, eating.',
   ]],
   ['CLIFFS', ['10,12'], 'THE TYGER', [
     "'Tyger Tyger, burning bright, / In the forests of the night.'",
-    'A striped cat asleep by the forge door. Fearful symmetry, at rest.',
+    'A striped cat asleep by the forge door.',
   ]],
   ['CLIFFS', ['14,12'], 'ANVIL', [
     "'What the hammer? what the chain? / In what furnace was thy brain?'",
     'Still warm.',
   ]],
   ['CLIFFS', ['33,11', '32,26', '35,12', '6,25'], 'BOULDER', [
-    'A boulder. It was here before the poems and has outlasted several movements.',
+    'A boulder, warm on the side that faces the sea.',
   ]],
   ['CLIFFS', ['7,15', '8,15', '9,15', '11,15', '12,15', '13,15', '17,16', '17,17', '17,18'], 'DRY-STONE WALL', [
-    'No mortar. Every stone is held up by the ones it holds up.',
+    'A dry-stone wall. No mortar. It has stood a long time.',
   ]],
   ['CLIFFS', ['31,17', '32,17'], 'LIMESTONE BENCH', [
-    'Sun-warm limestone with lavender behind it. Built for sitting and saying nothing.',
+    'Sun-warm limestone with lavender growing behind it.',
   ]],
   ['CLIFFS', ['33,19'], 'CAIRN', [
-    'Stones stacked by everyone who made it this far. Add one in your head.',
+    'Stones stacked by people who came this way before you.',
   ]],
   ['CLIFFS', ['20,20'], 'WOOL SOCKS', [
-    'One pair of thick wool socks, drying on a line. Somebody thought these deserved an ode.',
-    'They were right.',
+    'A pair of thick wool socks, drying on a line.',
+    'A friend knitted them for him. He wrote them an ode.',
   ]],
   ['CLIFFS', ['19,16', '20,16', '21,16', '19,17', '20,17', '21,17', '19,18', '20,18', '21,18', '19,19', '20,19', '21,19'], 'THE ODE GARDEN', [
-    'Artichokes, tomatoes, onions. Three rows of ordinary things somebody bothered to praise.',
+    'Artichokes, tomatoes, onions. He wrote an ode to each.',
   ]],
   ['CLIFFS', ['29,20', '8,21'], 'AMPHORA', [
-    'A clay jar older than the alphabet you read in. It held oil, then wine, then nothing.',
+    'A clay jar, very old. It held oil once, and then wine.',
   ]],
   ['CLIFFS', ['22,21'], 'BIRDCAGE', [
     'A birdcage on a post. The door is open. The cage is empty.',
-    'You know why.',
   ]],
   ['CLIFFS', ['27,21'], 'ANCHOR', [
-    "A ship's anchor in the yard of a house on dry land. The owner collects the sea in pieces.",
+    "A ship's anchor in the yard of a house on dry land. He collects things from ships.",
   ]],
   ['CLIFFS', ['13,25'], 'BRINDED COW', [
     "'Glory be to God for dappled things / For skies of couple-colour as a brinded cow.'",
-    'The cow accepts the glory and goes on chewing.',
+    'A brindled cow, chewing.',
   ]],
   ['CLIFFS', ['7,20'], 'BLACK PONY', [
-    'A small black pony, saddled, olives in the saddlebag. Its rider knows every road and knows he will never reach Cordoba.',
-    'The pony has heard. It is being a good sport about it.',
+    'A small black pony, saddled, with olives in the saddlebag.',
+    'Its rider is bound for Córdoba. He does not expect to arrive.',
   ]],
   ['CLIFFS', ['30,15', '8,17', '11,17', '14,17', '2,20', '6,20', '12,20', '16,20'], 'OLIVE TREE', [
-    'An olive tree, pruned by forty generations and in no hurry.',
-    'He wrote that a field of these opens and closes like a fan. Stand still long enough and it does.',
+    'An old olive tree. The trunk is split and it still bears.',
+    'There are groves of these all round Granada.',
   ]],
   ['CLIFFS', ['10,25'], 'THE WINDHOVER', [
-    "'I caught this morning morning's minion.' A kestrel, hanging on the wind like it is nailed there.",
+    "'I caught this morning morning's minion.' A kestrel, holding still on the wind.",
   ]],
   ['CLIFFS', ['27,27'], 'GULL ROCK', [
-    'A gull on a rock, screaming at the Aegean. No form, no meter, total commitment.',
+    'A gull on a rock, calling at the sea.',
   ]],
 
   // ----------------------------------------------------------------- THE RUINS
   ['RUINS', ['6,8'], 'THE MOUNTAIN GOAT', [
-    'THE MOUNTAIN GOAT. A plain board on a chain. No hours posted. It opens when he wakes up.',
+    'THE MOUNTAIN GOAT. A plain board on a chain. No hours posted.',
   ]],
   ['RUINS', ['29,10'], 'STACK OF BOOKS', [
     'Books stacked by the library door. She owned four thousand. They made her give them up.',
-    'She signed the paper in her own blood. Then she kept thinking anyway.',
+    'She signed the paper in her own blood.',
   ]],
   ['RUINS', ['14,11'], 'JUG AND THREE CUPS', [
     'One jug. Three cups. One for him, one for the moon, one for his shadow.',
-    'Nobody else was invited. It was still a party.',
+    'He drank alone that night and wrote it down.',
   ]],
   // Seen from either bank: the Reader stands on the bank (18,10 or 22,10) and faces the water.
   ['RUINS', ['20,10', '19,10', '21,10'], 'THE MOON IN THE WATER', [
     'The moon, sitting in the stream. They say he drowned reaching for it.',
-    'Probably not true. Worth believing.',
+    'It is a story. People have told it for a thousand years.',
   ]],
   // The bluebird sits on the bar's roof; the Reader faces the wall under it (9,8).
   ['RUINS', ['9,8'], 'BLUEBIRD', [
-    'A bluebird on the roof of a bar. The man inside says he keeps one too, and only lets it out at night.',
-    'It sings a little. Nobody in there is going to mention it.',
+    'A bluebird on the roof of the bar.',
+    'It sings a little and stops.',
   ]],
   ['RUINS', ['24,11'], 'WET BLACK BOUGH', [
     "'The apparition of these faces in the crowd: / Petals on a wet, black bough.'",
-    'Fourteen words. It took him a year to get it down to that.',
+    'He cut it down from thirty lines. It took him a year.',
   ]],
   ['RUINS', ['32,11'], 'LILACS', [
     "'April is the cruellest month, breeding / Lilacs out of the dead land.'",
-    'They smell fine. That is the cruel part.',
+    'Lilacs, in flower, growing out of broken stone.',
   ]],
   ['RUINS', ['11,7'], 'SUNFLOWER', [
     "'Ah Sun-flower! weary of time, / Who countest the steps of the Sun.'",
-    'Dusty, bent, growing out of rubble. Still a sunflower.',
+    'Dusty and bent, growing out of the rubble.',
   ]],
   ['RUINS', ['8,13'], 'SUNDIAL', [
-    'A sundial set by an astronomer who fixed the calendar and then wrote about how little time there is.',
-    'It is later than it was when you started reading this.',
+    'A sundial. The astronomer who set it also reformed the calendar.',
   ]],
   ['RUINS', ['9,14'], 'LOAF AND JUG', [
     "'A Jug of Wine, a Loaf of Bread, and Thou / Beside me singing in the Wilderness.'",
-    'Two out of three are here.',
+    'A loaf and a jug, set out under the tree.',
   ]],
   ['RUINS', ['4,15', '7,15', '11,15', '14,15', '5,18', '12,18', '9,18', '15,18'], 'BROKEN COLUMN', [
-    'Half a column. It used to hold up a roof. Now it holds up the idea of one.',
+    'Half a column. It held up a roof once.',
   ]],
   ['RUINS', ['25,18'], 'STONE LANTERN', [
-    'A stone lantern under a coat of moss. Nobody has lit it in three hundred years. It still looks like evening.',
+    'A stone lantern under a coat of moss. It has not been lit in a long time.',
   ]],
   ['RUINS', ['32,19'], 'BANANA PLANT', [
-    'A banana plant. Useless in this climate. Torn by every wind.',
-    'A student gave him one like it. He liked it so much he took its name.',
+    'A banana plant. The wind has torn the leaves.',
+    'A student gave him one like it. He took his name from it.',
   ]],
   ['RUINS', ['33,22'], 'STONE BASIN', [
     'A cracked basin of rainwater with one red leaf on it.',
-    'An old pond, more or less. Waiting on a frog.',
+    'The water is very still.',
   ]],
 
   // -------------------------------------------------------------- THE TREELINE
   ['TREELINE', ['10,7', '11,7'], 'BEE BOX', [
-    'A clean wood box, square as a chair. It hums.',
-    'She ordered it. Now she has to live with it.',
+    'A white wooden hive. It hums.',
+    'She keeps bees. Her father kept them too.',
   ]],
   ['TREELINE', ['7,9'], 'BLACK SHOE', [
     'One black shoe, left out in the snow. Just the one.',
   ]],
   ['TREELINE', ['31,9'], 'THE BELL', [
     "'Never send to know for whom the bell tolls; it tolls for thee.'",
-    'You did not ask. It told you anyway.',
+    'A bell on a post. The rope is frayed where hands have pulled it.',
   ]],
   // The graveyard yard is fenced and its gate is a door, so the Reader reads these through
   // the railings: 29,8 is the fence tile in front of the raven.
   ['TREELINE', ['29,7', '29,8'], 'RAVEN', [
     "A raven on the graveyard fence. Quoth the Raven: 'Nevermore.'",
-    'It only knows the one word. It has built a career on it.',
+    'It watches you and does not move.',
   ]],
   ['TREELINE', ['31,13'], 'THE SNOW MAN', [
     "'One must have a mind of winter.'",
-    'Three balls of snow and two pieces of coal. Nothing that is not there, and the nothing that is.',
+    'A snowman with two pieces of coal for eyes.',
   ]],
   ['TREELINE', ['11,16'], 'THE LITTLE HORSE', [
     "'He gives his harness bells a shake / To ask if there is some mistake.'",
-    'There is no farmhouse near. The horse has noticed.',
+    'A small horse in harness, standing in the snow.',
   ]],
   ['TREELINE', ['33,19'], 'CHOPPING BLOCK', [
-    'A chopping block with the axe left in it. Wood warms you twice. Once here.',
+    'A chopping block with the axe left in it.',
   ]],
   ['TREELINE', ['25,20'], 'FIREWOOD', [
-    'Split birch, stacked with more care than most stanzas.',
+    'Split birch, stacked carefully against the wall.',
   ]],
   ['TREELINE', ['27,20'], 'LIT WINDOW', [
-    'One lit window. A man in there went to the woods to live deliberately and still leaves the lamp on.',
+    'One lit window. He reads late.',
   ]],
   ['TREELINE', ['32,21'], 'SLED AND SNOWSHOES', [
-    'A sled and a pair of snowshoes. He walked to town more often than the book lets on.',
+    'A sled and a pair of snowshoes. It is a mile and a half to the village.',
   ]],
   ['TREELINE', ['1,23', '2,23'], 'THE CARRIAGE', [
     "'Because I could not stop for Death / He kindly stopped for me.'",
-    'It is parked. The driver is patient. He has all the time there is.',
+    'A carriage, standing at the gate. The driver waits.',
   ]],
   // The bird sits on her eave; the Reader faces the wall under it (7,22).
   ['TREELINE', ['7,21', '7,22'], 'THE THING WITH FEATHERS', [
     "'Hope is the thing with feathers / That perches in the soul.'",
-    'It is perched on the eave, singing the tune without the words. It has not asked you for a crumb.',
+    'A small bird on the eave, singing.',
   ]],
   ['TREELINE', ['3,24', '5,24'], 'BENT BIRCH', [
     "'One could do worse than be a swinger of birches.'",
-    'Bent to the ground and not broken. Ice did it, he says. He would rather a boy had.',
+    'A birch bent to the ground by ice.',
   ]],
   ['TREELINE', ['16,25'], 'THE FORK', [
-    "'Two roads diverged in a yellow wood.' A signpost with two arms and no opinion.",
-    'Both roads are worn about the same. He admits it in the second stanza. Nobody reads the second stanza.',
+    "'Two roads diverged in a yellow wood.' A signpost with two arms.",
+    'Both roads look about equally worn.',
   ]],
 
   // ---------------------------------------------------------------- THE SUMMIT
   ['SUMMIT', ['13,1', '22,1'], 'LAUREL', [
-    'A laurel wreath on a flat stone. Nobody is wearing it. That is the whole game.',
+    'A laurel wreath on a flat stone.',
   ]],
   ['SUMMIT', ['14,2'], 'THE FORBIDDEN TREE', [
     "'Of Man's first disobedience, and the fruit / Of that forbidden tree.'",
-    'Something is coiled in the branches. It has all the best lines.',
+    'Something is coiled in the branches.',
   ]],
   ['SUMMIT', ['21,2'], 'TABLET OVER THE GATE', [
     "'All hope abandon, ye who enter here.'",
-    'Carved deep. He meant it. He still wrote two more books to get you out.',
+    'The letters are cut deep into the stone.',
   ]],
   ['SUMMIT', ['22,5'], 'THE DARK WOOD', [
     "'Midway upon the journey of our life / I found myself within a forest dark.'",
-    'One black tree. It only takes one.',
+    'One black tree, standing by itself.',
   ]],
   ['SUMMIT', ['3,11'], 'APPLE ON THE TOP BOUGH', [
     "'Like the sweet apple which reddens upon the topmost bough.'",
@@ -230,54 +228,54 @@ const ENTRIES: PropEntry[] = [
   ]],
   ['SUMMIT', ['11,11'], 'GRECIAN URN', [
     "'Thou still unravish'd bride of quietness.'",
-    'The lovers on it never touch and never get old. He was twenty-three. He knew which was the better deal.',
+    'The figures on it are running and never arrive.',
   ]],
   ['SUMMIT', ['30,16'], 'YORICK', [
     "'Alas, poor Yorick! I knew him, Horatio: a fellow of infinite jest.'",
-    'A skull on a plinth. The jokes are gone. The grin stayed.',
+    'A skull on a plinth.',
   ]],
   ['SUMMIT', ['23,22', '32,22'], 'THE TWO MASKS', [
-    'Comedy and Tragedy, side by side on a pillar. Same face. One of them has read ahead.',
+    'Comedy and Tragedy, side by side on a pillar.',
   ]],
   ['SUMMIT', ['14,9'], 'NIGHTINGALE', [
     "'Thou wast not born for death, immortal Bird!'",
-    'It is singing. Do you wake or sleep?',
+    'It is singing somewhere above you. You cannot see it.',
   ]],
 
   // ----------------------------------------------------------------- INTERIORS
   ['KITCHEN', ['1,3'], 'WOODBOX', [
-    'Kindling, split small. The stove eats before anyone else in this house.',
+    'Kindling, split small, for the stove.',
   ]],
   ['HERMITAGE', ['9,10'], 'BOOTS', [
     'A pair of boots by the door, still wet. He has been out measuring the pond again.',
   ]],
   ['MOUNTAIN_GOAT', ['7,4', '8,4', '9,4'], 'BAR STOOL', [
-    'A cedar stool worn smooth. Better men than you have fallen off it.',
+    'A cedar stool, worn smooth.',
   ]],
   ['BLUE_HOUSE', ['11,4'], 'WRITING DESK', [
-    'A dictionary, a thesaurus and a deck of cards. Solitaire keeps the small mind busy so the big one can work.',
-    'Not his. A friend left them and he will not move them.',
+    'A dictionary, a thesaurus and a deck of cards.',
+    'They are not his. A friend left them here.',
   ]],
   ['BLUE_HOUSE', ['14,8'], 'TABLE', [
-    'Shells, bottles, a brass compass. He never bought one thing when he could buy the whole shelf.',
+    'Shells, bottles, a brass compass. He collects everything.',
   ]],
   ['FORGE', ['4,2'], 'BELLOWS', [
-    'A leather bellows. One good breath and the whole fire changes its mind.',
+    'A leather bellows, cracked along the fold.',
   ]],
   ['LUNCH_COUNTER', ['3,3', '4,3', '6,3', '8,3', '9,3', '10,3', '12,3'], 'LUNCH COUNTER', [
-    'Formica, coffee rings, a napkin with half a poem on it. He gets an hour. He uses all of it.',
+    'Formica, coffee rings, a napkin with half a poem on it.',
   ]],
   ['LUNCH_COUNTER', ['7,3'], 'SANDWICH', [
-    'A liver sausage sandwich, one bite gone. Lunch is a poem if you write it down fast enough.',
+    'A liver sausage sandwich, one bite gone.',
   ]],
   ['LUNCH_COUNTER', ['2,6', '3,6', '2,9'], 'BOOTH', [
-    'A booth with a cold plate on the table. Somebody ate the plums. They were delicious, apparently.',
+    'A booth with a cold plate on the table.',
   ]],
   ['NIGHTINGALE', ['7,2', '7,3', '7,4'], 'STAGE RAIL', [
-    'A brass rail between the stage and everybody else. It has been leaned on by people about to be famous.',
+    'A brass rail between the stage and the tables.',
   ]],
   ['NIGHTINGALE', ['11,3', '12,3', '13,3'], 'THE BAR', [
-    'The bar. Sticky in the good places. The blues come free with the second drink.',
+    'The bar. The wood is sticky under your hand.',
   ]],
 ];
 
@@ -293,31 +291,31 @@ for (const [screen, tiles, name, lines] of ENTRIES) {
 export const GRAVES: Record<string, PropLine> = {
   'GRAVEYARD:12,6': { name: 'LYCIDAS', lines: [
     "'For Lycidas is dead, dead ere his prime, / Young Lycidas, and hath not left his peer.'",
-    'Drowned in the Irish Sea. The stone is here. He is not.',
+    'Drowned in the Irish Sea. He was never found.',
   ] },
   'GRAVEYARD:10,9': { name: 'LUCY', lines: [
     "'But she is in her grave, and, oh, / The difference to me!'",
-    'She lived unknown, and few could know when she ceased to be. One did. He wrote five poems.',
+    'She lived unknown. He wrote five poems for her.',
   ] },
   'GRAVEYARD:3,10': { name: 'THE LADY OF SHALOTT', lines: [
     "'She has a lovely face; / God in his mercy lend her grace.'",
-    'She looked out the window once. That was all it took.',
+    'She looked out of her window toward Camelot, once.',
   ] },
   'GRAVEYARD:3,8': { name: 'PORPHYRIA', lines: [
     "'And all night long we have not stirred, / And yet God has not said a word!'",
-    'Do not ask her lover how it happened. He will tell you, calmly, and that is the problem.',
+    'She came in from the storm to see him. He tells it calmly.',
   ] },
   'GRAVEYARD:13,8': { name: 'BARBARA ALLEN', lines: [
     "'Sweet William died for me today, / I'll die for him tomorrow.'",
-    'A rose grows from one grave and a briar from the other. They have tied themselves in a knot.',
+    'A rose grows from one grave and a briar from the other. They have grown together in a knot.',
   ] },
   'GRAVEYARD:4,9': { name: 'LUCINDA MATLOCK', lines: [
     "'It takes life to love Life.'",
-    'Spoon River. Ninety-six years, twelve children, and no patience for your complaining.',
+    'Spoon River. Ninety-six years, twelve children.',
   ] },
   'GRAVEYARD:12,9': { name: 'THE ALBATROSS', lines: [
     "'Instead of the cross, the Albatross / About my neck was hung.'",
-    'A very small stone. Somebody with a long grey beard keeps leaving flowers and stopping wedding guests.',
+    'A very small stone. Someone leaves flowers here.',
   ] },
   'GRAVEYARD:4,10': { name: 'SELIMA', lines: [
     "'Not all that tempts your wand'ring eyes / And heedless hearts, is lawful prize.'",
@@ -327,7 +325,7 @@ export const GRAVES: Record<string, PropLine> = {
   // and 30,4, south fence at 30,8. The stones stand at 27,5 / 30,5 / 29,6.
   'TREELINE:27,4': { name: 'ONE WHO DIED FOR BEAUTY', lines: [
     "'I died for Beauty, but was scarce / Adjusted in the Tomb.'",
-    'The moss has reached the lips and is working on the name.',
+    'Moss has grown over the name.',
   ] },
   'TREELINE:30,4': { name: 'ONE WHO DIED FOR TRUTH', lines: [
     "'When One who died for Truth, was lain / In an adjoining Room.'",
@@ -343,20 +341,20 @@ export const GRAVES: Record<string, PropLine> = {
 // GATE REFUSALS. One per gated poet, in that poet's voice.
 // -----------------------------------------------------------------------------
 export const GATE_LINES: Record<string, string> = {
-  NERUDA: 'I have written odes to socks and onions, Reader. I have none for the unready. Finish {season} first.',
-  LORCA: 'The duende does not come because you knocked. It comes when you have bled a little. Finish {season}.',
-  ANGELOU: "You'll get here. I can see that from the way you walk. But not today. Finish {season} first.",
-  BLAKE: 'No bird soars too high if he soars with his own wings. Yours are still wet. Finish {season}.',
-  BASHO: 'You took a shortcut. The road noticed. Walk {season} to its end, then come sit.',
-  LI_BAI: 'Sit. Drink. But no duel. The moon tells me you have not finished {season}, and the moon does not gossip.',
-  SOR_JUANA: 'They made me wait a lifetime for a library. You can wait for a duel. Finish {season}.',
-  BUKOWSKI: "Kid, you haven't earned the hangover yet. Go finish {season}. I'll be here. I'm always here.",
-  FROST: 'You have promises to keep, and miles to go before we duel. Finish {season}.',
-  DICKINSON: 'I could not stop for you today. {season} is not finished with you. Come back when it is.',
-  POE: 'The raven says not yet. It is a small vocabulary, but it has never once been wrong. Finish {season}.',
-  PLATH: 'The bees are not ready for you. Neither am I. Finish {season} first.',
-  SAPPHO: 'The apple is on the top bough for a reason. Finish {season}, then reach.',
-  KEATS: 'I have less time than anyone on this mountain, and still I will make you wait. Finish {season}.',
-  SHAKESPEARE: 'Ripeness is all, Reader, and thou art green. Finish {season}.',
-  DANTE: 'There is an order to these things. I wrote it down, in three volumes. Finish {season} first.',
+  NERUDA: 'Not yet, compañero. Finish {season} first. I will keep the fire.',
+  LORCA: 'Not today. You have not finished {season}. Come back and we will sing.',
+  ANGELOU: "You'll get here. But not today, baby. Finish {season} first.",
+  BLAKE: 'Not yet. The plate is still in the acid. Finish {season} and come back.',
+  BASHO: 'You have come too soon. Walk {season} to its end, then sit with me.',
+  LI_BAI: 'Sit. Drink. But no duel until you have finished {season}.',
+  SOR_JUANA: 'Not yet. Finish {season}, and then we will dispute.',
+  BUKOWSKI: "Not now, kid. Go finish {season}. I'll be here.",
+  FROST: 'Not yet. Finish {season}. I have this wall to mend anyway.',
+  DICKINSON: 'Not today. {season} is not finished. Come back when it is.',
+  POE: 'Not yet. Quietly, now. Finish {season} first.',
+  PLATH: "Not yet. I'm working. Finish {season} first.",
+  SAPPHO: 'Not yet. Finish {season}. I will be here when the star is up.',
+  KEATS: 'Forgive me, not yet. Finish {season} first.',
+  SHAKESPEARE: 'Not yet, friend. Finish {season}, and come again.',
+  DANTE: 'There is an order to these things. Finish {season} first.',
 };

@@ -5887,15 +5887,15 @@ export default function App() {
             setOverworldDialogue({
               active: true,
               speakerName: 'SAPPHO',
-              text: targetNpc.introLine || "Chaire. Sappho. Most of what I wrote is gone. What's left is enough.",
+              text: targetNpc.introLine || "Chaire. Sappho, of Mytilene. Sit by me. The evening star is nearly up.",
               onComplete: releaseSappho,
             });
             return;
           }
           promptPoetChoiceMenu(
             'SAPPHO',
-            'The apple is still up there. Talk, duel, or walk on?',
-            targetNpc.talkLines || ['“I don\'t know what to do. Two states of mind in me.”'],
+            'Chaire. Sappho, of Mytilene. Sit by me. The evening star is nearly up.',
+            targetNpc.talkLines || ['I do not know which way to turn. My mind is two.'],
             targetNpc.duelLine || '“Someone will remember us, I say, even in another time.”',
             'SAPPHO',
             releaseSappho,
@@ -5974,11 +5974,11 @@ export default function App() {
           // Shakespeare IS captured
           promptPoetChoiceMenu(
             'JOHN KEATS',
-            targetNpc.greeting || "Hello. Keats. I'm twenty-five. I'll be twenty-five for a while.",
+            targetNpc.greeting || "Hello. John Keats. Forgive me, I tire quickly. Sit by me.",
             targetNpc.talkLines || [
               "“Was it a vision, or a waking dream? Fled is that music:—Do I wake or sleep?”",
               "“A thing of beauty is a joy for ever: its loveliness increases; it will never pass into nothingness.”",
-              "I trained as an apothecary in London before this. Believe me, the rhymes are better than the remedies.",
+              "I walked the wards at Guy's and passed for an apothecary. I knew by the first winter I should not practise.",
             ],
             targetNpc.duelLine || "“Beauty is truth, truth beauty,—that is all Ye know on earth, and all ye need to know.”",
             'KEATS',
@@ -7040,7 +7040,7 @@ export default function App() {
             targetNpc.talkLines || [
               "“I had three chairs in my house; one for solitude, two for friendship, three for society.”",
               "“Simplify, simplify, simplify! Say, rather, one meal a day instead of three.”",
-              "My mother brings a basket of laundry and warm pie on Sundays. A man can live deliberately and still appreciate pie.",
+              "I walked to the village most days. A man may live alone and still want the news.",
             ],
             targetNpc.duelLine || "“Simplify, simplify!”",
             'THOREAU',
@@ -7150,7 +7150,7 @@ export default function App() {
         promptPoetChoiceMenu(
           targetNpc.name,
           targetNpc.greeting || targetNpc.normalLines?.[0] || 'The river-stone hearth is warm. Will you sit and converse, or walk on?',
-          targetNpc.normalLines || targetNpc.talkLines || ['“I come into the peace of wild things.”'],
+          targetNpc.normalLines || targetNpc.talkLines || ['I farm a hillside in Henry County, Kentucky.'],
           '',
           undefined,
           () => {
@@ -8278,7 +8278,7 @@ export default function App() {
         triggerHaptics(30);
         const tableLines = [
           "A scarred cedar corner table holding a crumpled Hollywood Park Racing Form and two empty bottles.",
-          "'There's a bluebird in my heart that / wants to get out / but I'm too tough for him.'",
+          "A notebook, face down, with a pencil on it.",
         ];
         const curIdx = (propInspectIndexRef.current.GOAT_TIMBER_TABLE ?? 0) % tableLines.length;
         propInspectIndexRef.current.GOAT_TIMBER_TABLE = (curIdx + 1) % tableLines.length;
@@ -9882,7 +9882,7 @@ export default function App() {
         triggerHaptics(35);
         const jukeLines = [
           "A glowing Wurlitzer jukebox humming a low Lenox Avenue bassline.",
-          "'Good morning, daddy! / Ain't you heard / The boogie-woogie rumble / Of a dream deferred?'",
+          "'Droning a drowsy syncopated tune, / Rocking back and forth to a mellow croon.'",
         ];
         const curIdx = (propInspectIndexRef.current.LUNCH_JUKEBOX ?? 0) % jukeLines.length;
         propInspectIndexRef.current.LUNCH_JUKEBOX = (curIdx + 1) % jukeLines.length;
@@ -10144,7 +10144,7 @@ export default function App() {
               '“I’ve known rivers: I’ve known rivers ancient as the world. My soul has grown deep like the rivers.”',
               '“I, too, sing America. I am the darker brother.”',
             ],
-            '“What happens to a dream deferred? Does it dry up like a raisin in the sun?”',
+            'I\'m on after this number. Come on up, we\'ll do it right here.',
             'HUGHES',
             () => {
               setNightingaleNpcs((prev) =>
@@ -10253,7 +10253,7 @@ export default function App() {
       if (facingX === 14 && facingY === 3) {
         gameAudio.playCrispClick();
         triggerHaptics(30);
-        let text = "A pint of dark Welsh bitter. 'Rage, rage against the dying of the light.'";
+        let text = "A pint of dark Welsh bitter, half gone.";
         if (leadPoetId === 'BUKOWSKI') {
           text += "\n\nBukowski settles his elbow straight into the worn dent in the bar varnish like he never left.";
         }
@@ -10526,14 +10526,14 @@ export default function App() {
           const isPostEncounter = targetNpc.hasFoughtBefore || capturedPoetIds.includes('RUMI');
           const rumiGreeting = isPostEncounter
             ? 'We have spoken in verse, friend. The reed flute still remembers the song.'
-            : 'Khosh amadid. I am Jalal al-Din Muhammad Rumi. Sit with me in stillness; what you seek is seeking you.';
+            : 'Khosh amadid. Jalal al-Din, of Balkh, and now of Konya. Sit. There is no need to speak yet.';
           const rumiTalkLines = [
-            '“The wound is the place where the light enters you.”',
-            '“When the soul lies down in that grass, the world is too full to talk about.”',
-            '“Listen to the story told by the reed, of being separated.”',
+            'Listen to the reed. It has been crying since they cut it from the reed bed.',
+            'I was a scholar with a great many books. Then a man named Shams asked me one question.',
+            'My friend has been gone these many years. I have not stopped speaking to him.',
             'The tea here is good, though I usually spin after the second cup.',
           ];
-          const rumiDuelLine = '“Come, come, whoever you are.”';
+          const rumiDuelLine = 'Come, then. Let us turn a little.';
 
           promptPoetChoiceMenu(
             'JALAL AL-DIN MUHAMMAD RUMI',
@@ -10562,7 +10562,7 @@ export default function App() {
             "“There are in every man, at every hour, two simultaneous postulations: one towards God, the other towards Satan.”",
             "These dark forest-green wooden boxes are forged from French pine and river water. Look closely: stanza cards from every age of Paris.",
           ];
-          const baudelaireDuelLine = "“Hypocrite lecteur, — mon semblable, — mon frère!” Let us test our stanzas of spleen and ideal!";
+          const baudelaireDuelLine = "“Hypocrite lecteur, — mon semblable, — mon frère!”";
 
           promptPoetChoiceMenu(
             'CHARLES BAUDELAIRE',
@@ -10608,7 +10608,7 @@ export default function App() {
           const yeatsTalkLines = [
             '“Tread softly because you tread on my dreams.”',
             '“Things fall apart; the centre cannot hold.”',
-            "I was a senator for a while. It didn't take.",
+            "I have been a senator. A sixty-year-old smiling public man.",
           ];
 
           promptPoetChoiceMenu(
@@ -10638,8 +10638,8 @@ export default function App() {
         if (targetNpc.poetId === 'PESSOA' || targetNpc.id === 'npc_town_pessoa') {
           const pessoaGreeting = 'Boa tarde. Pessoa. Or one of us, anyway.';
           const pessoaTalkLines = [
-            '“Apart from that, I have within me all the dreams of the world.”',
-            '“Each of us is several, is many.”',
+            'I am a clerk. I translate business letters for the shipping firms.',
+            'I write under other names. Each has his own hand and his own opinions.',
             "I'm checking the notices for any news of Alberto Caeiro or Ricardo Reis.",
           ];
 
@@ -11254,7 +11254,7 @@ export default function App() {
             active: true,
             speakerName: targetNpc.name,
             text:
-              "Morning. Mary Oliver. You caught me out by the water's edge, watching the wild geese swim across the pond. I'm always out by the water. Or writing.",
+              "Morning. Mary Oliver. I've been out since first light. The geese are on the water.",
             onComplete: () => {
               setHarborNpcs((prev) =>
                 prev.map((n) =>
@@ -11282,11 +11282,11 @@ export default function App() {
           targetNpc.name,
           "Shall we share words together, test our stanzas in a duel, or will you walk along?",
           [
-            "“Pay attention. Be astonished. Tell about it.”",
-            "“You do not have to be good. You only have to let the soft animal of your body love what it loves.”",
-            "“The geese know what they're doing. I just take notes.”",
+            "You looked hard at things. That's most of it.",
+            "I had a dog named Percy. He taught me more than most people have.",
+            "The geese know what they're doing. I just take notes.",
           ],
-          "“Tell me, what is it you plan to do with your one wild and precious life?”",
+          "All right. But quietly. There's a heron just there.",
           'MARY_OLIVER',
           () => {
             setHarborNpcs((prev) =>
@@ -11319,7 +11319,7 @@ export default function App() {
             text:
               targetNpc.introLine ||
               targetNpc.greeting ||
-              "Salaam, traveler. Mahmoud Darwish. You find me in this quiet reading park beneath the green boughs. Sit beside me on the bench if your limbs grow weary.",
+              "Salaam. Mahmoud Darwish. Sit, the bench is in the shade.",
             onComplete: () => {
               setHarborNpcs((prev) =>
                 prev.map((n) =>
@@ -11335,12 +11335,12 @@ export default function App() {
           targetNpc.name,
           targetNpc.greeting || "The sea breeze brings the scent of wildflowers and poetry to this quiet park nook.",
           targetNpc.talkLines || [
-            '“We have on this earth what makes life worth living: the scent of bread at dawn, a woman’s thoughts on men, the works of Aeschylus, the beginning of love...”',
-            '“Where should the birds fly after the last sky? Where should the plants sleep after the last air?”',
-            '“I have learned all the words and broken them to make a single word: Home.”',
-            'Sit beside me on this weathered bench; the harbor road is loud, but here the verse takes root.',
+            'I think often of the house where I was born. I was six when we left it, at night.',
+            'I have lived in Beirut, in Cairo, in Paris, in Ramallah. I write in the mornings, wherever I am.',
+            'The village where I was born is not on the map now. I know the way all the same.',
+            'The road is loud. Under the trees one can hear oneself.',
           ],
-          targetNpc.duelLine || "“We have on this earth what makes life worth living.” Let us test our stanzas under the park trees!",
+          targetNpc.duelLine || "Then let us speak, you and I. Gently. The trees are listening.",
           'DARWISH',
           () => {
             setHarborNpcs((prev) =>
@@ -11367,7 +11367,7 @@ export default function App() {
             text:
               targetNpc.introLine ||
               targetNpc.greeting ||
-              "Nanga def. I'm Senghor. Think of me as a poet, or a president, or a poet again after. These golden flowers dance to an inner rhythm.",
+              "Nanga def. Senghor. I was a poet, then a president, then, thank God, a poet again.",
             onComplete: () => {
               setHarborNpcs((prev) =>
                 prev.map((n) =>
@@ -11390,12 +11390,12 @@ export default function App() {
           targetNpc.name,
           targetNpc.greeting || "These golden flowers dance to an inner rhythm. Listen to the music of the earth.",
           targetNpc.talkLines || [
-            '“Rhythm is the architecture of being.”',
-            '“Night of Sine, let me breathe the smell of our Dead.”',
-            '“Listen to the golden heads nodding in the breeze—every stanza has its pulse.”',
+            'I was born at Joal, by the sea. My mother\'s people kept cattle.',
+            'At night in the village the old ones spoke and the drum answered. That was my first school.',
+            'Look how the flowers move together in the wind.',
             "That's the road. There's only the one.",
           ],
-          targetNpc.duelLine || "“Rhythm is the architecture of being.” Let our verses resonate together in the glade!",
+          targetNpc.duelLine || "Come, then. Under the trees.",
           targetNpc.isFightable ? 'SENGHOR' : undefined,
           () => {
             setHarborNpcs((prev) =>
@@ -11434,7 +11434,7 @@ export default function App() {
             text:
               targetNpc.introLine ||
               targetNpc.greeting ||
-              "Kalispera. Cavafy. The beacon lamp burns clear over the Crossing-Bar shoals. Look out across the water—the sloop is sailing past.",
+              "Kalispera. Cavafy, of Alexandria. I am watching the ships come in.",
             onComplete: () => {
               setHarborNpcs((prev) =>
                 prev.map((n) =>
@@ -11464,9 +11464,9 @@ export default function App() {
           targetNpc.name,
           targetNpc.greeting || "The beacon lamp burns clear over the Crossing-Bar shoals. Look out across the water—the sloop is sailing past.",
           targetNpc.talkLines || [
-            '“Hope your road is a long one.”',
-            '“Full of adventure, full of discovery.”',
-            "I'll stay by the beacon lamp.",
+            'When you set out, pray the road is long.',
+            'Do not hurry the journey. Better it last for years.',
+            "I shall stay by the lamp. I keep late hours.",
           ],
           '',
           undefined,
@@ -11513,7 +11513,7 @@ export default function App() {
             text:
               targetNpc.introLine ||
               targetNpc.greeting ||
-              "Bonjou. Walcott. Out here on the beach, watching the waves roll in toward the boathouse. The sea is history.",
+              "Bonjou. Walcott. St. Lucia. I came down to see the light on the water before it goes.",
             onComplete: () => {
               setHarborNpcs((prev) =>
                 prev.map((n) =>
@@ -11539,13 +11539,13 @@ export default function App() {
 
         promptPoetChoiceMenu(
           targetNpc.name,
-          targetNpc.greeting || "Bonjou. Walcott. Out here on the beach, watching the waves roll in toward the boathouse. The sea is history.",
+          targetNpc.greeting || "Bonjou. Walcott. St. Lucia. I came down to see the light on the water before it goes.",
           targetNpc.talkLines || [
-            '“You will greet yourself arriving at your own door.”',
-            '“The sea is history.”',
+            'I paint as well. The sea does not hold still for it.',
+            'I was born in Castries. The town burned when I was eighteen. I wrote about that first.',
             'Look east along the surf—The Bight Boathouse has stood there through thirty hurricanes.',
           ],
-          targetNpc.duelLine || "“The sea is history.” Let our verses meet upon the shore!",
+          targetNpc.duelLine || "Come, then. Down by the water.",
           targetNpc.isFightable ? 'WALCOTT' : undefined,
           () => {
             setHarborNpcs((prev) =>
@@ -11699,7 +11699,7 @@ export default function App() {
       triggerHaptics(30);
       const benchLines = [
         "A weathered cedar park bench set peacefully within a quiet reading park framed by green park trees.",
-        "Scratched into the cedar armrest in fine Arabic script: 'We have on this earth what makes life worth living.'",
+        "Something is scratched into the cedar armrest in fine Arabic script.",
         "Wild poppies, marigolds, bluebells, and clover blossom in the gentle breeze across the verdant grass.",
       ];
       const curBenchIdx = (propInspectIndexRef.current.CANTO1_BENCH ?? 0) % benchLines.length;
@@ -12618,7 +12618,7 @@ export default function App() {
       const lostToName = enemyPoetRef.current?.name ?? 'the poet';
       const lossLines = [
         `${lostToName} had the better lines today. Your poets carried you back to the pier, rested. Not every duel has to be finished.`,
-        `${lostToName} again. A thought for the walk back: the blank books in your bag are not for writing in.`,
+        `${lostToName} again. A thought for the walk back: you are carrying blank books.`,
         `Back on the pier. Your poets are rested. Not every verse has to be a blow.`,
       ];
       // The other thing nobody discovers alone: who leads matters more than anything. If the
