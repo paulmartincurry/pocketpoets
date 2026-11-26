@@ -17,13 +17,16 @@
 // Tune with `npm run balance`, which reads this file.
 // =============================================================================
 
+// 26 Nov 2026: Paul asked for the Summit half a notch harder. Shakespeare, Keats and Dante
+// moved a small step; Sappho, the first of the four, stayed. Shakespeare tips from always
+// beaten to almost never beaten near guard 0.5 / edge 1.6, so do not go there.
 export const HOME_EDGE: Record<string, number> = {
   BUKOWSKI: 1.45, // Autumn's hard duel
   PLATH: 1.55, // Winter's hard duel
   SAPPHO: 1.15,
-  SHAKESPEARE: 1.4,
-  KEATS: 1.2,
-  DANTE: 1.35,
+  SHAKESPEARE: 1.48,
+  KEATS: 1.3,
+  DANTE: 1.37,
 };
 
 export const BOOK_THRESHOLD: Record<string, number> = { SAPPHO: 0.2, SHAKESPEARE: 0.2, KEATS: 0.2, DANTE: 0.2 };
@@ -35,9 +38,9 @@ export const HOME_GUARD: Record<string, number> = {
   BUKOWSKI: 0.68,
   PLATH: 0.62,
   SAPPHO: 0.8,
-  SHAKESPEARE: 0.6,
+  SHAKESPEARE: 0.56,
   // Keats needs none: Bright Star already caps every verse at a quarter of his strength
-  DANTE: 0.65,
+  DANTE: 0.64,
 };
 
 /** A beaten Summit poet is yours, but stays on the Summit until the last of the four is beaten.
