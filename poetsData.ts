@@ -489,7 +489,7 @@ export const ALL_POETS: PoetData[] = [
     bio: 'Pulitzer Prize winner who walked the ponds and dunes of Provincetown, celebrating flora, fauna, and the gift of living with attentive awe.',
     quote: '“Tell me, what is it you plan to do with your one wild and precious life?”',
     dialogue: {
-      intro: "Morning. Mary Oliver. I've been out since first light. The geese are on the water.",
+      intro: "Morning. I've been out since first light. The geese are on the water.",
       preFight: "All right. But quietly. There's a heron just there.",
       midFight: "Wait. Did you see that? Go on.",
       escaped: "I'm going back out. The light is changing.",
@@ -632,7 +632,7 @@ export const ALL_POETS: PoetData[] = [
     bio: 'National poet of Palestine whose lyrical verses intertwined love, exile, memory, and the enduring fragrance of home and olive groves.',
     quote: '“We have on this earth what makes life worth living.”',
     dialogue: {
-      intro: "Salaam. Mahmoud Darwish. Sit, the bench is in the shade.",
+      intro: "Salaam. Sit, the bench is in the shade.",
       preFight: "Then let us speak, you and I. Gently. The trees are listening.",
       midFight: "Again. Say it as if someone were waiting for it.",
       escaped: "Go in peace.",
@@ -777,7 +777,7 @@ export const ALL_POETS: PoetData[] = [
     bio: 'Leader of the Harlem Renaissance who gave voice to Black American life with syncopated blues and jazz cadences.',
     quote: '“Hold fast to dreams / For if dreams die / Life is a broken-winged bird / That cannot fly.”',
     dialogue: {
-      intro: "Hey now. Langston Hughes. I'm on in a minute, stick around.",
+      intro: "Hey now. I'm on in a minute, stick around.",
       preFight: "I'm on after this number. Come on up, we'll do it right here.",
       midFight: "There it is. Now you're swinging. Stay with me.",
       escaped: 'Hold fast to dreams.',
@@ -1069,7 +1069,7 @@ export const ALL_POETS: PoetData[] = [
     bio: '13th-century Persian Sufi mystic whose ecstatic odes celebrate transcendent love and spiritual union.',
     quote: '“Out beyond ideas of wrongdoing and rightdoing there is a field. I’ll meet you there.”',
     dialogue: {
-      intro: "Khosh amadid. Jalal al-Din, of Balkh, and now of Konya. Sit. There is no need to speak yet.",
+      intro: "Sit. There is no need to speak yet.",
       preFight: "Come, then. Let us turn a little.",
       midFight: "Good. Again, more quietly.",
       escaped: "Go well.",
@@ -1360,7 +1360,7 @@ export const ALL_POETS: PoetData[] = [
     bio: 'Renowned Spanish poet and dramatist whose Romancero gitano and duende explored the dark, passionate soul of folk song.',
     quote: '“Green, how I want you green. Green wind. Green branches.”',
     dialogue: {
-      intro: "Buenas. Federico. Lorca if you're being formal, and nobody is.",
+      intro: "Sit, sit. I was about to play something.",
       preFight: 'Verde que te quiero verde.',
       midFight: "Wait. There. Did you feel it come up through the floor?",
       escaped: 'Into the olive groves under the crescent moon I slip away.',
@@ -1500,7 +1500,7 @@ export const ALL_POETS: PoetData[] = [
     bio: 'Celebrated poet and civil rights icon whose booming verse lifted generations with dignity and pride.',
     quote: '“You may write me down in history / With your bitter, twisted lies, / You may trod me in the very dirt / But still, like dust, I’ll rise.”',
     dialogue: {
-      intro: 'Well, good afternoon. Maya Angelou. Come stand here a minute, look at that.',
+      intro: 'Well, good afternoon. Come stand here a minute. Look at that.',
       preFight: "All right, now. Stand up straight and say it like you mean it.",
       midFight: "Mm. That's it. Don't you sit down now.",
       escaped: "I'll be going now. You keep at it.",
@@ -1797,7 +1797,7 @@ export const ALL_POETS: PoetData[] = [
     bio: 'Supreme master of haiku who wandered Edo Japan, capturing transient moments of stillness in three distilled lines.',
     quote: '“The old pond / A frog leaps in / The sound of water.”',
     dialogue: {
-      intro: "Konnichiwa. Bashō. I came on foot. The rains were late this year.",
+      intro: "I came on foot. The rains were late this year.",
       preFight: 'An old pond. A frog jumps in.',
       midFight: "Slowly. There is no one behind us on the road.",
       escaped: 'On a withered branch a crow alights; autumn twilight.',
@@ -2233,7 +2233,7 @@ export const ALL_POETS: PoetData[] = [
     bio: 'Underground poet of the Skid Row typewriter, dive bars, and horse tracks whose stripped-down lines captured survival and grit.',
     quote: '“there’s a bluebird in my heart that wants to get out but I’m too tough for him.”',
     dialogue: {
-      intro: "Bukowski. You're in the bartender's way. Sit.",
+      intro: "You're in the bartender's way. Sit.",
       preFight: "Okay, kid. Let's see it.",
       midFight: "That one landed.",
       escaped: 'I’m heading out the back door into the rain.',
@@ -2815,7 +2815,7 @@ export const ALL_POETS: PoetData[] = [
     bio: 'Pioneer of American Gothic verse whose rhythmic musical terror and melancholic themes transformed dark literature.',
     quote: '“Deep into that darkness peering, long I stood there wondering, fearing.”',
     dialogue: {
-      intro: 'Good evening. Poe. Quietly, please.',
+      intro: 'Quietly, please.',
       preFight: 'Once upon a midnight dreary.',
       midFight: "Hush. Do you hear it? Under the boards.",
       escaped: 'Deep into that darkness peering, long I stood there wondering, fearing.',
@@ -2959,7 +2959,7 @@ export const ALL_POETS: PoetData[] = [
     bio: 'Electrifying 20th-century poet whose intense verse channeled psychological fury, personal myth, and rebirth.',
     quote: '“Out of the ash / I rise with my red hair / And I eat men like air.”',
     dialogue: {
-      intro: "Oh. Hi. Sylvia. I've been up since four, don't mind the cups.",
+      intro: "Oh. Hi. I've been up since four, don't mind the cups.",
       preFight: "All right. Quickly, before the house wakes.",
       midFight: "No. Again. That wasn't it yet.",
       escaped: "I have to get back. The baby is awake.",
@@ -3245,7 +3245,7 @@ export const ALL_POETS: PoetData[] = [
     bio: 'Revered in antiquity as the Tenth Muse, Sappho created intensely musical lyrics celebrating beauty and Aphrodite.',
     quote: '“Someone will remember us, I say, even in another time.”',
     dialogue: {
-      intro: "Chaire. Sappho, of Mytilene. Sit by me. The evening star is nearly up.",
+      intro: "Sit by me. The evening star is nearly up.",
       preFight: '“Someone will remember us, I say, even in another time.”',
       midFight: 'Love shakes my heart like a mountain wind falling on the oaks!',
       escaped: "I do not know which way to turn. My mind is two.",
@@ -3389,7 +3389,7 @@ export const ALL_POETS: PoetData[] = [
     bio: 'The greatest dramatist and sonneteer in the English language, whose mastery of iambic pentameter shaped world literature.',
     quote: '“Shall I compare thee to a summer’s day?”',
     dialogue: {
-      intro: "Good morrow. Will Shakespeare. Thou hast the look of one who would be at it.",
+      intro: "Good morrow. Thou hast the look of one who would be at it.",
       preFight: '"Shall I compare thee to a summer\'s day?"',
       midFight: 'Rough winds do shake the darling buds of May!',
       escaped: '"Exit, pursued by a bear."',
@@ -3532,7 +3532,7 @@ export const ALL_POETS: PoetData[] = [
     bio: 'One of the greatest lyric poets in history who penned the immortal odes to a Nightingale, Grecian Urn, and Autumn in Hampstead before dying at 25.',
     quote: '“Beauty is truth, truth beauty.”',
     dialogue: {
-      intro: "Hello. John Keats. Forgive me, I tire quickly. Sit by me.",
+      intro: "Forgive me, I tire quickly. Sit by me.",
       preFight: '"Beauty is truth, truth beauty."',
       midFight: "Go on. I have not much breath, but I am listening.",
       escaped: '"Was it a vision, or a waking dream? Fled is that music."',

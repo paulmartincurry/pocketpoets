@@ -79,6 +79,7 @@ import {
   checkCaptureWindow,
   captureWindowPct,
 } from './src/battleEngine';
+import { WIN_LINES, extraTalkLines } from './talkExtras';
 import { homeEdge, homeGuard, onHomeGround, summitPoetWaits, SUMMIT_LOSS_RESUMES, SUMMIT_POET_IDS } from './difficulty';
 import {
   EXTERIOR_COLS,
@@ -4328,7 +4329,8 @@ export default function App() {
       gameAudio.playConfirmSelect();
       triggerHaptics(35);
       soundtrackEngine.triggerSfxDucking(450, 0.82);
-      const linesArray = Array.isArray(talkLines) ? talkLines : [talkLines];
+      // Bystanders who teach, point and notice say that first (talkExtras.ts).
+      const linesArray = [...extraTalkLines(speakerName, capturedPoetIdsRef.current), ...(Array.isArray(talkLines) ? talkLines : [talkLines])];
       let currentTalkIdx = 0;
 
       const choiceOptions: Array<{ label: 'TALK' | 'DUEL' | 'LEAVE' | 'JOIN'; action: () => void }> = [
@@ -5887,14 +5889,14 @@ export default function App() {
             setOverworldDialogue({
               active: true,
               speakerName: 'SAPPHO',
-              text: targetNpc.introLine || "Chaire. Sappho, of Mytilene. Sit by me. The evening star is nearly up.",
+              text: targetNpc.introLine || "Sit by me. The evening star is nearly up.",
               onComplete: releaseSappho,
             });
             return;
           }
           promptPoetChoiceMenu(
             'SAPPHO',
-            'Chaire. Sappho, of Mytilene. Sit by me. The evening star is nearly up.',
+            'Sit by me. The evening star is nearly up.',
             targetNpc.talkLines || ['I do not know which way to turn. My mind is two.'],
             targetNpc.duelLine || '“Someone will remember us, I say, even in another time.”',
             'SAPPHO',
@@ -5974,7 +5976,7 @@ export default function App() {
           // Shakespeare IS captured
           promptPoetChoiceMenu(
             'JOHN KEATS',
-            targetNpc.greeting || "Hello. John Keats. Forgive me, I tire quickly. Sit by me.",
+            targetNpc.greeting || "Forgive me, I tire quickly. Sit by me.",
             targetNpc.talkLines || [
               "“Was it a vision, or a waking dream? Fled is that music:—Do I wake or sleep?”",
               "“A thing of beauty is a joy for ever: its loveliness increases; it will never pass into nothingness.”",
@@ -7036,7 +7038,7 @@ export default function App() {
         if (targetNpc.poetId === 'THOREAU' || targetNpc.id === 'npc_hermitage_thoreau') {
           promptPoetChoiceMenu(
             'HENRY DAVID THOREAU',
-            targetNpc.greeting || "Good day. Thoreau. I went to the woods because I wished to live deliberately.",
+            targetNpc.greeting || "I went to the woods because I wished to live deliberately.",
             targetNpc.talkLines || [
               "“I had three chairs in my house; one for solitude, two for friendship, three for society.”",
               "“Simplify, simplify, simplify! Say, rather, one meal a day instead of three.”",
@@ -10124,7 +10126,7 @@ export default function App() {
             setOverworldDialogue({
               active: true,
               speakerName: 'LANGSTON HUGHES',
-              text: "Hey now. Langston Hughes. I'm on in a minute, stick around.",
+              text: "Hey now. I'm on in a minute, stick around.",
               onComplete: () => {
                 setNightingaleNpcs((prev) =>
                   prev.map((n) =>
@@ -10526,7 +10528,7 @@ export default function App() {
           const isPostEncounter = targetNpc.hasFoughtBefore || capturedPoetIds.includes('RUMI');
           const rumiGreeting = isPostEncounter
             ? 'We have spoken in verse, friend. The reed flute still remembers the song.'
-            : 'Khosh amadid. Jalal al-Din, of Balkh, and now of Konya. Sit. There is no need to speak yet.';
+            : 'Sit. There is no need to speak yet.';
           const rumiTalkLines = [
             'Listen to the reed. It has been crying since they cut it from the reed bed.',
             'I was a scholar with a great many books. Then a man named Shams asked me one question.',
@@ -10604,7 +10606,7 @@ export default function App() {
 
         // 3. W. B. YEATS: Pacing West of Fountain, X: 10–13, Y: 7–9. Non-Duelist!
         if (targetNpc.poetId === 'YEATS' || targetNpc.id === 'npc_town_yeats') {
-          const yeatsGreeting = "Good evening to you. Yeats. Don't mind me, I pace.";
+          const yeatsGreeting = "Good evening to you. Don't mind me, I pace.";
           const yeatsTalkLines = [
             '“Tread softly because you tread on my dreams.”',
             '“Things fall apart; the centre cannot hold.”',
@@ -11254,7 +11256,7 @@ export default function App() {
             active: true,
             speakerName: targetNpc.name,
             text:
-              "Morning. Mary Oliver. I've been out since first light. The geese are on the water.",
+              "Morning. I've been out since first light. The geese are on the water.",
             onComplete: () => {
               setHarborNpcs((prev) =>
                 prev.map((n) =>
@@ -11319,7 +11321,7 @@ export default function App() {
             text:
               targetNpc.introLine ||
               targetNpc.greeting ||
-              "Salaam. Mahmoud Darwish. Sit, the bench is in the shade.",
+              "Salaam. Sit, the bench is in the shade.",
             onComplete: () => {
               setHarborNpcs((prev) =>
                 prev.map((n) =>
@@ -11367,7 +11369,7 @@ export default function App() {
             text:
               targetNpc.introLine ||
               targetNpc.greeting ||
-              "Nanga def. Senghor. I was a poet, then a president, then, thank God, a poet again.",
+              "I was a poet, then a president, then, thank God, a poet again.",
             onComplete: () => {
               setHarborNpcs((prev) =>
                 prev.map((n) =>
@@ -11434,7 +11436,7 @@ export default function App() {
             text:
               targetNpc.introLine ||
               targetNpc.greeting ||
-              "Kalispera. Cavafy, of Alexandria. I am watching the ships come in.",
+              "I am watching the ships come in. I do it most evenings.",
             onComplete: () => {
               setHarborNpcs((prev) =>
                 prev.map((n) =>
@@ -11464,8 +11466,8 @@ export default function App() {
           targetNpc.name,
           targetNpc.greeting || "The beacon lamp burns clear over the Crossing-Bar shoals. Look out across the water—the sloop is sailing past.",
           targetNpc.talkLines || [
-            'When you set out, pray the road is long.',
-            'Do not hurry the journey. Better it last for years.',
+            'When you set out, pray the road is long. Do not hurry the journey.',
+            'I was thirty years a clerk in the Irrigation Office. I wrote in the evenings.',
             "I shall stay by the lamp. I keep late hours.",
           ],
           '',
@@ -11513,7 +11515,7 @@ export default function App() {
             text:
               targetNpc.introLine ||
               targetNpc.greeting ||
-              "Bonjou. Walcott. St. Lucia. I came down to see the light on the water before it goes.",
+              "I came down to see the light on the water before it goes.",
             onComplete: () => {
               setHarborNpcs((prev) =>
                 prev.map((n) =>
@@ -11539,7 +11541,7 @@ export default function App() {
 
         promptPoetChoiceMenu(
           targetNpc.name,
-          targetNpc.greeting || "Bonjou. Walcott. St. Lucia. I came down to see the light on the water before it goes.",
+          targetNpc.greeting || "I came down to see the light on the water before it goes.",
           targetNpc.talkLines || [
             'I paint as well. The sea does not hold still for it.',
             'I was born in Castries. The town burned when I was eighteen. I wrote about that first.',
@@ -12641,7 +12643,10 @@ export default function App() {
       setOverworldDialogue({
         active: true,
         speakerName: 'AWAKENING',
-        text: useSeasonLine ? `Back on the pier, rested. ${seasonLine}` : lossLines[Math.min(climbLossCountRef.current - 1, 2)],
+        // The poet who beat you gets the last word, then the pier.
+        text:
+          (lostTo && WIN_LINES[lostTo.id] ? `${lostTo.name}: “${WIN_LINES[lostTo.id]}”\n\n` : '') +
+          (useSeasonLine ? `Back on the pier, rested. ${seasonLine}` : lossLines[Math.min(climbLossCountRef.current - 1, 2)]),
       });
 
       setCurrentScreen('OVERWORLD');
@@ -20182,8 +20187,12 @@ export default function App() {
             <h1 className="text-2xl sm:text-3xl font-black text-[#EE1515] uppercase tracking-wider mb-2">
               DEFEAT
             </h1>
-            <p className="text-xs sm:text-sm text-[#242424] font-serif italic mb-3">
-              “Your verses dissolved into quiet mist... Even masters face the struggle of the blank draft.”
+            {/* The poet who beat you gets the last word (talkExtras.ts). */}
+            <p className="text-xs sm:text-sm text-[#242424] font-serif italic mb-1">
+              “{WIN_LINES[activeEnemyPoetId] || 'Your verses dissolved into quiet mist.'}”
+            </p>
+            <p className="text-[10px] text-[#4B5563] uppercase tracking-widest mb-3">
+              {WIN_LINES[activeEnemyPoetId] ? getPoetById(activeEnemyPoetId).name : ''}
             </p>
 
             <div className="space-y-2">
