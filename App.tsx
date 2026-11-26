@@ -4417,14 +4417,14 @@ export default function App() {
               const coachName = lead.name.toUpperCase();
               const tips = isWalt
                 ? [
-                    'Before your first duel, Camerado, three things. Watch the INTENT line. It tells you what they mean to recite next.',
-                    'Let me open with a boost. And heal me before I am desperate, not after.',
-                    'When they are down to a quarter of their strength, stop hitting. Choose CAPTURE, open a blank book, and bind them. That is how poets are won.',
+                    'Before your first duel, Camerado, three things. They always say what they mean to do next. Read it.',
+                    'Not every verse of mine is a blow. And do not wait until I am desperate to look after me.',
+                    'And when they are nearly spent, stop hitting. You carry blank books for a reason.',
                   ]
                 : [
-                    'Before your first duel, three things. Watch the INTENT line. It tells you what they mean to recite next.',
-                    'Open with a boost if I have one. Heal me before I am desperate, not after.',
-                    'When they are down to a quarter of their strength, stop hitting. Choose CAPTURE, open a blank book, and bind them.',
+                    'Before your first duel, three things. They always say what they mean to do next. Read it.',
+                    'Not every verse of mine is a blow. Do not wait until I am desperate to look after me.',
+                    'And when they are nearly spent, stop hitting. You carry blank books for a reason.',
                   ];
               const say = (i: number) =>
                 setOverworldDialogue({
@@ -12617,9 +12617,9 @@ export default function App() {
       climbLossCountRef.current += 1;
       const lostToName = enemyPoetRef.current?.name ?? 'the poet';
       const lossLines = [
-        `${lostToName} had the better lines today. Your poets carried you back to the pier, rested. Next time, when a poet is down to a quarter strength, try CAPTURE.`,
-        `${lostToName} again. A thought for the walk back: a poet at a quarter strength can be bound in a blank book. You do not have to finish every duel.`,
-        `Back on the pier. Your poets are rested. An opening verse can be a boost instead of a blow, and a tired poet can be bound.`,
+        `${lostToName} had the better lines today. Your poets carried you back to the pier, rested. Not every duel has to be finished.`,
+        `${lostToName} again. A thought for the walk back: the blank books in your bag are not for writing in.`,
+        `Back on the pier. Your poets are rested. Not every verse has to be a blow.`,
       ];
       // The other thing nobody discovers alone: who leads matters more than anything. If the
       // lead was not a season counter and a counter is in the Anthology, name it. (Draft.)
@@ -12631,8 +12631,10 @@ export default function App() {
         const leadNow = getPoetById(playerLineupRef.current[0] ?? owned[0] ?? 'WHITMAN');
         const leadCounters = calculateSeasonMultiplier(leadNow.season, lostTo.season) > 1;
         const counter = owned.map((id) => getPoetById(id)).filter((pp) => calculateSeasonMultiplier(pp.season, lostTo.season) > 1).sort((a, b) => b.hp - a.hp)[0];
-        if (!leadCounters && counter) {
-          seasonLine = `${lostTo.name} is a ${cap(lostTo.season)} poet, and ${cap(counter.season)} has the better of ${cap(lostTo.season)}. ${counter.name} is in your Anthology. Open POETS [P] and let them lead.`;
+        // Hints narrow, they do not name: the season, never the poet or the button.
+        if (!leadCounters) {
+          const better = ['SPRING', 'SUMMER', 'AUTUMN', 'WINTER'].find((x) => calculateSeasonMultiplier(x as any, lostTo.season) > 1);
+          if (better) seasonLine = `${lostTo.name} is a ${cap(lostTo.season)} poet. ${cap(better)} has the better of ${cap(lostTo.season)}.${counter ? ` Someone in your Anthology knows ${cap(better)}.` : ''}`;
         }
       }
       const useSeasonLine = seasonLine && (climbLossCountRef.current >= 2 || (lostTo && onHomeGround(lostTo.id)));
